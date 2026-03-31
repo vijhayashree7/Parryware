@@ -1,49 +1,85 @@
 import React from 'react';
-
-const blogs = [
-  {
-    id: 1,
-    title: 'Why Should You Choose a Countertop Basin?',
-    image: 'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&q=80',
-  },
-  {
-    id: 2,
-    title: 'Elegant Bedroom Wall Tile Ideas to Suit Every Style',
-    image: 'https://images.unsplash.com/photo-1622372738946-62e02505feb3?auto=format&fit=crop&q=80',
-  },
-  {
-    id: 3,
-    title: 'Creative Kitchen Chimney Design Ideas for Your Home',
-    image: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&q=80',
-  }
-];
+import { Link } from 'react-router-dom';
+import { blogsData } from '../data/blogs';
 
 const Blogs = () => {
+  // As requested, strictly slice to exactly 3 blogs to display on the homepage
+  const topBlogs = blogsData.slice(0, 3);
+
   return (
-    <section className="py-24 bg-white px-6 md:px-12">
-      <div className="max-w-7xl mx-auto">
+    <section className="py-24 bg-transparent px-6 md:px-12 relative" id="blog-section">
+      <div className="max-w-[1400px] mx-auto">
         
-        <div className="flex justify-between items-end mb-16 border-b border-cozy-200 pb-6">
-          <h2 className="text-4xl md:text-5xl font-serif text-cozy-900">Blogs</h2>
-          <span className="text-cozy-600 uppercase tracking-widest text-sm font-medium hover:text-cozy-900 cursor-pointer transition-colors border-b border-transparent hover:border-cozy-900 pb-1">View All Blogs</span>
+        {/* Header - Minimalist Centered Title with absolute right link matching screenshot */}
+        <div className="flex justify-center flex-col md:flex-row md:items-center relative mb-16">
+          <h2 className="text-6xl md:text-[5rem] font-serif font-light text-cozy-900 tracking-wide drop-shadow-sm text-center">
+            Blogs
+          </h2>
+          <Link 
+            to="/blogs" 
+            className="md:absolute right-0 mt-6 md:mt-0 text-[10px] tracking-[0.2em] font-bold uppercase text-cozy-900 border-b border-cozy-400 pb-1 self-center hover:text-cozy-500 hover:border-cozy-500 transition-colors pointer-events-auto"
+          >
+            View All Blogs
+          </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          {blogs.map((blog) => (
-            <div key={blog.id} className="group cursor-pointer">
-              <div className="relative overflow-hidden mb-6 aspect-w-4 aspect-h-3">
-                <img 
+        {/* Restored the beautiful dark rounded cards CSS from the original layout! */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
+          {topBlogs.map((blog) => (
+            <Link 
+              to={`/blog/${blog.id}`}
+              key={blog.id} 
+              className="group relative rounded-[2.5rem] overflow-hidden cursor-pointer h-[460px] shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col justify-end"
+            >
+              {/* Background Image */}
+              <div className="absolute inset-0">
+                 <img 
                   src={blog.image} 
                   alt={blog.title} 
-                  className="w-full h-72 object-cover transform transition-transform duration-700 group-hover:scale-105"
-                />
+                  className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                 />
               </div>
-              <h3 className="text-xl md:text-2xl font-serif text-cozy-900 leading-snug group-hover:text-cozy-600 transition-colors">
-                {blog.title}
-              </h3>
-            </div>
+
+              {/* Gradient Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent transition-opacity duration-500 opacity-80 group-hover:opacity-100"></div>
+
+              {/* Tag and Date - Hidden by default, reveals on hover */}
+              <div className="absolute inset-x-0 top-0 p-6 flex justify-between items-start opacity-0 -translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
+                 <span className="bg-white/20 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] font-bold tracking-widest text-white uppercase border border-white/20 shadow-sm">
+                   {blog.category}
+                 </span>
+                 <span className="text-white/90 text-[11px] font-medium bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full shadow-sm">
+                   {blog.date}
+                 </span>
+              </div>
+
+              {/* Content */}
+              <div className="relative p-6 px-8 z-10 flex flex-col justify-end">
+                <h3 className="text-[1.35rem] font-serif text-white mb-3 leading-snug drop-shadow-md group-hover:drop-shadow-lg transition-all duration-500">
+                  {blog.title}
+                </h3>
+                
+                {/* Description - Hidden by default, expands on hover */}
+                <p className="text-white/80 text-[13px] mb-6 font-medium line-clamp-3 leading-relaxed opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-[100px] transition-all duration-500 overflow-hidden">
+                  {blog.description}
+                </p>
+
+                {/* Footer - Views and Read Time with Circular Arrow Button */}
+                <div className="flex items-center justify-between border-transparent pt-4 mt-2 transition-all duration-500 border-t group-hover:border-white/20">
+                  <span className="text-white/70 text-[11px] font-bold uppercase tracking-widest">
+                    {blog.meta}
+                  </span>
+                  <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center bg-white/10 group-hover:bg-white group-hover:text-black text-white transition-all backdrop-blur-sm shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
+
       </div>
     </section>
   );

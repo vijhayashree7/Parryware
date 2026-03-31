@@ -4,12 +4,15 @@ const Hero = () => {
   return (
     <section className="relative w-full h-screen overflow-hidden bg-cozy-900">
       
-      {/* Background Image with Ken Burns Video Effect */}
+      {/* Background Video */}
       <div className="absolute inset-0 w-full h-full">
-        <img 
-          src="/hero-bg.png" 
-          alt="Parryware Luxury Bathroom" 
-          className="w-[110%] h-[110%] object-cover ken-burns origin-center filter brightness-75"
+        <video 
+          autoPlay 
+          loop 
+          muted 
+          playsInline
+          src="/hero-video.mp4" 
+          className="w-full h-full object-cover filter brightness-[0.6]"
         />
       </div>
 

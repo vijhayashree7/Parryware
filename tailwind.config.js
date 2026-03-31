@@ -21,8 +21,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
-        serif: ['Merriweather', 'serif'],
+        sans: ['Outfit', 'sans-serif'],
+        serif: ['Italiana', 'serif'],
       }
     },
   },
