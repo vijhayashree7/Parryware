@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu } from 'lucide-react';
 
 const Navbar = ({ onMenuClick }) => {
@@ -7,15 +8,20 @@ const Navbar = ({ onMenuClick }) => {
       <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
         
         {/* Left - Menu Button */}
-        <div className="flex items-center gap-4 cursor-pointer text-white hover:text-cozy-300 transition-colors" onClick={onMenuClick}>
-          <Menu size={32} strokeWidth={1.5} />
-          <span className="hidden md:inline text-sm uppercase tracking-widest font-medium">Menu</span>
+        <div className="flex items-center gap-8 pointer-events-auto">
+          <div className="flex items-center gap-4 cursor-pointer text-white hover:text-cozy-300 transition-colors" onClick={onMenuClick}>
+            <Menu size={32} strokeWidth={1.5} />
+            <span className="hidden md:inline text-sm uppercase tracking-widest font-medium">Menu</span>
+          </div>
+          <Link to="/#catalog" className="hidden md:block text-sm uppercase tracking-widest font-medium text-white hover:text-cozy-300 transition-colors">
+            Catalogue
+          </Link>
         </div>
 
         {/* Center - Logo */}
-        <div className="absolute left-1/2 -translate-x-1/2 text-white text-3xl md:text-5xl font-serif tracking-widest text-shadow cursor-pointer transition-transform hover:scale-105">
+        <Link to="/" className="absolute left-1/2 -translate-x-1/2 text-white text-3xl md:text-5xl font-serif tracking-widest text-shadow cursor-pointer transition-transform hover:scale-105">
           Parryware
-        </div>
+        </Link>
 
         {/* Right - Icons */}
         <div className="flex items-center gap-6 text-white cursor-pointer">

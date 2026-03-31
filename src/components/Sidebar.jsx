@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { X, ChevronRight } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -37,11 +38,35 @@ const Sidebar = ({ isOpen, onClose }) => {
           
           <div className="h-px bg-cozy-800 w-full my-6"></div>
 
-          {['Location of Store', 'Catalog', 'Contact Us'].map(link => (
-            <div key={link} className="flex items-center justify-between text-xl font-light tracking-wide cursor-pointer hover:text-cozy-400 hover:translate-x-2 transition-all">
-              {link}
-            </div>
-          ))}
+          {['Location of Store', 'Catalogue', 'Contact Us'].map(link => {
+            const isCatalogue = link === 'Catalogue' || link === 'Catalog';
+            const isContact = link === 'Contact Us';
+            const isLocations = link === 'Location of Store';
+            
+            if (isContact || isLocations) {
+              return (
+                <Link 
+                  key={link} 
+                  to={isContact ? "/contact" : "/locations"}
+                  onClick={onClose}
+                  className="flex items-center justify-between text-xl font-light tracking-wide cursor-pointer hover:text-cozy-400 hover:translate-x-2 transition-all block"
+                >
+                  {link}
+                </Link>
+              );
+            }
+
+            return (
+              <a 
+                key={link} 
+                href={isCatalogue ? '/#catalog' : '#'}
+                onClick={isCatalogue ? onClose : undefined}
+                className="flex items-center justify-between text-xl font-light tracking-wide cursor-pointer hover:text-cozy-400 hover:translate-x-2 transition-all block"
+              >
+                {link}
+              </a>
+            );
+          })}
         </div>
 
         <div className="p-8 bg-cozy-900/50 mt-auto border-t border-cozy-800 text-sm text-cozy-400 space-y-2">
