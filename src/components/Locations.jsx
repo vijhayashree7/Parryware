@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { MapPin, Phone, Clock, Share2, Globe } from 'lucide-react';
+import { Clock, Globe, MapPin, Phone, Share2 } from 'lucide-react';
+import { useEffect } from 'react';
 
 const locations = [
   {
@@ -42,7 +42,7 @@ const Locations = () => {
 
   const containerVariants = {
     hidden: { opacity: 0 },
-    visible: { 
+    visible: {
       opacity: 1,
       transition: { staggerChildren: 0.2, delayChildren: 0.3 }
     }
@@ -50,101 +50,96 @@ const Locations = () => {
 
   const itemVariants = {
     hidden: { y: 30, opacity: 0 },
-    visible: { 
-      y: 0, 
+    visible: {
+      y: 0,
       opacity: 1,
       transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] }
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF9] pt-32 pb-24 px-6">
+    <div className="h-screen bg-[#FDFBF9] pt-24 pb-8 px-6 flex flex-col overflow-hidden">
       <motion.div 
-        className="max-w-7xl mx-auto"
+        className="max-w-7xl mx-auto flex-1 flex flex-col w-full"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
       >
-        {/* Header Section */}
-        <motion.div variants={itemVariants} className="text-center mb-24">
-          <h2 className="text-[#A68966] text-sm uppercase tracking-[0.4em] font-medium mb-4">Our Presence</h2>
-          <h1 className="text-5xl md:text-7xl font-serif text-[#4E342E] leading-tight mb-8">
-            Abirami Parryware <br /> 
-            <span className="italic font-light text-shadow-sm">Studio Network</span>
+        {/* Header Section - More Compact */}
+        <motion.div variants={itemVariants} className="text-center mb-10">
+          <h2 className="text-[#A68966] text-xs uppercase tracking-[0.4em] font-medium mb-2">Our Presence</h2>
+          <h1 className="text-4xl md:text-5xl font-serif text-[#4E342E] leading-tight mb-4">
+            Abirami Parryware <span className="italic font-light">Studio Network</span>
           </h1>
-          <p className="text-[#8D6E63] text-lg font-light max-w-2xl mx-auto mb-10 leading-relaxed">
-            Experience the finest collection of luxury bathware and tiles at our strategically located branches across the region.
-          </p>
-          <div className="w-24 h-px bg-[#A68966] mx-auto opacity-40"></div>
+          <div className="w-16 h-px bg-[#A68966] mx-auto opacity-40"></div>
         </motion.div>
 
-        {/* Locations Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Locations Grid - Filling remaining space */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 items-stretch mb-8 overflow-hidden">
           {locations.map((loc) => (
             <motion.div 
               key={loc.id}
               variants={itemVariants}
-              whileHover={{ y: -12 }}
-              className="group bg-white rounded-3xl overflow-hidden shadow-[0_15px_45px_rgba(78,52,46,0.05)] border border-[#F5F0EB] transition-all duration-500 hover:shadow-[0_30px_70px_rgba(78,52,46,0.1)]"
+              className="group bg-white rounded-2xl overflow-hidden shadow-[0_10px_35px_rgba(78,52,46,0.04)] border border-[#F5F0EB] transition-all duration-500 flex flex-col h-full"
             >
-              {/* Image Header */}
-              <div className="relative h-64 overflow-hidden">
+              {/* Image Header - Aspect ratio aware */}
+              <div className="relative h-[40%] overflow-hidden">
                 <img 
                   src={loc.image} 
                   alt={loc.name}
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60 group-hover:opacity-40 transition-opacity"></div>
-                <div className="absolute top-6 left-6 px-4 py-2 bg-white/95 backdrop-blur-sm rounded-full shadow-lg">
-                  <span className="text-[#8D6E63] text-[10px] uppercase tracking-widest font-bold">{loc.type}</span>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60"></div>
+                <div className="absolute top-4 left-4 px-3 py-1 bg-white/95 backdrop-blur-sm rounded-full shadow-md">
+                  <span className="text-[#8D6E63] text-[9px] uppercase tracking-widest font-bold">{loc.type}</span>
                 </div>
-                <div className="absolute bottom-6 left-6 right-6">
-                  <h3 className="text-white text-2xl font-serif mb-1 group-hover:translate-x-2 transition-transform duration-500">{loc.city}</h3>
-                  <div className="flex items-center gap-2 text-white/80 text-sm font-light">
-                    <MapPin size={14} className="text-[#A68966]" />
-                    <span>Tamil Nadu, India</span>
+                <div className="absolute bottom-4 left-4 right-4">
+                  <h3 className="text-white text-xl font-serif mb-0.5">{loc.city}</h3>
+                  <div className="flex items-center gap-2 text-white/80 text-xs font-light">
+                    <MapPin size={12} className="text-[#A68966]" />
+                    <span>Tamil Nadu</span>
                   </div>
                 </div>
               </div>
 
-              {/* Content Body */}
-              <div className="p-10 space-y-8">
-                <div className="space-y-4">
-                  <h4 className="text-[#4E342E] text-xl font-serif leading-tight">{loc.name}</h4>
-                  <p className="text-[#8D6E63] font-light leading-relaxed text-base min-h-[3rem]">
+              {/* Content Body - Compact flex spacing */}
+              <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                <div className="space-y-3">
+                  <h4 className="text-[#4E342E] text-lg font-serif leading-tight">{loc.name}</h4>
+                  <p className="text-[#8D6E63] font-light leading-relaxed text-sm">
                     {loc.address}
                   </p>
                 </div>
 
-                <div className="space-y-4 pt-4 border-t border-[#F5F0EB]">
-                  <div className="flex items-center gap-4 text-[#4E342E]/80 group/info">
-                    <div className="w-10 h-10 bg-[#FDFBF9] rounded-full flex items-center justify-center text-[#A68966] group-hover/info:bg-[#A68966] group-hover/info:text-white transition-all duration-300">
-                      <Phone size={18} />
+                <div className="space-y-3 pt-4 border-t border-[#F5F0EB]">
+                  <div className="flex items-center gap-3 text-[#4E342E]/80">
+                    <div className="w-8 h-8 bg-[#FDFBF9] rounded-full flex items-center justify-center text-[#A68966] border border-[#F5F0EB]">
+                      <Phone size={14} />
                     </div>
-                    <span className="text-sm font-medium tracking-wide">{loc.phone}</span>
+                    <span className="text-xs font-medium tracking-wide">{loc.phone}</span>
                   </div>
-                  <div className="flex items-center gap-4 text-[#4E342E]/80 group/info">
-                    <div className="w-10 h-10 bg-[#FDFBF9] rounded-full flex items-center justify-center text-[#A68966] group-hover/info:bg-[#A68966] group-hover/info:text-white transition-all duration-300">
-                      <Clock size={18} />
+                  <div className="flex items-center gap-3 text-[#4E342E]/80">
+                    <div className="w-8 h-8 bg-[#FDFBF9] rounded-full flex items-center justify-center text-[#A68966] border border-[#F5F0EB]">
+                      <Clock size={14} />
                     </div>
-                    <span className="text-sm font-medium tracking-wide">{loc.hours}</span>
+                    <span className="text-xs font-medium tracking-wide">{loc.hours}</span>
                   </div>
                 </div>
 
-                {/* Footer Buttons */}
-                <div className="flex items-center justify-center pt-6 border-t border-[#F5F0EB]">
-                  <div className="flex gap-6">
+                {/* Footer Buttons - Compact */}
+                <div className="flex items-center justify-center pt-4 border-t border-[#F5F0EB]">
+                  <div className="flex gap-4">
                     <motion.button 
                       whileHover={{ scale: 1.1, y: -2 }} 
-                      className="w-12 h-12 rounded-full bg-[#FDFBF9] flex items-center justify-center text-[#8D6E63] hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm border border-[#F5F0EB]"
+                      className="w-10 h-10 rounded-full bg-[#FDFBF9] flex items-center justify-center text-[#8D6E63] hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm border border-[#F5F0EB]"
                     >
-                      <Share2 size={20} />
+                      <Share2 size={16} />
                     </motion.button>
                     <motion.button 
                       whileHover={{ scale: 1.1, y: -2 }} 
-                      className="w-12 h-12 rounded-full bg-[#FDFBF9] flex items-center justify-center text-[#8D6E63] hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm border border-[#F5F0EB]"
+                      className="w-10 h-10 rounded-full bg-[#FDFBF9] flex items-center justify-center text-[#8D6E63] hover:bg-[#8D6E63] hover:text-white transition-all shadow-sm border border-[#F5F0EB]"
                     >
-                      <Globe size={20} />
+                      <Globe size={16} />
                     </motion.button>
                   </div>
                 </div>
@@ -153,19 +148,20 @@ const Locations = () => {
           ))}
         </div>
 
-        {/* Global Footer Card */}
+        {/* Global Footer Card - Minimal version to keep in viewport */}
         <motion.div 
           variants={itemVariants}
-          className="mt-20 p-12 bg-[#4E342E] rounded-[3rem] text-center relative overflow-hidden"
+          className="p-6 bg-[#4E342E] rounded-3xl text-center relative overflow-hidden"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-          <p className="text-white/60 text-sm uppercase tracking-[0.3em] mb-6">Partnership Inquiries</p>
-          <h2 className="text-white text-3xl md:text-5xl font-serif mb-10 leading-tight">
-            Interested in partnering <br /> with <span className="italic">Abirami Agency?</span>
-          </h2>
-          <button className="px-10 py-5 bg-[#A68966] text-white text-sm font-bold uppercase tracking-[0.2em] rounded-2xl hover:bg-white hover:text-[#4E342E] transition-all duration-500 shadow-xl shadow-black/20">
-            Contact Head Office
-          </button>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl"></div>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-6">
+            <h2 className="text-white text-xl font-serif">
+              Interested in partnering with <span className="italic">Abirami Agency?</span>
+            </h2>
+            <button className="px-8 py-3 bg-[#A68966] text-white text-xs font-bold uppercase tracking-[0.2em] rounded-xl hover:bg-white hover:text-[#4E342E] transition-all duration-500 shadow-lg">
+              Contact Head Office
+            </button>
+          </div>
         </motion.div>
       </motion.div>
     </div>
