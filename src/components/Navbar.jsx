@@ -1,7 +1,10 @@
 import React from 'react';
 import { Search, ShoppingBag, User, Menu } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = ({ onMenuClick }) => {
+  const navigate = useNavigate();
+
   return (
     <nav className="fixed top-0 left-0 w-full z-40 bg-transparent px-6 py-6 transition-all duration-300 pointer-events-none">
       <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
@@ -13,7 +16,10 @@ const Navbar = ({ onMenuClick }) => {
         </div>
 
         {/* Center - Logo */}
-        <div className="absolute left-1/2 -translate-x-1/2 text-white text-3xl md:text-5xl font-serif tracking-widest text-shadow cursor-pointer transition-transform hover:scale-105">
+        <div 
+          onClick={() => navigate('/')}
+          className="absolute left-1/2 -translate-x-1/2 text-white text-3xl md:text-5xl font-serif tracking-widest text-shadow cursor-pointer transition-transform hover:scale-105"
+        >
           Parryware
         </div>
 

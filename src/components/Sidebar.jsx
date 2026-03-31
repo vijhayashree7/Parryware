@@ -1,7 +1,32 @@
 import React from 'react';
 import { X, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+
+  const handleProductClick = (prod) => {
+    if (prod === 'Basin') {
+      navigate('/basin');
+      onClose();
+    } else if (prod === 'Faucets') {
+      navigate('/faucets');
+      onClose();
+    } else if (prod === 'Water Heater') {
+      navigate('/water-heater');
+      onClose();
+    } else if (prod === 'Chimney') {
+      navigate('/chimney');
+      onClose();
+    } else if (prod === 'Tiles and Surface') {
+      navigate('/tiles-and-surface');
+      onClose();
+    } else if (prod === 'Closet') {
+      navigate('/closet');
+      onClose();
+    }
+  };
+
   return (
     <>
       {/* Backdrop */}
@@ -30,7 +55,13 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
             <ul className="pl-4 space-y-4 text-cozy-200 border-l border-cozy-700/50">
               {['Water Heater', 'Closet', 'Basin', 'Faucets', 'Chimney', 'Tiles and Surface'].map(prod => (
-                <li key={prod} className="hover:text-white hover:translate-x-1 cursor-pointer transition-all">{prod}</li>
+                <li 
+                  key={prod} 
+                  onClick={() => handleProductClick(prod)}
+                  className="hover:text-white hover:translate-x-1 cursor-pointer transition-all"
+                >
+                  {prod}
+                </li>
               ))}
             </ul>
           </div>
