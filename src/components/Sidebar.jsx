@@ -1,6 +1,5 @@
 import React from 'react';
 import { X, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
@@ -30,21 +29,21 @@ const Sidebar = ({ isOpen, onClose }) => {
   return (
     <>
       {/* Backdrop */}
-      <div 
+      <div
         className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
       />
 
       {/* Sidebar Panel */}
       <div className={`fixed top-0 left-0 h-full w-full max-w-sm bg-cozy-900 text-cozy-50 z-50 transform transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        
+
         <div className="flex items-center justify-between p-8 border-b border-cozy-800">
           <span className="text-xl tracking-widest uppercase text-cozy-300">Menu</span>
-          <X 
-            size={32} 
-            strokeWidth={1.5} 
-            className="cursor-pointer hover:text-white transition-colors hover:rotate-90 duration-300" 
-            onClick={onClose} 
+          <X
+            size={32}
+            strokeWidth={1.5}
+            className="cursor-pointer hover:text-white transition-colors hover:rotate-90 duration-300"
+            onClick={onClose}
           />
         </div>
 
@@ -65,14 +64,32 @@ const Sidebar = ({ isOpen, onClose }) => {
               ))}
             </ul>
           </div>
-          
+
           <div className="h-px bg-cozy-800 w-full my-6"></div>
 
-          {['Location of Store', 'Catalog', 'Contact Us'].map(link => (
-            <div key={link} className="flex items-center justify-between text-xl font-light tracking-wide cursor-pointer hover:text-cozy-400 hover:translate-x-2 transition-all">
-              {link}
-            </div>
-          ))}
+          {['Location of Store', 'Catalogue', 'Contact Us'].map(link => {
+            const isCatalogue = link === 'Catalogue' || link === 'Catalog';
+            const isContact = link === 'Contact Us';
+            const isLocations = link === 'Location of Store';
+
+            if (isContact || isLocations || isCatalogue) {
+              let to = "/";
+              if (isContact) to = "/contact";
+              if (isLocations) to = "/locations";
+              if (isCatalogue) to = "/catalog";
+
+              return (
+                <Link
+                  key={link}
+                  to={to}
+                  onClick={onClose}
+                  className="flex items-center justify-between text-xl font-light tracking-wide cursor-pointer hover:text-cozy-400 hover:translate-x-2 transition-all block"
+                >
+                  {link}
+                </Link>
+              );
+            }
+          })}
         </div>
 
         <div className="p-8 bg-cozy-900/50 mt-auto border-t border-cozy-800 text-sm text-cozy-400 space-y-2">
