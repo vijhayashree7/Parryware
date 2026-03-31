@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Menu, Search, ShoppingBag, User } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -124,56 +123,6 @@ const Navbar = ({ onMenuClick }) => {
               )}
             </AnimatePresence>
           </div>
-=======
-import React, { useState, useEffect } from 'react';
-import { Search, ShoppingBag, User, Menu } from 'lucide-react';
-
-const Navbar = ({ onMenuClick }) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      // Dynamic logic: once the user scrolls slightly past the top edge, convert Navbar to dark glassmode
-      setIsScrolled(window.scrollY > 40);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // When scrolled down into the light mist, we apply a clear frosty glass and dark brown text to maintain visibility.
-  // When at the very top (over the dark hero section), it stays completely transparent with pure white text.
-  const navClasses = isScrolled 
-    ? 'bg-white/85 backdrop-blur-xl border-b border-cozy-200/50 shadow-sm text-cozy-900 py-4' 
-    : 'bg-transparent text-white py-6';
-
-  const iconClasses = `transition-colors duration-300 ${isScrolled ? 'hover:text-cozy-600' : 'hover:text-cozy-300'}`;
-
-  return (
-    <nav className={`fixed top-0 left-0 w-full z-40 px-6 transition-all duration-500 pointer-events-none ${navClasses}`}>
-      <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
-        
-        {/* Left - Menu Button */}
-        <div className={`flex items-center gap-4 cursor-pointer ${iconClasses}`} onClick={onMenuClick}>
-          <Menu size={28} strokeWidth={1.5} />
-          <span className="hidden md:inline text-[11px] uppercase tracking-[0.25em] font-medium">Menu</span>
-        </div>
-
-        {/* Center - Stylish Modern Logo */}
-        <div className="absolute left-1/2 -translate-x-1/2 text-[2.5rem] md:text-[3.5rem] font-serif font-light tracking-wide cursor-pointer hover:scale-[1.02] transition-transform duration-500 pb-1">
-          Abirami
-        </div>
-
-        {/* Right - Icons */}
-        <div className={`flex items-center gap-5 md:gap-8 cursor-pointer`}>
-          <Search size={22} strokeWidth={1.5} className={iconClasses} />
-          <div className="relative">
-            <ShoppingBag size={22} strokeWidth={1.5} className={iconClasses} />
-            <span className={`absolute -top-2 -right-2 w-4 h-4 text-[9px] rounded-full flex items-center justify-center font-bold shadow-sm transition-colors duration-300 ${isScrolled ? 'bg-cozy-900 text-white' : 'bg-cozy-600 text-white'}`}>
-              1
-            </span>
-          </div>
-          <User size={22} strokeWidth={1.5} className={iconClasses} />
->>>>>>> 348b95b (Added new blog data and updates)
         </div>
 
       </div>
