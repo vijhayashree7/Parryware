@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Star, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 import { Link, useParams, Navigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const imageUrls = [
   "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-silver-stainless-steel-water-heater-with-steam-valve-image_2651541.jpg",
@@ -66,7 +67,7 @@ const categories = [
 
 export default function WaterHeaterCollection() {
   const { categoryId } = useParams();
-  const [cart, setCart] = useState([]);
+  const { cart, addToCart, removeFromCart, updateQuantity, setIsSidebarOpen, getProductMin, getProductStep } = useCart();
 
   const catIndex = categories.indexOf(categoryId);
   
@@ -100,32 +101,6 @@ export default function WaterHeaterCollection() {
 
   const products = getProducts();
 
-  const handleAddToCart = (product) => {
-    if (!cart.find(item => item.product.id === product.id)) {
-      setCart([...cart, { product, quantity: 1 }]);
-    }
-  };
-
-  const handleIncrease = (productId) => {
-    setCart(cart.map(item => 
-      item.product.id === productId ? { ...item, quantity: item.quantity + 1 } : item
-    ));
-  };
-
-  const handleDecrease = (productId) => {
-    setCart(cart.map(item => {
-      if (item.product.id === productId) {
-        if (item.quantity === 1) return null;
-        return { ...item, quantity: item.quantity - 1 };
-      }
-      return item;
-    }).filter(Boolean));
-  };
-
-  const handleRemoveFromCart = (productId) => {
-    setCart(cart.filter(item => item.product.id !== productId));
-  };
-
   return (
     <div className="min-h-screen font-sans w-full overflow-y-auto bg-[#F4F6F8]">
       <header className="bg-white h-[70px] flex items-center justify-between px-6 text-gray-900 sticky top-0 z-50 border-b border-gray-200 shadow-sm">
@@ -135,11 +110,11 @@ export default function WaterHeaterCollection() {
           </Link>
           <h1 className="text-lg md:text-xl font-bold tracking-tight">{categoryId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h1>
         </div>
-        <div className="relative flex items-center cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors">
+        <div className="relative flex items-center cursor-pointer p-2 rounded-full hover:bg-gray-100 transition-colors" onClick={() => setIsSidebarOpen(true)}>
           <ShoppingCart className="w-7 h-7 text-gray-700" />
           {cart.length > 0 && (
             <span className="absolute top-0 right-0 bg-[#E33939] text-white font-bold text-[10px] rounded-full w-[18px] h-[18px] flex items-center justify-center shadow-md">
-              {cart.reduce((total, item) => total + item.quantity, 0)}
+              {cart.length}
             </span>
           )}
         </div>
@@ -214,17 +189,23 @@ export default function WaterHeaterCollection() {
                     {cartItem ? (
                       <div className="w-full h-[52px] flex items-center justify-between border-[1px] border-gray-800 rounded-full overflow-hidden bg-white text-gray-900 shadow-sm">
                         <button 
-                          onClick={() => cartItem.quantity === 1 ? handleRemoveFromCart(product.id) : handleDecrease(product.id)} 
+                          onClick={() => {
+                            if (cartItem.quantity <= getProductMin(product)) {
+                              removeFromCart(product.id);
+                            } else {
+                              updateQuantity(product.id, cartItem.quantity - getProductStep(product));
+                            }
+                          }}
                           className="h-full px-5 hover:bg-gray-100 transition-colors flex items-center justify-center"
                         >
-                          {cartItem.quantity === 1 ? 
+                          {cartItem.quantity <= getProductMin(product) ? 
                             <Trash2 className="w-[18px] h-[18px]" strokeWidth={2} /> : 
                             <Minus className="w-[18px] h-[18px]" strokeWidth={2.5} />
                           }
                         </button>
                         <span className="font-bold text-[16px] px-4">{cartItem.quantity}</span>
                         <button 
-                          onClick={() => handleIncrease(product.id)} 
+                          onClick={() => updateQuantity(product.id, cartItem.quantity + getProductStep(product))} 
                           className="h-full px-5 bg-gray-50 hover:bg-gray-100 transition-colors flex items-center justify-center border-l border-gray-200"
                         >
                           <Plus className="w-[20px] h-[20px]" strokeWidth={2.5} />
@@ -232,7 +213,7 @@ export default function WaterHeaterCollection() {
                       </div>
                     ) : (
                       <button
-                        onClick={() => handleAddToCart(product)}
+                        onClick={() => addToCart(product)}
                         className="w-full h-[52px] rounded-full text-[15px] font-semibold tracking-wide transition-all duration-300 flex items-center justify-center gap-2 bg-gradient-to-b from-[#2a2a2a] to-[#0f0f0f] text-white shadow-md transform hover:scale-[1.01]"
                       >
                         Add to Cart

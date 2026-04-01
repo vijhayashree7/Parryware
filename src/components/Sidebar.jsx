@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, ChevronRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();

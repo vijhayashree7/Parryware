@@ -26,7 +26,7 @@ const Footer = () => {
         {/* Top Branding Section */}
         <div className="flex flex-col items-center justify-center mb-20 space-y-8">
           <h3 className="text-5xl md:text-6xl font-serif tracking-widest font-bold bg-clip-text text-transparent bg-gradient-to-r from-cozy-700 via-cozy-900 to-cozy-700 opacity-90 pb-2">
-            parryware
+            abirami
           </h3>
           <div className="flex items-center gap-4 md:gap-6 mt-4">
             {socialPaths.map((path, idx) => (

@@ -530,7 +530,16 @@ const Catalog = () => {
 
   return (
     <>
-      <section id="catalog" className="py-24 bg-[#FDFBF9] overflow-hidden">
+      <section 
+        id="catalog" 
+        className="py-24 overflow-hidden relative"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(253, 251, 249, 0.6), rgba(253, 251, 249, 0.8)), url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=2000")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed'
+        }}
+      >
         <div className="container mx-auto px-6">
           {/* Header */}
           <div className="flex flex-col items-center mb-16 text-center">

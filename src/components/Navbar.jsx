@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, User, Menu } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ onMenuClick }) => {
+  const [scrolled, setScrolled] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const location = useLocation();
+  const { cart, setIsSidebarOpen } = useCart();
+  const isHomePage = location.pathname === '/';
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    
+    const handleClickOutside = (event) => {
+      if (isUserDropdownOpen && !event.target.closest('.user-dropdown-container')) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isUserDropdownOpen]);
+
+  const navBg = scrolled || !isHomePage ? 'bg-white/95 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6';
+  const textColor = scrolled || !isHomePage ? 'text-[#4E342E]' : 'text-white';
+  const accentColor = scrolled || !isHomePage ? 'text-[#A68966]' : 'text-[#D7CCC8]';
+
   return (
     <nav className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 pointer-events-none ${navBg}`}>
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 pointer-events-auto">
@@ -18,20 +51,25 @@ const Navbar = ({ onMenuClick }) => {
               <Menu size={32} strokeWidth={1.5} />
               <span className="hidden md:inline text-sm uppercase tracking-widest font-medium">Menu</span>
             </motion.button>
+            <Link to="/" className={`hidden md:flex items-center space-x-2 ${textColor} hover:opacity-70 transition-all duration-300 font-medium tracking-widest text-sm uppercase pt-1`}>
+              Home
+            </Link>
           </div>
         </div>
 
         {/* Center - Logo */}
-        <div className="absolute left-1/2 -translate-x-1/2 text-white text-3xl md:text-5xl font-serif tracking-widest text-shadow cursor-pointer transition-transform hover:scale-105">
-          Parryware
+        <Link to="/" className={`absolute left-1/2 -translate-x-1/2 ${textColor} text-3xl md:text-5xl font-serif tracking-widest text-shadow cursor-pointer transition-transform hover:scale-105 pb-1`}>
+          Abirami
         </Link>
 
         {/* Right - Icons */}
         <div className={`flex items-center gap-6 ${textColor}`}>
           <Search size={24} strokeWidth={1.5} className="hover:text-[#A68966] transition-colors cursor-pointer" />
-          <div className="relative cursor-pointer">
+          <div className="relative cursor-pointer" onClick={() => setIsSidebarOpen(true)}>
             <ShoppingBag size={24} strokeWidth={1.5} className="hover:text-[#A68966] transition-colors" />
-            <span className="absolute -top-2 -right-2 bg-[#A68966] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">1</span>
+            {cart.length > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#A68966] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">{cart.length}</span>
+            )}
           </div>
           
           {/* User Dropdown */}

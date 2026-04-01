@@ -58,7 +58,15 @@ const Locations = () => {
   };
 
   return (
-    <div className="h-screen bg-[#FDFBF9] pt-24 pb-8 px-6 flex flex-col overflow-hidden">
+    <div 
+      className="min-h-screen pt-24 pb-8 px-6 flex flex-col overflow-hidden relative"
+      style={{
+        backgroundImage: 'linear-gradient(rgba(253, 251, 249, 0.6), rgba(253, 251, 249, 0.8)), url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=2000")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
       <motion.div 
         className="max-w-7xl mx-auto flex-1 flex flex-col w-full"
         initial="hidden"
