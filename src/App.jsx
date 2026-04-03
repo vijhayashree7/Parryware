@@ -5,6 +5,7 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Hero from './components/Hero';
 import Products from './components/Products';
+import WhyChooseUs from './components/WhyChooseUs';
 import Blogs from './components/Blogs';
 import Footer from './components/Footer';
 import BackgroundMist from './components/BackgroundMist';
