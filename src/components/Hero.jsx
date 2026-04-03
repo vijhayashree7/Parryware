@@ -11,7 +11,7 @@ const Hero = () => {
           loop 
           muted 
           playsInline
-          src="/hero-video.mp4" 
+          src="/abirami video parryware.mp4" 
           className="w-full h-full object-cover filter brightness-[0.6]"
         />
       </div>
