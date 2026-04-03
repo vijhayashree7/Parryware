@@ -47,11 +47,13 @@ export default function CardinalCollection() {
 
   return (
     <div 
-      className="min-h-screen font-sans w-full overflow-y-auto"
-      style={{ backgroundImage: "url('/images/faucets/cardinal_bg.png')", backgroundSize: 'cover', backgroundAttachment: 'fixed', backgroundPosition: 'center' }}
+      className="min-h-screen font-sans w-full overflow-y-auto bg-transparent relative"
     >
+      {/* Ambient Top Glow */}
+      <div className="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-[#A68966]/10 to-transparent pointer-events-none"></div>
       {/* Amazon Style Header */}
-      <header className="bg-[#131921] h-[60px] flex items-center justify-between px-4 text-white sticky top-0 z-50">
+      {/* Glassmorphic Header */}
+      <header className="bg-white/40 backdrop-blur-md h-[60px] flex items-center justify-between px-4 text-gray-900 sticky top-0 z-50 shadow-sm border-b border-gray-200/30">
         <div className="flex items-center gap-4">
           <Link to="/faucets" className="hover:text-gray-300">
             <ArrowLeft className="w-6 h-6" />

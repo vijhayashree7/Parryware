@@ -29,7 +29,7 @@ const BlogDetailsPage = () => {
   }
 
   return (
-    <div className="bg-white pt-28 pb-10">
+    <div className="bg-transparent pt-28 pb-10">
       <article className="max-w-6xl mx-auto px-6 md:px-12">
         {/* Back button */}
         <Link to="/blogs" className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-900 transition-colors mb-6 text-sm font-medium">
@@ -84,7 +84,7 @@ const BlogDetailsPage = () => {
       </article>
 
       {/* Recommended Blogs Section Below */}
-      <div className="mt-20 pt-16 bg-cozy-50/30">
+      <div className="mt-20 pt-16 bg-transparent border-t border-gray-100">
         <div className="max-w-7xl mx-auto px-6 md:px-12 mb-10">
           <h2 className="text-3xl font-serif text-cozy-900 mb-2">Related Articles</h2>
           <p className="text-cozy-600">Continue reading our latest insights.</p>

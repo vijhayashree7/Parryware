@@ -92,6 +92,7 @@ const Navbar = ({ onMenuClick }) => {
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.3 }}
                   className="absolute right-0 mt-6 w-56 bg-white rounded-3xl shadow-lg border py-6 px-2"
+                  style={{ fontFamily: "'Times New Roman', Times, serif" }}
                 >
                   <div className="px-6 mb-4">
                     <p className="text-[#A68966] text-[10px] uppercase tracking-[0.2em] font-bold">Welcome</p>
@@ -101,7 +102,7 @@ const Navbar = ({ onMenuClick }) => {
                     <Link 
                       to="/signin" 
                       onClick={() => setIsUserDropdownOpen(false)}
-                      className="flex items-center px-6 py-3 text-sm hover:bg-gray-100 rounded-xl gap-3"
+                      className="flex items-center px-6 py-3 text-sm text-[#3E2723] hover:bg-gray-100 rounded-xl gap-3 font-medium"
                     >
                       <User size={14} />
                       Sign In
@@ -110,7 +111,7 @@ const Navbar = ({ onMenuClick }) => {
                     <Link 
                       to="/signup" 
                       onClick={() => setIsUserDropdownOpen(false)}
-                      className="flex items-center px-6 py-3 text-sm hover:bg-gray-100 rounded-xl gap-3"
+                      className="flex items-center px-6 py-3 text-sm text-[#3E2723] hover:bg-gray-100 rounded-xl gap-3 font-medium"
                     >
                       <Search size={14} />
                       Create Account

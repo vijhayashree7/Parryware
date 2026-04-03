@@ -9,9 +9,12 @@ import WhyChooseUs from './components/WhyChooseUs';
 import Blogs from './components/Blogs';
 import Footer from './components/Footer';
 import BackgroundMist from './components/BackgroundMist';
+
+import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
-import CartSidebar from './components/CartSidebar';
 import { ProductProvider } from './context/ProductContext';
+import CartSidebar from './components/CartSidebar';
+import Checkout from './components/Checkout';
 
 import BlogsPage from './pages/BlogsPage';
 import BlogDetailsPage from './pages/BlogDetailsPage';
@@ -39,73 +42,72 @@ import ChimneyCollection from './components/ChimneyCollection';
 import TilesSurfaceCollection from './components/TilesSurfaceCollection';
 import ClosetCollection from './components/ClosetCollection';
 
-
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
+  const isAuthPage = location.pathname === '/signin' || location.pathname === '/signup' || location.pathname === '/checkout';
 
   return (
-    <CartProvider>
-      <ProductProvider>
-        <div className="relative min-h-screen font-sans bg-transparent overflow-x-hidden flex flex-col">
-          {/* Render BackgroundMist only on the home page (/) */}
-          {!isAdmin && (
-            <Routes>
-              <Route path="/" element={<BackgroundMist />} />
-            </Routes>
-          )}
-          
-          {!isAdmin && <Navbar onMenuClick={() => setIsSidebarOpen(true)} />}
-          {!isAdmin && <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />}
-          {!isAdmin && <CartSidebar />}
-          
-          <div className="flex-grow">
-            <Routes>
-              <Route path="/" element={
-                <>
-                  <Hero />
-                  <Products />
-                  <WhyChooseUs />
-                  <div id="blog-section">
-                    <Blogs />
-                  </div>
-                </>
-              } />
-              <Route path="/blogs" element={<BlogsPage />} />
-              <Route path="/blog/:id" element={<BlogDetailsPage />} />
-              <Route path="/catalog" element={<Catalog />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/locations" element={<Locations />} />
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/admin" element={<AdminDashboard />} />
+    <AuthProvider>
+      <CartProvider>
+        <ProductProvider>
+          <div className="relative min-h-screen font-sans bg-transparent overflow-x-hidden flex flex-col">
+            {/* Global Background Mist - Excluded from Admin pages */}
+            {!isAdmin && <BackgroundMist />}
+            
+            {!isAdmin && <Navbar onMenuClick={() => setIsSidebarOpen(true)} />}
+            {!isAdmin && <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />}
+            {!isAdmin && <CartSidebar />}
+            
+            <div className="flex-grow">
+              <Routes>
+                <Route path="/" element={
+                  <>
+                    <Hero />
+                    <Products />
+                    <WhyChooseUs />
+                    <div id="blog-section">
+                      <Blogs />
+                    </div>
+                  </>
+                } />
+                <Route path="/blogs" element={<BlogsPage />} />
+                <Route path="/blog/:id" element={<BlogDetailsPage />} />
+                <Route path="/catalog" element={<Catalog />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/locations" element={<Locations />} />
+                <Route path="/signin" element={<SignIn />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/admin" element={<AdminDashboard />} />
 
-              {/* Product Routes */}
-              <Route path="/basin" element={<BasinPage />} />
-              <Route path="/faucets" element={<FaucetsPage />} />
-              <Route path="/water-heater" element={<WaterHeaterPage />} />
-              <Route path="/chimney" element={<ChimneyPage />} />
-              <Route path="/tiles-and-surface" element={<TilesSurfacePage />} />
-              <Route path="/closet" element={<ClosetPage />} />
+                {/* Product Routes */}
+                <Route path="/basin" element={<BasinPage />} />
+                <Route path="/faucets" element={<FaucetsPage />} />
+                <Route path="/water-heater" element={<WaterHeaterPage />} />
+                <Route path="/chimney" element={<ChimneyPage />} />
+                <Route path="/tiles-and-surface" element={<TilesSurfacePage />} />
+                <Route path="/closet" element={<ClosetPage />} />
 
-              {/* Product Collection Routes */}
-              <Route path="/basin-collection/:categoryId" element={<BasinCollection />} />
-              <Route path="/faucet/cardinal-collection" element={<CardinalCollection />} />
-              <Route path="/faucet/praseo-collection" element={<PraseoCollection />} />
-              <Route path="/faucet/quattro-collection" element={<QuattroCollection />} />
-              <Route path="/faucet-collection/:categoryId" element={<GenericFaucetCollection />} />
-              <Route path="/water-heater-collection/:categoryId" element={<WaterHeaterCollection />} />
-              <Route path="/chimney-collection/:categoryId" element={<ChimneyCollection />} />
-              <Route path="/tiles-surface-collection/:categoryId" element={<TilesSurfaceCollection />} />
-              <Route path="/closet-collection/:categoryId" element={<ClosetCollection />} />
-            </Routes>
+                {/* Product Collection Routes */}
+                <Route path="/basin-collection/:categoryId" element={<BasinCollection />} />
+                <Route path="/faucet/cardinal-collection" element={<CardinalCollection />} />
+                <Route path="/faucet/praseo-collection" element={<PraseoCollection />} />
+                <Route path="/faucet/quattro-collection" element={<QuattroCollection />} />
+                <Route path="/faucet-collection/:categoryId" element={<GenericFaucetCollection />} />
+                <Route path="/water-heater-collection/:categoryId" element={<WaterHeaterCollection />} />
+                <Route path="/chimney-collection/:categoryId" element={<ChimneyCollection />} />
+                <Route path="/tiles-surface-collection/:categoryId" element={<TilesSurfaceCollection />} />
+                <Route path="/closet-collection/:categoryId" element={<ClosetCollection />} />
+              </Routes>
+            </div>
+            
+            {!isAdmin && <Footer />}
           </div>
-          
-          {!isAdmin && <Footer />}
-        </div>
-      </ProductProvider>
-    </CartProvider>
+        </ProductProvider>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

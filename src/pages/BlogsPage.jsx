@@ -9,7 +9,7 @@ const BlogsPage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-cozy-50 pt-24 pb-16 px-6 md:px-12">
+    <div className="min-h-screen bg-transparent pt-24 pb-16 px-6 md:px-12">
       <div className="max-w-7xl mx-auto mt-10">
         <div className="mb-16 border-b border-cozy-200 pb-10">
           <h1 className="text-5xl md:text-6xl font-serif text-cozy-900 mb-4">Our Blog</h1>

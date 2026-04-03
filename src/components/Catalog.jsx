@@ -147,8 +147,7 @@ const FlipBookViewer = ({ catalog, onClose }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[200] flex flex-col"
-      style={{ background: 'radial-gradient(ellipse at center, #3d2b1f 0%, #1a0e08 100%)' }}
+      className="fixed inset-0 z-[200] flex flex-col bg-transparent"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -281,13 +280,7 @@ const Catalog = () => {
     <>
       <section 
         id="catalog" 
-        className="py-24 overflow-hidden relative"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(253, 251, 249, 0.6), rgba(253, 251, 249, 0.8)), url("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=2000")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
-        }}
+        className="py-24 overflow-hidden relative bg-transparent"
       >
         <div className="container mx-auto px-6">
           {/* Header */}

@@ -79,7 +79,7 @@ const ChimneyPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#4A3222] relative pt-32 pb-24 px-6 md:px-10 overflow-hidden">
+    <div className="min-h-screen bg-transparent relative pt-32 pb-24 px-6 md:px-10 overflow-hidden">
       
       {/* Luxury Ambient Glow Elements for Brown Theme */}
       <div className="absolute top-0 inset-x-0 h-[600px] bg-gradient-to-b from-[#8c7462]/20 to-transparent pointer-events-none"></div>
@@ -88,12 +88,12 @@ const ChimneyPage = () => {
 
       <div className="max-w-[1400px] mx-auto relative z-10">
         <div className="mb-14 text-center md:text-left">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-white mb-6 tracking-wide relative inline-block">
-            Designer Chimneys
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4E342E] mb-6 tracking-wide relative inline-block">
+            Chimney Collection
             <div className="absolute -bottom-3 md:left-0 left-1/2 md:-translate-x-0 -translate-x-1/2 w-1/3 md:w-1/2 h-1 bg-[#8c7462] rounded-full"></div>
           </h1>
-          <p className="text-lg md:text-xl text-[#DFD0C6] max-w-2xl font-light leading-relaxed mx-auto md:mx-0">
-            Engineered for absolute extraction power, our luxury chimneys ensure an eternally pristine, smoke-free kitchen atmosphere.
+          <p className="text-lg md:text-xl text-[#8C7462] max-w-2xl font-light leading-relaxed mx-auto md:mx-0">
+            Powerful suction meets artistic engineering. Discover our premium chimneys designed for a smoke-free, luxury kitchen experience.
           </p>
         </div>
 

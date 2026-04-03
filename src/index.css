@@ -4,7 +4,39 @@
 
 @layer base {
   body {
-    @apply bg-cozy-50 text-cozy-900 font-sans tracking-wide m-0 overflow-x-hidden;
+    @apply bg-cozy-50 text-[#3E2723] tracking-wide m-0 overflow-x-hidden;
+    font-family: 'Times New Roman', Times, serif;
+  }
+}
+
+@layer components {
+  .font-serif-elegant {
+    font-family: 'Times New Roman', Times, serif;
+  }
+
+  .font-cormorant {
+    font-family: 'Times New Roman', Times, serif;
+  }
+
+  /* Balanced Modern Authenticate Box - 480px Standard */
+  .authenticate-box {
+    @apply bg-white/95 backdrop-blur-3xl border border-[#3E2723]/10 
+      rounded-2xl shadow-[0_45px_100px_-25px_rgba(62,39,35,0.25)] 
+      max-w-[480px] w-full mx-auto relative overflow-hidden;
+  }
+  
+  /* High-Contrast Integrated Input */
+  .glass-input-premium {
+    @apply bg-transparent border-b border-[#3E2723]/30 px-0 rounded-none
+      focus:border-[#3E2723] transition-all duration-300 
+      placeholder-[#3E2723]/40 text-[#3E2723] text-base py-2 font-bold;
+    font-family: 'Times New Roman', Times, serif;
+  }
+
+  /* High-Contrast Luxury Label - Sharp & Visible */
+  .luxury-label {
+    @apply text-[10px] uppercase tracking-[0.6em] font-black text-[#3E2723] mb-1 block;
+    font-family: 'Times New Roman', Times, serif;
   }
 }
 
@@ -18,6 +50,30 @@
   100% { transform: scale(1.1) translate(1%, 1%); }
 }
 
+@keyframes floatbox {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
+}
+
+.animate-floatbox {
+  animation: floatbox 6s ease-in-out infinite;
+}
+
+@keyframes sway {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(3deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.animate-sway {
+  animation: sway 8s ease-in-out infinite;
+}
+
 html {
   scroll-behavior: smooth;
 }
+
+
+
+

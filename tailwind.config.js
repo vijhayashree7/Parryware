@@ -21,8 +21,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Outfit', 'sans-serif'],
-        serif: ['Italiana', 'serif'],
+        sans: ['Times New Roman', 'Times', 'serif'],
+        serif: ['Times New Roman', 'Times', 'serif'],
       }
     },
   },

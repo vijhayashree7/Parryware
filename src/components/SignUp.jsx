@@ -1,117 +1,206 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Mail, Lock, ArrowRight, User, Phone } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Mail, Lock, User, AlertCircle, CheckCircle, Eye, EyeOff, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
+
+import { useAuth } from '../context/AuthContext';
 
 const SignUp = () => {
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: { 
-      opacity: 1,
-      transition: { duration: 0.8, ease: [0.19, 1, 0.22, 1] }
+  const navigate = useNavigate();
+  const { login: authLogin } = useAuth();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  React.useEffect(() => {
+    const checkServer = async () => {
+      try {
+        const res = await fetch('http://127.0.0.1:5000/api/health');
+        if (!res.ok) throw new Error();
+        console.log('--- Server Protocol Online ---');
+      } catch (err) {
+        setError('CRITICAL: Server Offline. Please start backend terminal.');
+      }
+    };
+    checkServer();
+  }, []);
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setError('');
+    setSuccess('Verified. Creating profile identity...');
+    
+    try {
+      const decoded = jwtDecode(credentialResponse.credential);
+      setName(decoded.name || '');
+      setEmail(decoded.email || '');
+      setPassword('••••••••'); 
+
+      const response = await fetch('http://127.0.0.1:5000/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: credentialResponse.credential })
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setSuccess('ACCOUNT CREATED SUCCESSFULLY!');
+        authLogin(data.user, data.token);
+        
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } else {
+        setError(data.message || 'Registration Failed');
+        setSuccess('');
+      }
+    } catch (err) {
+      setError('Server Error: Registration Failed');
+      setSuccess('');
     }
   };
 
-  const cardVariants = {
-    hidden: { y: 40, opacity: 0 },
-    visible: { 
-      y: 0, 
-      opacity: 1,
-      transition: { duration: 1, ease: [0.19, 1, 0.22, 1], delay: 0.2 }
+  const handleManualRegister = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccess('Establishing Profile...');
+    
+    try {
+      const response = await fetch('http://127.0.0.1:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      });
+      const data = await response.json();
+      
+      if (data.success) {
+        setSuccess('ACCOUNT CREATED SUCCESSFULLY!');
+        authLogin(data.user, data.token);
+        
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } else {
+        setError(data.message || 'Registration Failed');
+        setSuccess('');
+      }
+    } catch (err) {
+      setError('Server Error: Connection Timed Out');
+      setSuccess('');
     }
   };
 
   return (
-    <div className="h-screen bg-[#FDFBF9] flex items-center justify-center px-6 overflow-hidden relative">
-      {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-[#A68966]/5 rounded-full blur-[120px]"></div>
-        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] bg-[#4E342E]/5 rounded-full blur-[120px]"></div>
-      </div>
+    <div className="min-h-screen w-full flex items-start justify-center px-4 relative pt-24 md:pt-32 pb-20 overflow-hidden" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
 
-      <motion.div 
-        className="w-full max-w-lg relative z-10"
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-      >
-        <motion.div 
-          variants={cardVariants}
-          className="bg-white rounded-[2.5rem] shadow-[0_30px_80px_rgba(78,52,46,0.08)] border border-[#F5F0EB] overflow-hidden"
-        >
-          <div className="p-8 md:p-10">
-            {/* Header */}
-            <div className="text-center mb-6">
-              <h1 className="text-4xl font-serif text-[#4E342E] mb-2">Create Account</h1>
-              <p className="text-[#8D6E63] font-light tracking-wide text-sm">Join the Abirami Agency community</p>
-            </div>
+      <div className="authenticate-box z-10 p-6 flex flex-col items-center shadow-xl">
+        <div className="text-center mb-4">
+          <h2 className="font-serif-elegant text-2xl text-[#3E2723] mb-1 font-bold tracking-tight">
+            Initialize
+          </h2>
+          <div className="w-8 h-[2px] bg-[#3E2723]/20 mx-auto mb-2" />
+          <p className="luxury-label">Registry Enrollment</p>
+        </div>
 
-            {/* Form */}
-            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-              <div className="space-y-2">
-                <label className="text-[#4E342E] text-[10px] uppercase tracking-[0.2em] font-bold ml-1">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A68966]" size={18} strokeWidth={1.5} />
-                  <input 
-                    type="text" 
-                    placeholder="John Doe"
-                    className="w-full bg-[#FDFBF9] border border-[#F5F0EB] rounded-2xl py-4 pl-12 pr-4 text-[#4E342E] placeholder-[#A68966]/40 focus:outline-none focus:border-[#A68966] transition-all"
-                  />
-                </div>
-              </div>
+        {error && (
+          <div className="w-full mb-4 p-3 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 text-[10px] font-black uppercase tracking-widest leading-tight">
+            <AlertCircle size={14} className="shrink-0" /> {error.includes('Google') ? 'GOOGLE IDENTITY AUTH ERROR' : error}
+          </div>
+        )}
 
-              <div className="space-y-2">
-                <label className="text-[#4E342E] text-[10px] uppercase tracking-[0.2em] font-bold ml-1">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A68966]" size={18} strokeWidth={1.5} />
-                  <input 
-                    type="email" 
-                    placeholder="name@example.com"
-                    className="w-full bg-[#FDFBF9] border border-[#F5F0EB] rounded-2xl py-4 pl-12 pr-4 text-[#4E342E] placeholder-[#A68966]/40 focus:outline-none focus:border-[#A68966] transition-all"
-                  />
-                </div>
-              </div>
+        {success && (
+          <div className="w-full mb-6 p-4 bg-green-50 border border-green-200 rounded-xl flex items-center gap-3 text-green-800 text-[11px] font-black uppercase tracking-widest leading-tight text-center">
+            <CheckCircle size={16} className="shrink-0" /> {success}
+          </div>
+        )}
 
-              <div className="space-y-2">
-                <label className="text-[#4E342E] text-[10px] uppercase tracking-[0.2em] font-bold ml-1">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-[#A68966]" size={18} strokeWidth={1.5} />
-                  <input 
-                    type="password" 
-                    placeholder="••••••••"
-                    className="w-full bg-[#FDFBF9] border border-[#F5F0EB] rounded-2xl py-4 pl-12 pr-4 text-[#4E342E] placeholder-[#A68966]/40 focus:outline-none focus:border-[#A68966] transition-all"
-                  />
-                </div>
-              </div>
+        <div className="w-full mb-4">
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => setError('Google Identity Error: System Offline')}
+            theme="filled_black"
+            size="large"
+            shape="rectangular"
+            text="signup_with"
+          />
+        </div>
 
-              {/* Sign Up Button */}
-              <motion.button 
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="w-full bg-[#4E342E] text-white py-5 rounded-2xl font-bold uppercase tracking-[0.3em] text-[10px] shadow-xl shadow-black/10 hover:bg-[#8D6E63] transition-all flex items-center justify-center gap-3 mt-6"
+        <div className="w-full relative mb-4 text-center">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-[#3E2723]/10"></div>
+          </div>
+          <span className="relative px-3 bg-[#FCFBF9] text-[#3E2723]/30 text-[8px] uppercase tracking-[0.5em] font-black italic">OR</span>
+        </div>
+
+        <form className="w-full space-y-3" onSubmit={handleManualRegister}>
+          <div className="space-y-0.5">
+            <label className="luxury-label">Full Name</label>
+            <input 
+              type="text" 
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="First Last"
+              className="w-full glass-input-premium"
+            />
+          </div>
+
+          <div className="space-y-0.5">
+            <label className="luxury-label">Email Handle</label>
+            <input 
+              type="email" 
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="id@residence.com"
+              className="w-full glass-input-premium"
+            />
+          </div>
+
+          <div className="space-y-0.5 relative">
+            <label className="luxury-label">Secret Passkey</label>
+            <div className="relative group">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full glass-input-premium pr-10"
+                style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc' }}
+              />
+              <button
+                type="button"
+                onClick={() => {
+                  console.log('Toggling Password:', !showPassword);
+                  setShowPassword(!showPassword);
+                }}
+                className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-[#3E2723] hover:text-black transition-colors z-20 cursor-pointer"
+                title={showPassword ? "Hide password" : "Show password"}
               >
-                Create Account <ArrowRight size={16} />
-              </motion.button>
-            </form>
-
-            <p className="mt-6 text-center text-[#8D6E63] text-[9px] leading-relaxed max-w-xs mx-auto">
-              By creating an account, you agree to our <a href="#" className="text-[#4E342E] font-bold underline underline-offset-2">Terms of Service</a> and <a href="#" className="text-[#4E342E] font-bold underline underline-offset-2">Privacy Policy</a>.
-            </p>
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
-          {/* Footer */}
-          <div className="bg-[#FDFBF9] p-6 text-center border-t border-[#F5F0EB]">
-            <p className="text-[#8D6E63] text-sm font-light">
-              Already have an account? {' '}
-              <Link to="/signin" className="text-[#4E342E] font-bold hover:text-[#A68966] transition-colors underline underline-offset-4">Sign In</Link>
-            </p>
-          </div>
-        </motion.div>
+          <button 
+            type="submit"
+            className="w-full bg-[#3E2723] text-white py-4 rounded-lg font-black uppercase tracking-[0.6em] text-[10px] shadow-2xl hover:bg-black transition-all active:scale-95 mt-4"
+          >
+            Create Profile
+          </button>
+        </form>
 
-        <Link to="/" className="block mt-8 text-center text-[#A68966] text-[10px] uppercase tracking-[0.4em] font-medium hover:text-[#4E342E] transition-colors">
-          Return to Home
-        </Link>
-      </motion.div>
+        <div className="mt-8 text-center pt-6 border-t border-[#3E2723]/5 w-full">
+          <p className="text-[#3E2723]/40 text-[10px] font-black uppercase tracking-widest">
+            Member Already? {' '}
+            <Link to="/signin" className="text-[#3E2723] hover:underline underline-offset-8 decoration-2">Authenticate</Link>
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

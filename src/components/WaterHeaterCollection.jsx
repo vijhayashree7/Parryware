@@ -102,8 +102,11 @@ export default function WaterHeaterCollection() {
   const products = getProducts();
 
   return (
-    <div className="min-h-screen font-sans w-full overflow-y-auto bg-[#F4F6F8]">
-      <header className="bg-white h-[70px] flex items-center justify-between px-6 text-gray-900 sticky top-0 z-50 border-b border-gray-200 shadow-sm">
+    <div className="min-h-screen font-sans w-full overflow-y-auto bg-transparent relative">
+      {/* Ambient Top Glow */}
+      <div className="absolute top-0 inset-x-0 h-[400px] bg-gradient-to-b from-[#A68966]/10 to-transparent pointer-events-none"></div>
+      {/* Glassmorphic Header */}
+      <header className="bg-white/40 backdrop-blur-md h-[70px] flex items-center justify-between px-6 text-gray-900 sticky top-0 z-50 border-b border-gray-200/50 shadow-sm transition-all duration-300">
         <div className="flex items-center gap-4">
           <Link to="/water-heater" className="hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100">
             <ArrowLeft className="w-6 h-6" />
