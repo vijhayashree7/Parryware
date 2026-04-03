@@ -64,6 +64,7 @@ const Navbar = ({ onMenuClick }) => {
 
         {/* Right - Icons */}
         <div className={`flex items-center gap-6 ${textColor}`}>
+          
           <Search size={24} strokeWidth={1.5} className="hover:text-[#A68966] transition-colors cursor-pointer" />
           <div className="relative cursor-pointer" onClick={() => setIsSidebarOpen(true)}>
             <ShoppingBag size={24} strokeWidth={1.5} className="hover:text-[#A68966] transition-colors" />
@@ -89,8 +90,8 @@ const Navbar = ({ onMenuClick }) => {
                   initial={{ opacity: 0, y: 20, scale: 0.95 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                  transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-                  className="absolute right-0 mt-6 w-56 bg-white rounded-3xl shadow-[0_20px_50px_rgba(78,52,46,0.12)] border border-[#F5F0EB] py-6 px-2 overflow-hidden"
+                  transition={{ duration: 0.3 }}
+                  className="absolute right-0 mt-6 w-56 bg-white rounded-3xl shadow-lg border py-6 px-2"
                 >
                   <div className="px-6 mb-4">
                     <p className="text-[#A68966] text-[10px] uppercase tracking-[0.2em] font-bold">Welcome</p>
@@ -100,29 +101,26 @@ const Navbar = ({ onMenuClick }) => {
                     <Link 
                       to="/signin" 
                       onClick={() => setIsUserDropdownOpen(false)}
-                      className="flex items-center px-6 py-3 text-[#4E342E] text-sm hover:bg-[#FDFBF9] hover:text-[#A68966] transition-all rounded-xl gap-3 group"
+                      className="flex items-center px-6 py-3 text-sm hover:bg-gray-100 rounded-xl gap-3"
                     >
-                      <div className="w-8 h-8 rounded-full bg-[#F5F0EB] flex items-center justify-center group-hover:bg-[#A68966] group-hover:text-white transition-colors">
-                        <User size={14} />
-                      </div>
+                      <User size={14} />
                       Sign In
                     </Link>
+
                     <Link 
                       to="/signup" 
                       onClick={() => setIsUserDropdownOpen(false)}
-                      className="flex items-center px-6 py-3 text-[#4E342E] text-sm hover:bg-[#FDFBF9] hover:text-[#A68966] transition-all rounded-xl gap-3 group"
+                      className="flex items-center px-6 py-3 text-sm hover:bg-gray-100 rounded-xl gap-3"
                     >
-                      <div className="w-8 h-8 rounded-full bg-[#F5F0EB] flex items-center justify-center group-hover:bg-[#A68966] group-hover:text-white transition-colors">
-                        <Search size={14} />
-                      </div>
+                      <Search size={14} />
                       Create Account
                     </Link>
                   </div>
 
-                  <div className="mx-6 my-4 h-px bg-[#F5F0EB]"></div>
+                  <div className="mx-6 my-4 h-px bg-gray-200"></div>
 
                   <div className="px-6">
-                    <p className="text-[#8D6E63] text-[9px] font-light leading-relaxed">
+                    <p className="text-xs text-gray-500">
                       Log in to access your wishlist and orders.
                     </p>
                   </div>
@@ -130,6 +128,7 @@ const Navbar = ({ onMenuClick }) => {
               )}
             </AnimatePresence>
           </div>
+
         </div>
 
       </div>

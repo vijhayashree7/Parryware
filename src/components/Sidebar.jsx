@@ -6,59 +6,49 @@ const Sidebar = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleProductClick = (prod) => {
-    if (prod === 'Basin') {
-      navigate('/basin');
-      onClose();
-    } else if (prod === 'Faucets') {
-      navigate('/faucets');
-      onClose();
-    } else if (prod === 'Water Heater') {
-      navigate('/water-heater');
-      onClose();
-    } else if (prod === 'Chimney') {
-      navigate('/chimney');
-      onClose();
-    } else if (prod === 'Tiles and Surface') {
-      navigate('/tiles-and-surface');
-      onClose();
-    } else if (prod === 'Closet') {
-      navigate('/closet');
-      onClose();
-    }
+    if (prod === 'Basin') navigate('/basin');
+    else if (prod === 'Faucets') navigate('/faucets');
+    else if (prod === 'Water Heater') navigate('/water-heater');
+    else if (prod === 'Chimney') navigate('/chimney');
+    else if (prod === 'Tiles and Surface') navigate('/tiles-and-surface');
+    else if (prod === 'Closet') navigate('/closet');
+
+    onClose();
   };
 
   return (
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${
+          isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
         onClick={onClose}
       />
 
-      {/* Sidebar Panel */}
-      <div className={`fixed top-0 left-0 h-full w-full max-w-sm bg-cozy-900 text-cozy-50 z-50 transform transition-transform duration-500 ease-[cubic-bezier(0.19,1,0.22,1)] flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-
-        <div className="flex items-center justify-between p-8 border-b border-cozy-800">
-          <span className="text-xl tracking-widest uppercase text-cozy-300">Menu</span>
-          <X
-            size={32}
-            strokeWidth={1.5}
-            className="cursor-pointer hover:text-white transition-colors hover:rotate-90 duration-300"
-            onClick={onClose}
-          />
+      {/* Sidebar */}
+      <div
+        className={`fixed top-0 left-0 h-full w-full max-w-sm bg-black text-white z-50 transform transition-transform duration-500 flex flex-col ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        <div className="flex items-center justify-between p-8 border-b">
+          <span className="text-xl uppercase">Menu</span>
+          <X size={32} className="cursor-pointer" onClick={onClose} />
         </div>
 
         <div className="flex-1 overflow-y-auto py-8 px-8 space-y-6">
-          <div className="group cursor-pointer">
-            <div className="flex items-center justify-between text-2xl font-light tracking-wide group-hover:text-cozy-400 transition-colors mb-4">
-              Our Products <ChevronRight size={20} className="group-hover:translate-x-2 transition-transform" />
+          <div>
+            <div className="flex items-center justify-between text-2xl mb-4">
+              Our Products <ChevronRight size={20} />
             </div>
-            <ul className="pl-4 space-y-4 text-cozy-200 border-l border-cozy-700/50">
+
+            <ul className="pl-4 space-y-4">
               {['Water Heater', 'Closet', 'Basin', 'Faucets', 'Chimney', 'Tiles and Surface'].map(prod => (
-                <li 
-                  key={prod} 
+                <li
+                  key={prod}
                   onClick={() => handleProductClick(prod)}
-                  className="hover:text-white hover:translate-x-1 cursor-pointer transition-all"
+                  className="cursor-pointer hover:text-gray-300"
                 >
                   {prod}
                 </li>
@@ -66,36 +56,16 @@ const Sidebar = ({ isOpen, onClose }) => {
             </ul>
           </div>
 
-          <div className="h-px bg-cozy-800 w-full my-6"></div>
+          <div className="h-px bg-gray-700 my-6"></div>
 
-          {['Location of Store', 'Catalogue', 'Contact Us'].map(link => {
-            const isCatalogue = link === 'Catalogue' || link === 'Catalog';
-            const isContact = link === 'Contact Us';
-            const isLocations = link === 'Location of Store';
-
-            if (isContact || isLocations || isCatalogue) {
-              let to = "/";
-              if (isContact) to = "/contact";
-              if (isLocations) to = "/locations";
-              if (isCatalogue) to = "/catalog";
-
-              return (
-                <Link
-                  key={link}
-                  to={to}
-                  onClick={onClose}
-                  className="flex items-center justify-between text-xl font-light tracking-wide cursor-pointer hover:text-cozy-400 hover:translate-x-2 transition-all block"
-                >
-                  {link}
-                </Link>
-              );
-            }
-          })}
+          <Link to="/locations" onClick={onClose} className="block text-xl">Location of Store</Link>
+          <Link to="/catalog" onClick={onClose} className="block text-xl">Catalogue</Link>
+          <Link to="/contact" onClick={onClose} className="block text-xl">Contact Us</Link>
+          <Link to="/admin" onClick={onClose} className="block text-xl text-[#F08804] font-bold mt-4">Admin Dashboard</Link>
         </div>
 
-        <div className="p-8 bg-cozy-900/50 mt-auto border-t border-cozy-800 text-sm text-cozy-400 space-y-2">
+        <div className="p-8 text-sm text-gray-400">
           <p>© 2026 Abiramy Agency Parryware</p>
-          <p className="hover:text-cozy-300 cursor-pointer">Privacy Policy | Terms</p>
         </div>
       </div>
     </>

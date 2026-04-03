@@ -58,6 +58,10 @@ export default function GenericFaucetCollection() {
         finalImage = `/images/faucets/agate_new_${i+1}.jpg`;
       } else if (categoryId === 'faucet-thermostatic') {
         finalImage = `/images/faucets/thermo_new_${i+1}.jpg`;
+      } else if (categoryId === 'faucet-espirion') {
+        finalImage = `/images/faucets/espirion_new_${i+1}.jpg`;
+      } else if (categoryId === 'faucet-crust') {
+        finalImage = `/images/faucets/crust_new_${i+1}.jpg`;
       }
       
       return {

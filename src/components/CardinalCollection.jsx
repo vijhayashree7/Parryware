@@ -2,111 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Star, Check, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const products = [
-  {
-    id: 1,
-    name: 'Cardinal Matte Black Basin Faucet',
-    description: 'A sleek and modern matte black faucet designed for contemporary bathrooms with a bold premium finish.',
-    price: 2799,
-    mrp: 3999,
-    image: '/images/faucets/cardinal_set1_1.png',
-    rating: 4.8,
-    reviews: 1124
-  },
-  {
-    id: 2,
-    name: 'Cardinal Matte Black Basin Faucet',
-    description: 'A sleek and modern matte black faucet designed for contemporary bathrooms with a bold premium finish.',
-    price: 2799,
-    mrp: 3999,
-    image: '/images/faucets/cardinal_set1_2.png',
-    rating: 4.8,
-    reviews: 842
-  },
-  {
-    id: 3,
-    name: 'Cardinal Chrome Classic Faucet',
-    description: 'A timeless chrome-finished faucet with a polished shine, suitable for modern and traditional interiors.',
-    price: 3499,
-    mrp: 4599,
-    image: '/images/faucets/cardinal_set1_3.png',
-    rating: 4.6,
-    reviews: 2301
-  },
-  {
-    id: 4,
-    name: 'Cardinal Chrome Classic Faucet',
-    description: 'A timeless chrome-finished faucet with a polished shine, suitable for modern and traditional interiors.',
-    price: 3499,
-    mrp: 4599,
-    image: '/images/faucets/cardinal_set1_4.png',
-    rating: 4.7,
-    reviews: 1840
-  },
-  {
-    id: 5,
-    name: 'Cardinal Rose Gold Luxury Faucet',
-    description: 'Elegant rose gold faucet crafted for a luxurious bathroom experience with a warm metallic tone.',
-    price: 4299,
-    mrp: 5499,
-    image: '/images/faucets/cardinal_set1_5.jpg',
-    rating: 4.9,
-    reviews: 512
-  },
-  {
-    id: 6,
-    name: 'Cardinal Rose Gold Luxury Faucet',
-    description: 'Elegant rose gold faucet crafted for a luxurious bathroom experience with a warm metallic tone.',
-    price: 4299,
-    mrp: 5499,
-    image: '/images/faucets/cardinal_new_6.png',
-    rating: 4.9,
-    reviews: 320
-  },
-  {
-    id: 7,
-    name: 'Cardinal Rose Gold Luxury Faucet',
-    description: 'Elegant rose gold faucet crafted for a luxurious bathroom experience with a warm metallic tone.',
-    price: 4299,
-    mrp: 5499,
-    image: '/images/faucets/cardinal_new_7.png',
-    rating: 4.8,
-    reviews: 415
-  },
-  {
-    id: 8,
-    name: 'Cardinal Wall-Mounted Slim Faucet',
-    description: 'A space-saving wall-mounted faucet with a clean and minimal modern design.',
-    price: 3899,
-    mrp: 4999,
-    image: '/images/faucets/cardinal_new_8.png',
-    rating: 4.5,
-    reviews: 198
-  },
-  {
-    id: 9,
-    name: 'Cardinal Wall-Mounted Slim Faucet',
-    description: 'A space-saving wall-mounted faucet with a clean and minimal modern design.',
-    price: 3899,
-    mrp: 4999,
-    image: '/images/faucets/cardinal_new_9.png',
-    rating: 4.7,
-    reviews: 254
-  },
-  {
-    id: 10,
-    name: 'Cardinal Waterfall Designer Faucet',
-    description: 'A stunning waterfall-style faucet delivering smooth natural flow for a spa-like experience.',
-    price: 4999,
-    mrp: 6499,
-    image: '/images/faucets/cardinal_new_10.jpg',
-    rating: 5.0,
-    reviews: 88
-  }
-];
+import { useProducts } from '../context/ProductContext';
 
 export default function CardinalCollection() {
+  const { products } = useProducts();
   const [cart, setCart] = useState([]);
 
   const handleAddToCart = (product) => {
@@ -186,24 +85,16 @@ export default function CardinalCollection() {
                     alt={product.name} 
                     className="max-h-full max-w-full object-contain mix-blend-multiply p-4"
                   />
-                  {/* Dynamic Badges */}
-                  {product.rating >= 4.9 ? (
-                    <div className="absolute top-3 left-3 bg-[#FFF0E6]/95 backdrop-blur-md text-[#E36611] text-[11px] font-bold px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-[#FFE0CC]">
-                      <Star className="w-[10px] h-[10px] fill-[#E36611] text-[#E36611]" /> Best Seller
+                  {/* Dynamic Tags assigned via Admin Portal */}
+                  {product.tags && product.tags.length > 0 ? (
+                    <div className="absolute top-3 inset-x-3 flex flex-col gap-2 pointer-events-none">
+                      {product.tags.map(tag => (
+                        <div key={tag} className="self-start text-[11px] font-bold px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border bg-[#FFF8E6]/95 backdrop-blur-md text-[#F5A623] border-[#FFEDCC]">
+                          <Star className="w-[10px] h-[10px] fill-[#F5A623]" /> {tag}
+                        </div>
+                      ))}
                     </div>
-                  ) : product.price <= 3500 ? (
-                    <div className="absolute top-3 left-3 bg-[#E6F4EA]/95 backdrop-blur-md text-[#1E8E3E] text-[11px] font-bold px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-[#CCE8D5]">
-                      <Check className="w-[10px] h-[10px] text-[#1E8E3E]" strokeWidth={3} /> Value Choice
-                    </div>
-                  ) : product.id % 3 === 0 ? (
-                    <div className="absolute top-3 left-3 bg-[#F3E8FF]/95 backdrop-blur-md text-[#8B5CF6] text-[11px] font-bold px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm border border-[#E9D5FF]">
-                      <Star className="w-[10px] h-[10px] fill-[#8B5CF6] text-[#8B5CF6]" /> New Arrival
-                    </div>
-                  ) : (
-                    <div className="absolute top-3 left-3 bg-[#FFF8E6]/95 backdrop-blur-md text-[#F5A623] text-[11px] font-bold px-2.5 py-1.5 rounded-full flex items-center gap-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.08)] border border-[#FFEDCC]">
-                      <Star className="w-[10px] h-[10px] fill-[#F5A623] text-[#F5A623]" /> Prime Pick
-                    </div>
-                  )}
+                  ) : null}
                 </div>
 
                 {/* Content Container */}
@@ -225,24 +116,35 @@ export default function CardinalCollection() {
                   
                   <div className="h-[1px] w-full bg-gray-100 my-4"></div>
                   
-                  {/* Specs Row */}
-                  <div className="flex items-center gap-6 text-[13px] text-gray-700 font-medium">
-                    <div className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
-                      <Star className="w-[14px] h-[14px] text-gray-400" />
-                      {product.rating} <span className="text-gray-400 font-normal">Rating</span>
+                  {/* Specs Row & Variants */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-4 text-[13px] text-gray-700 font-medium">
+                      <div className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                        <Star className="w-[14px] h-[14px] text-gray-400" />
+                        {product.rating} <span className="text-gray-400 font-normal">Rating</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
+                        <Check className="w-[14px] h-[14px] text-gray-400" />
+                        {product.reviews} <span className="text-gray-400 font-normal">Reviews</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">
-                      <Check className="w-[14px] h-[14px] text-gray-400" />
-                      {product.reviews} <span className="text-gray-400 font-normal">Reviews</span>
-                    </div>
+                    {product.variants && product.variants.length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {product.variants.map((v, i) => (
+                          <span key={i} className="text-[10px] font-bold border border-gray-200 bg-gray-50 rounded px-2 py-1 text-gray-600">
+                            {v.key}: <span className="text-gray-800">{v.value}</span>
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
                   
                   <div className="h-[1px] w-full bg-gray-100 my-4"></div>
                   
                   {/* Footer Row */}
                   <div className="flex items-center justify-between text-[12px] text-gray-500 mb-5 font-medium">
-                    <div>By • <span className="text-gray-800 font-semibold underline underline-offset-2">Parryware Luxury</span></div>
-                    <div className="text-emerald-600 font-semibold px-2 py-0.5 bg-emerald-50 rounded text-[11px]">In Stock</div>
+                    <div>By • <span className="text-gray-800 font-semibold underline underline-offset-2">Parryware</span></div>
+                    <div className="text-emerald-600 font-semibold px-2 py-0.5 bg-emerald-50 rounded border border-emerald-100 shadow-sm text-[11px] flex items-center gap-1">In Stock</div>
                   </div>
 
                   {/* Buttons */}

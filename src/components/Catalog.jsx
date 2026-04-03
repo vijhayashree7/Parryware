@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PageFlip } from 'page-flip';
 import { Download, Camera, ChevronLeft, ChevronRight, X, BookOpen } from 'lucide-react';
 import waterHeaterCover from '../assets/catalog/water_heater_cover.png';
 import closetCover from '../assets/catalog/closet_cover.jpg';
@@ -133,154 +132,18 @@ const catalogues = [
 ];
 
 /* ─────────────────────────────────────────────
-   FLIP BOOK VIEWER
+   SIMPLE CATALOG VIEWER (Fallback)
 ───────────────────────────────────────────── */
 const FlipBookViewer = ({ catalog, onClose }) => {
-  const bookRef = useRef(null);
-  const flipBookRef = useRef(null);
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [isFlipping, setIsFlipping] = useState(false);
-  const [imagesLoaded, setImagesLoaded] = useState(false);
+  const totalPages = catalog.pages.length;
 
-  // Pre-load all images before mounting the flipbook
-  useEffect(() => {
-    let loaded = 0;
-    const total = catalog.pages.length;
-    if (total === 0) { setImagesLoaded(true); return; }
+  const goNext = () => { if (currentPage < totalPages - 1) setCurrentPage(c => c + 1); };
+  const goPrev = () => { if (currentPage > 0) setCurrentPage(c => c - 1); };
 
-    // For local imports (object URLs / data), skip preload
-    const needsPreload = catalog.pages.filter(p => typeof p === 'string' && p.startsWith('http'));
-    if (needsPreload.length === 0) { setImagesLoaded(true); return; }
-
-    needsPreload.forEach((src) => {
-      const img = new Image();
-      img.onload = img.onerror = () => {
-        loaded++;
-        if (loaded >= needsPreload.length) setImagesLoaded(true);
-      };
-      img.src = src;
-    });
-  }, [catalog]);
-
-  // Mount the PageFlip once images are ready
-  useEffect(() => {
-    if (!imagesLoaded || !bookRef.current) return;
-
-    // Landscape sizing: fill as much of the viewport as possible
-    const vw = window.innerWidth;
-    const vh = window.innerHeight - 120; // subtract top/bottom bars
-    const maxW = Math.min(vw - 120, 960);  // leave room for arrows
-    const maxH = Math.min(vh - 60, 560);
-    // Landscape 16:10 ratio — choose the dimension that fits
-    const byWidth  = { w: maxW, h: Math.round(maxW * 0.625) };
-    const byHeight = { w: Math.round(maxH / 0.625), h: maxH };
-    const choose = byWidth.h <= maxH ? byWidth : byHeight;
-    const pageW = choose.w;
-    const pageH = choose.h;
-
-    const pf = new PageFlip(bookRef.current, {
-      width: pageW,
-      height: pageH,
-      size: 'fixed',
-      minWidth: 320,
-      maxWidth: 960,
-      minHeight: 200,
-      maxHeight: 600,
-      maxShadowOpacity: 0.4,
-      showCover: true,
-      mobileScrollSupport: false,
-      clickEventForward: true,
-      useMouseEvents: true,
-      swipeDistance: 30,
-      showPageCorners: true,
-      disableFlipByClick: false,
-      startPage: 0,
-      drawShadow: true,
-      flippingTime: 700,
-      usePortrait: true,   // ← single page at a time (no split)
-      startZIndex: 0,
-      autoSize: false,
-    });
-
-    pf.loadFromHTML(bookRef.current.querySelectorAll('.page-item'));
-
-    pf.on('flip', (e) => {
-      setCurrentPage(e.data);
-      setIsFlipping(false);
-    });
-    pf.on('changeState', (state) => {
-      if (state.data === 'flipping') setIsFlipping(true);
-    });
-
-    setTotalPages(pf.getPageCount());
-    flipBookRef.current = pf;
-
-    return () => {
-      try { pf.destroy(); } catch (_) {}
-    };
-  }, [imagesLoaded]);
-
-  const goNext = () => { if (flipBookRef.current) flipBookRef.current.flipNext(); };
-  const goPrev = () => { if (flipBookRef.current) flipBookRef.current.flipPrev(); };
-
-  const [isDownloading, setIsDownloading] = useState(false);
-
-  const handleDownload = async () => {
-    setIsDownloading(true);
-    try {
-      const { jsPDF } = await import('jspdf');
-      // A4 landscape dimensions in mm
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-      const pdfW = pdf.internal.pageSize.getWidth();
-      const pdfH = pdf.internal.pageSize.getHeight();
-
-      for (let i = 0; i < catalog.pages.length; i++) {
-        if (i > 0) pdf.addPage();
-
-        const src = catalog.pages[i];
-        // Load image into an HTMLImageElement
-        const imgEl = await new Promise((resolve, reject) => {
-          const img = new Image();
-          img.crossOrigin = 'anonymous';
-          img.onload = () => resolve(img);
-          img.onerror = reject;
-          img.src = typeof src === 'string' ? src : src;
-        });
-
-        // Draw to canvas to get data URL
-        const canvas = document.createElement('canvas');
-        canvas.width = imgEl.naturalWidth || imgEl.width;
-        canvas.height = imgEl.naturalHeight || imgEl.height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(imgEl, 0, 0);
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
-
-        // Fit image into page with aspect ratio preserved
-        const imgAspect = canvas.width / canvas.height;
-        const pageAspect = pdfW / pdfH;
-        let drawW, drawH, offsetX, offsetY;
-        if (imgAspect > pageAspect) {
-          drawW = pdfW; drawH = pdfW / imgAspect;
-          offsetX = 0; offsetY = (pdfH - drawH) / 2;
-        } else {
-          drawH = pdfH; drawW = pdfH * imgAspect;
-          offsetX = (pdfW - drawW) / 2; offsetY = 0;
-        }
-        pdf.addImage(dataUrl, 'JPEG', offsetX, offsetY, drawW, drawH);
-      }
-
-      pdf.save(`${catalog.title.replace(/\s+/g, '_')}_Catalog.pdf`);
-    } catch (err) {
-      console.error('PDF generation failed:', err);
-      // Fallback: open external URL if available
-      if (catalog.downloadUrl) window.open(catalog.downloadUrl, '_blank');
-    } finally {
-      setIsDownloading(false);
-    }
+  const handleDownload = () => {
+    if (catalog.downloadUrl) window.open(catalog.downloadUrl, '_blank');
   };
-
-  const progress = totalPages > 1 ? Math.round((currentPage / (totalPages - 1)) * 100) : 0;
 
   return (
     <motion.div
@@ -304,26 +167,12 @@ const FlipBookViewer = ({ catalog, onClose }) => {
         <div className="flex items-center gap-3">
           <motion.button
             onClick={handleDownload}
-            disabled={isDownloading}
-            whileHover={!isDownloading ? { scale: 1.05 } : {}}
-            whileTap={!isDownloading ? { scale: 0.95 } : {}}
-            className="flex items-center gap-2 px-5 py-2.5 bg-[#8D6E63] text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#6D4C41] transition-colors shadow-lg disabled:opacity-70 disabled:cursor-wait"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center gap-2 px-5 py-2.5 bg-[#8D6E63] text-white rounded-full text-xs font-bold uppercase tracking-wider hover:bg-[#6D4C41] transition-colors shadow-lg"
           >
-            {isDownloading ? (
-              <>
-                <motion.span
-                  className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full inline-block"
-                  animate={{ rotate: 360 }}
-                  transition={{ repeat: Infinity, duration: 0.7, ease: 'linear' }}
-                />
-                Generating…
-              </>
-            ) : (
-              <>
-                <Download size={15} />
-                Download PDF
-              </>
-            )}
+            <Download size={15} />
+            Download PDF
           </motion.button>
 
           <motion.button
@@ -338,12 +187,7 @@ const FlipBookViewer = ({ catalog, onClose }) => {
       </div>
 
       {/* ── Book Stage ── */}
-      <div className="flex-1 flex items-center justify-center relative overflow-hidden">
-        {/* Ambient glow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-[#8D6E63]/10 blur-3xl" />
-        </div>
-
+      <div className="flex-1 flex items-center justify-center relative overflow-hidden bg-black/30 p-6 md:p-12">
         {/* Prev Arrow */}
         <motion.button
           onClick={goPrev}
@@ -354,74 +198,14 @@ const FlipBookViewer = ({ catalog, onClose }) => {
           <ChevronLeft size={24} />
         </motion.button>
 
-        {/* THE FLIPBOOK */}
-        {!imagesLoaded ? (
-          <div className="flex flex-col items-center gap-4 text-white">
-            <motion.div
-              className="w-12 h-12 border-2 border-[#8D6E63] border-t-transparent rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 0.8, ease: 'linear' }}
-            />
-            <p className="text-[#D7CCC8] text-sm tracking-widest uppercase">Loading catalogue…</p>
-          </div>
-        ) : (
-          <div
-            className="flex items-center justify-center"
-            style={{ perspective: '2400px', perspectiveOrigin: '50% 50%' }}
-          >
-            {/* page-flip mounts into this element */}
-            <div ref={bookRef} className="flip-book">
-              {catalog.pages.map((src, i) => (
-                <div
-                  key={i}
-                  className="page-item"
-                  data-density={i === 0 || i === catalog.pages.length - 1 ? 'hard' : 'soft'}
-                >
-                  <div
-                    className="page-content"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      overflow: 'hidden',
-                      background: '#f5f0eb',
-                      position: 'relative',
-                    }}
-                  >
-                    <img
-                      src={typeof src === 'string' ? src : src}
-                      alt={`Page ${i + 1}`}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        display: 'block',
-                        pointerEvents: 'none',
-                        userSelect: 'none',
-                        WebkitUserDrag: 'none',
-                      }}
-                      draggable={false}
-                    />
-                    {/* Page number */}
-                    <span
-                      style={{
-                        position: 'absolute',
-                        bottom: '10px',
-                        [i % 2 === 0 ? 'right' : 'left']: '12px',
-                        fontSize: '10px',
-                        color: 'rgba(78,52,46,0.4)',
-                        fontFamily: 'serif',
-                        letterSpacing: '0.1em',
-                        userSelect: 'none',
-                      }}
-                    >
-                      {i === 0 ? '' : i}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Image Container */}
+        <div className="relative w-full h-full flex justify-center items-center rounded-2xl overflow-hidden shadow-2xl">
+          <img 
+            src={catalog.pages[currentPage]} 
+            alt={`Page ${currentPage + 1}`} 
+            className="max-w-full max-h-full object-contain pointer-events-none select-none" 
+          />
+        </div>
 
         {/* Next Arrow */}
         <motion.button
@@ -435,48 +219,13 @@ const FlipBookViewer = ({ catalog, onClose }) => {
       </div>
 
       {/* ── Bottom Bar ── */}
-      <div className="px-6 py-4 border-t border-white/10 flex-shrink-0 bg-black/20 backdrop-blur-sm flex items-center gap-6">
-        {/* Progress bar */}
-        <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full bg-gradient-to-r from-[#8D6E63] to-[#D7CCC8] rounded-full"
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.4, ease: 'easeOut' }}
-          />
-        </div>
-
-        {/* Page count */}
-        <p className="text-[#A68966] text-xs font-bold tracking-widest uppercase whitespace-nowrap">
+      <div className="px-6 py-4 border-t border-white/10 flex-shrink-0 bg-black/20 backdrop-blur-sm flex items-center justify-center gap-6">
+        <p className="text-[#A68966] text-xs font-bold tracking-widest uppercase">
           {totalPages > 0
             ? currentPage === 0 ? 'Cover' : `Page ${currentPage} / ${totalPages - 1}`
             : '—'}
         </p>
-
-        {/* Dot indicators */}
-        <div className="flex gap-1.5">
-          {Array.from({ length: Math.min(totalPages, 8) }).map((_, i) => {
-            const pageIndex = Math.round((i / Math.max(Math.min(totalPages, 8) - 1, 1)) * (totalPages - 1));
-            const isActive = currentPage === pageIndex;
-            return (
-              <button
-                key={i}
-                onClick={() => flipBookRef.current?.flip(pageIndex)}
-                className={`rounded-full transition-all duration-300 ${isActive ? 'w-4 h-2 bg-[#D7CCC8]' : 'w-2 h-2 bg-white/20 hover:bg-white/50'}`}
-              />
-            );
-          })}
-        </div>
       </div>
-
-      {/* Hint text */}
-      <motion.div
-        className="absolute bottom-20 left-1/2 -translate-x-1/2 text-white/30 text-[10px] tracking-widest uppercase pointer-events-none"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5, duration: 1 }}
-      >
-        Click page edges or drag to flip
-      </motion.div>
     </motion.div>
   );
 };
