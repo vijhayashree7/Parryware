@@ -1,20 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Camera, ChevronLeft, ChevronRight, X, BookOpen } from 'lucide-react';
+import { Download, Camera, ChevronLeft, ChevronRight, X, BookOpen, MessageCircle, Mail } from 'lucide-react';
 import waterHeaterCover from '../assets/catalog/water_heater_cover.png';
 import closetCover from '../assets/catalog/closet_cover.jpg';
 import basinCover from '../assets/catalog/basin_cover.png';
 import faucetsCover from '../assets/catalog/faucets_cover.png';
 import chimneyCover from '../assets/catalog/chimney_cover.png';
 import tilesCover from '../assets/catalog/tiles_cover.jpg';
-import faucetsP1 from '../assets/catalog/faucets_p1.png';
-import faucetsP2 from '../assets/catalog/faucets_p2.png';
-import faucetsP3 from '../assets/catalog/faucets_p3.png';
-import faucetsP4 from '../assets/catalog/faucets_p4.png';
-import faucetsP5 from '../assets/catalog/faucets_p5.png';
-import faucetsP6 from '../assets/catalog/faucets_p6.png';
-import faucetsP7 from '../assets/catalog/faucets_p7.png';
-import faucetsP8 from '../assets/catalog/faucets_p8.png';
 import closetP1 from '../assets/catalog/closet_p1.png';
 import closetP2 from '../assets/catalog/closet_p2.png';
 import closetP3 from '../assets/catalog/closet_p3.png';
@@ -26,11 +18,6 @@ import basinP3 from '../assets/catalog/basin_p3.png';
 import basinP4 from '../assets/catalog/basin_p4.png';
 import basinP5 from '../assets/catalog/basin_p5.png';
 import waterHeaterP1 from '../assets/catalog/water_heater_p1.png';
-import chimneyP1 from '../assets/catalog/chimney_p1.png';
-import chimneyP2 from '../assets/catalog/chimney_p2.png';
-import chimneyP3 from '../assets/catalog/chimney_p3.png';
-import chimneyP4 from '../assets/catalog/chimney_p4.png';
-import chimneyP5 from '../assets/catalog/chimney_p5.png';
 
 const catalogues = [
   {
@@ -88,7 +75,7 @@ const catalogues = [
     description: 'Precision-engineered faucets with striking finishes and water-saving tech.',
     downloadUrl: 'https://hindwarestg.blob.core.windows.net/container1/catalog/Bathware%20Collection%202025-26-New.pdf',
     pages: [
-      faucetsP1,
+      'https://t3.ftcdn.net/jpg/03/88/93/22/360_F_388932211_RuO271Qr1diwiSptd2Ncnd7TC3N3O5cg.jpg',
       'https://t3.ftcdn.net/jpg/03/88/93/22/360_F_388932211_RuO271Qr1diwiSptd2Ncnd7TC3N3O5cg.jpg',
       'https://assets.architecturaldigest.in/photos/68b967798ccafba316b6d809/16:9/w_2560%2Cc_limit/Collection%2520JAIPUR_volevatch%25203%2520(1).jpg',
       'https://www.kohler.co.in/content/dam/kohler-com-INDIA/Authored%20Content/Thumbnail-Images/Thumbnail-Images-aah25592.jpg',
@@ -264,9 +251,11 @@ const Catalog = () => {
       case 'whatsapp':
         window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`, '_blank');
         break;
-      case 'email':
-        window.location.href = `mailto:?subject=${encodeURIComponent(catalog.title)}&body=${encodeURIComponent(text + '\n' + url)}`;
+      case 'email': {
+        const mailto = `mailto:?subject=${encodeURIComponent(catalog.title)}&body=${encodeURIComponent(text + '\n' + url)}`;
+        window.location.assign(mailto);
         break;
+      }
       case 'instagram':
         alert('Link copied to clipboard! Share it on your Instagram story.');
         navigator.clipboard.writeText(`${text} ${url}`);
@@ -342,9 +331,9 @@ const Catalog = () => {
                     {/* Share row */}
                     <div className="flex items-center gap-3">
                       {[
-                        { platform: 'whatsapp', Icon: WhatsAppLogo },
-                        { platform: 'instagram', Icon: InstagramLogo },
-                        { platform: 'email', Icon: MailLogo },
+                        { platform: 'whatsapp', Icon: MessageCircle },
+                        { platform: 'instagram', Icon: Camera },
+                        { platform: 'email', Icon: Mail },
                       ].map(({ platform, Icon }) => (
                         <button
                           key={platform}

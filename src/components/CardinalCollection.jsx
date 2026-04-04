@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { ShoppingCart, Star, Check, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
@@ -34,16 +34,6 @@ export default function CardinalCollection() {
     setCart(cart.filter(item => item.product.id !== productId));
   };
 
-  const renderStars = (rating) => {
-    return (
-      <div className="flex items-center text-[#FFA41C]">
-        {[...Array(5)].map((_, i) => (
-          <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? 'fill-current' : ''}`} />
-        ))}
-        <span className="text-[#007185] ml-2 text-sm font-normal">{rating}</span>
-      </div>
-    );
-  };
 
   return (
     <div 

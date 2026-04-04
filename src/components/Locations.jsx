@@ -19,7 +19,7 @@ const locations = [
   {
     id: 2,
     city: 'Ariyalur',
-    name: 'Abirami Parryware - Ariyalur',
+    name: 'Abirami Agency Parryware - Ariyalur',
     address: 'Main Road, Near Old Bus Stand, Ariyalur, Tamil Nadu - 621704',
     lat: 11.1401,
     lng: 79.0747,
@@ -177,8 +177,8 @@ const Locations = () => {
       >
         <div className="text-center mb-10">
           <h2 className="text-[#A68966] text-xs uppercase tracking-[0.4em] font-medium mb-2">Our Presence</h2>
-          <h1 className="text-4xl md:text-5xl font-serif text-[#4E342E] leading-tight mb-4">
-            Abirami Parryware <span className="italic font-light">Studio Network</span>
+          <h1 className="text-4xl md:text-5xl font-serif text-[#4E342E] leading-tight mb-4 text-center">
+            Abirami Agency Parryware <span className="italic font-light">Studio Network</span>
           </h1>
           <div className="w-16 h-px bg-[#A68966] mx-auto opacity-40"></div>
         </div>

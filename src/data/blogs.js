@@ -88,7 +88,7 @@ export const blogsData = [
     category: 'Buying Guide',
     date: 'February 25, 2026',
     author: 'Home Expert',
-    image: '/images/heater.png',
+    image: '/images/heater_new.png',
     description: 'Instant vs Storage? Learn everything you need to know about picking the right geyser for your family’s needs.',
     content: `
       <p>A reliable supply of hot water is essential, especially during the chillier months. However, choosing the right water heater (geyser) can be confusing given the myriad of options available.</p>
@@ -107,7 +107,7 @@ export const blogsData = [
     category: 'Design & Tech',
     date: 'February 14, 2026',
     author: 'Design Team',
-    image: '/images/faucet.png',
+    image: '/images/faucet_new.png',
     description: 'A deep dive into faucet finishes. Should you go for the sleek modern matte black, or the classic shiny chrome?',
     content: `
       <p>Faucets are often the "jewelry" of the bathroom or kitchen. The right finish can either establish the room's whole identity or subtly complement the existing design.</p>

@@ -2,109 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Star, Check, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 import { Link } from 'react-router-dom';
-
-const products = [
-  {
-    id: 1,
-    name: 'Praseo Classic Chrome',
-    description: 'Defined by elegant curves and a timeless chrome finish, bringing classic sophistication.',
-    price: 3500,
-    mrp: 4500,
-    image: '/images/faucets/praseo_item_1.jpg',
-    rating: 4.8,
-    reviews: 1124
-  },
-  {
-    id: 2,
-    name: 'Quattro Bold Geometric',
-    description: 'A bold geometric design with sharp edges and clean lines, perfect for contemporary spaces.',
-    price: 4999,
-    mrp: 5500,
-    image: '/images/faucets/praseo_item_2.jpg',
-    rating: 4.9,
-    reviews: 588
-  },
-  {
-    id: 3,
-    name: 'Elara Warm Metallic',
-    description: 'Crafted with a warm metallic finish, Elara blends luxury and softness.',
-    price: 6499,
-    mrp: 7500,
-    image: '/images/faucets/praseo_item_3.jpg',
-    rating: 4.9,
-    reviews: 415
-  },
-  {
-    id: 4,
-    name: 'Nero Minimal Styled',
-    description: 'A bold matte minimal silhouette, designed for modern bathrooms.',
-    price: 3500,
-    mrp: 6000,
-    image: '/images/faucets/praseo_item_4.jpg',
-    rating: 4.8,
-    reviews: 254
-  },
-  {
-    id: 5,
-    name: 'Aurum Opulence Gold',
-    description: 'The Aurum collection features a rich golden finish that elevates your bathroom.',
-    price: 8000,
-    mrp: 9500,
-    image: '/images/faucets/praseo_item_5.jpg',
-    rating: 5.0,
-    reviews: 112
-  },
-  {
-    id: 6,
-    name: 'Praseo Minimalist Swan',
-    description: 'Elegant swan-inspired gold design with smooth curves and flawless performance.',
-    price: 5500,
-    mrp: 6500,
-    image: '/images/faucets/praseo_item_6.jpg',
-    rating: 4.7,
-    reviews: 340
-  },
-  {
-    id: 7,
-    name: 'Quattro Architectural Flat',
-    description: 'A flat matte black architectural design optimized for absolute visual harmony.',
-    price: 4500,
-    mrp: 5200,
-    image: '/images/faucets/praseo_item_7.jpg',
-    rating: 4.8,
-    reviews: 215
-  },
-  {
-    id: 8,
-    name: 'Elara Crystal Handle',
-    description: 'Dazzling gold with stunning crystal textures on the handles, redefining traditional elegance.',
-    price: 8500,
-    mrp: 9900,
-    image: '/images/faucets/praseo_item_8.jpg',
-    rating: 5.0,
-    reviews: 421
-  },
-  {
-    id: 9,
-    name: 'Nero Tall Vessel',
-    description: 'Tall structured gold vessel tap built specifically for deep countertop basins.',
-    price: 6000,
-    mrp: 7000,
-    image: '/images/faucets/praseo_item_9.jpg',
-    rating: 4.6,
-    reviews: 178
-  },
-  {
-    id: 10,
-    name: 'Aurum Waterfall Stream',
-    description: 'Innovative matte waterfall architecture allowing a seamless, gentle cascade of water.',
-    price: 7500,
-    mrp: 8500,
-    image: '/images/faucets/praseo_item_10.jpg',
-    rating: 4.9,
-    reviews: 310
-  }
-];
+import { praseoProducts as products } from '../data/productData';
 
 export default function PraseoCollection() {
   const [cart, setCart] = useState([]);
@@ -135,16 +33,6 @@ export default function PraseoCollection() {
     setCart(cart.filter(item => item.product.id !== productId));
   };
 
-  const renderStars = (rating) => {
-    return (
-      <div className="flex items-center text-[#FFA41C]">
-        {[...Array(5)].map((_, i) => (
-          <Star key={i} className={`w-4 h-4 ${i < Math.floor(rating) ? 'fill-current' : ''}`} />
-        ))}
-        <span className="text-[#007185] ml-2 text-sm font-normal">{rating}</span>
-      </div>
-    );
-  };
 
   return (
     <div 

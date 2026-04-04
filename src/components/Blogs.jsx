@@ -29,7 +29,11 @@ const Blogs = () => {
             <Link 
               to={`/blog/${blog.id}`}
               key={blog.id} 
-              className="group relative rounded-[2.5rem] overflow-hidden cursor-pointer h-[460px] shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col justify-end"
+              onClick={() => {
+                window.scrollTo({ top: 0, behavior: 'auto' });
+                setTimeout(() => window.scrollTo(0, 0), 50);
+              }}
+              className="group relative rounded-[2.5rem] overflow-hidden cursor-pointer h-[460px] shadow-lg hover:shadow-xl transition-all duration-500 transform hover:-translate-y-2 flex flex-col justify-end z-30"
             >
               {/* Background Image */}
               <div className="absolute inset-0">

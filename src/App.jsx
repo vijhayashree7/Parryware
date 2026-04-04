@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import SplashScreen from './components/SplashScreen';
 
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
@@ -44,19 +46,23 @@ import ClosetCollection from './components/ClosetCollection';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
   const location = useLocation();
   const isAdmin = location.pathname.startsWith('/admin');
-  const isAuthPage = location.pathname === '/signin' || location.pathname === '/signup' || location.pathname === '/checkout';
 
   return (
     <AuthProvider>
       <CartProvider>
         <ProductProvider>
           <div className="relative min-h-screen font-sans bg-transparent overflow-x-hidden flex flex-col">
-            {/* Global Background Mist - Excluded from Admin pages */}
-            {!isAdmin && <BackgroundMist />}
+            <AnimatePresence>
+              {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+            </AnimatePresence>
+
+            {/* Global Background Mist */}
+            <BackgroundMist />
             
-            {!isAdmin && <Navbar onMenuClick={() => setIsSidebarOpen(true)} />}
+            {!isAdmin && !showSplash && <Navbar onMenuClick={() => setIsSidebarOpen(true)} />}
             {!isAdmin && <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />}
             {!isAdmin && <CartSidebar />}
             

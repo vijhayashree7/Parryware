@@ -1,73 +1,8 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React from 'react';
 import { ShoppingCart, Star, Check, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
-
-const imageUrls = [
-  "https://m.media-amazon.com/images/I/71pO2DYe9mL.jpg",
-  "https://bathoutlet.in/cdn/shop/products/20201003_142913.jpg?crop=center&height=2048&v=1656477308&width=2048",
-  "https://m.media-amazon.com/images/I/61BBn9NyWjL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://www.inart.co.in/cdn/shop/files/71hv9D1snOL.jpg?v=1773470985&width=360",
-  "https://www.inart.co.in/cdn/shop/files/81edSovqynL.jpg?v=1773472772&width=1946",
-  "https://m.media-amazon.com/images/I/510SkLiw7fL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://www.cera-india.com/sites/default/files/2022-02/Wash%20basin%20with%20full%20pedestal%20Mobile%20Banner.jpg",
-  "https://www.artize.com/in/image/catalog/2025/VCS-WHT-503301.jpg",
-  "https://www.jaquar.com/images/thumbs/0009687_wall-hung-basin-with-full-pedestal_960.jpeg",
-  "https://www.inart.co.in/cdn/shop/files/Camera.003_160b55d6-98bb-4a10-9ae2-5aea98865ccf.jpg?v=1751257627",
-  "https://m.media-amazon.com/images/I/31RgQDATi4L._AC_UF1000%2C1000_QL80_.jpg",
-  "https://m.media-amazon.com/images/I/71EF6l7hTNL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://m.media-amazon.com/images/I/51f1c8m7L5L._AC_UF1000%2C1000_QL80_.jpg",
-  "https://ruheindia.com/cdn/shop/files/1_ed689375-0b2d-4067-8ee4-738f60188054.png?v=1754914333",
-  "https://www.inart.co.in/cdn/shop/files/71gU7Hl6LQL.jpg?crop=center&height=2048&v=1773323744&width=2048",
-  "https://www.decorpot.com/images/1927620867Title.jpg",
-  "https://png.pngtree.com/thumb_back/fh260/background/20240424/pngtree-water-tap-sink-with-faucet-in-expensive-loft-bathroom-image_15666876.jpg",
-  "https://m.media-amazon.com/images/I/61dVVRssAFL.jpg",
-  "https://m.media-amazon.com/images/I/81D7NEYzaXL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://m.media-amazon.com/images/I/41vXfLysfbS._AC_UF1000%2C1000_QL80_.jpg",
-  "https://www.peelorange.com/cdn/shop/files/1469002e2cc6aa8772048bcb49818f8c.jpg?v=1727069559",
-  "https://www.queobathrooms.com/QueoBathroomImages/BlogImage/creating-a-rejuvenating-space-with-contemporary-bath-fixtures.jpg",
-  "https://www.kotabaths.com/data/watermark/main/20251012/68eb4bb27a64b.jpg",
-  "https://m.media-amazon.com/images/I/716e4MRHJIL._AC_UF350%2C350_QL80_.jpg",
-  "https://www.fontanashowers.com/v/vspfiles/photos/FS70547-2.jpg?v-cache=1765282397",
-  "https://m.media-amazon.com/images/I/61EkmhyHBXL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://m.media-amazon.com/images/I/61A4-NDW%2BUL.jpg",
-  "https://www.aquaticabath.eu/cache/images/1280x800a-ffffff/aquatica/Aquatica-Solace-A-Wht-Round-Stone-Bathroom-Vessel-Sink-02-%28web%29.jpg",
-  "https://m.media-amazon.com/images/I/713JkEQY8ML.jpg",
-  "https://images.openai.com/thumbnails/url/bLQwJHicDclJDoIwAADAF8kiAkJiDCEBidoIBJcTgbYsBaGllcXn-Ct_o3Od76cSgnJblnEHh4UKjFYi7zSp5CITNZRg_5R51VNad-We7f5nOwBZPgyvA6I-CZDlAn0Z2mkmSnSxcn10yAtrZlEVGl-TcTKDU-TgrTcXcZkm51USEn7sbpvkXoLcsQxDxEzzHkKJdDdtmXoYccMYhX32XsxUbcAPZQw6Yw",
-  "https://www.jaquar.com/images/thumbs/0056306_under-counter-basin_960.jpeg",
-  "https://www.inart.co.in/cdn/shop/files/71iQuEFqr_L.jpg?v=1773470580&width=1946",
-  "https://image.made-in-china.com/202f0j00cgnqwHpdkoub/Hot-Rectangle-White-Ceramic-Undermount-Basin-Sink-1813.webp",
-  "https://simpolo-web.s3.ap-south-1.amazonaws.com/uploads/media/blog/Classic-White-Oval-Undermount-Basin-with-Marble-Look-Countertop.jpeg",
-  "https://m.media-amazon.com/images/I/71hOGsrsK7L._AC_UF1000%2C1000_QL80_.jpg",
-  "https://www.inart.co.in/cdn/shop/files/Camera.006-Copy.png?v=1744439931",
-  "https://www.inart.co.in/cdn/shop/files/Camera.001.png?v=1731923117",
-  "https://bassinoimpex.com/cdn/shop/files/BPB-742_512x512.jpg?v=1757590883",
-  "https://images.openai.com/thumbnails/url/ZjfvBHicDclJDoIwFADQEyFGiAyJMSiTMipGDBtjC0oLlOkjyqm8jrfRt33fTw7Q9CrPZwx37waylAPE5rNHDzcgeIbriu_zumkIe6zb1f9UzU8VCx9oF-_L7gVCOGXCeTTlqDjlMeWssCXlAsQTqpVqgSVmOYjEI91OnpxIl0GkbRSaxhN5qDADp3xtytFuzbsfJDZ1j7reG4OvKNFwcAttvKLdXreXopvGwJ5erf0A63I_Xg",
-  "https://images.openai.com/static-rsc-1/A3A-XQvvK7bbDbkcwn6Oriptyzrr7DPuCau6bq1bIBjcAmOMbIk_l6e3rw1AHNQTLKY4ZzzS4qMwO4cQ07xnZEXhw7D3hxs2x7GfOeDr6DAsxeRiqiWr_x3KPvU-1NFIJwxcqCnX1_wBThZF43ekww",
-  "https://images.openai.com/static-rsc-1/H3rMIqcZ9JBFsRyGM8Ig40t8K-2uezJU4meRvIODpG-Uorfpm4I8K8bUUbE6RA5GhiNXw5nsElVGD5zAJIh_imTTEEv28rRHFWnxJdooJP8h4jJ0mKma1YAyuNp3i28KXI6xYyFpKMGQxD1xYG3IQQ",
-  "https://m.media-amazon.com/images/I/317PqKGP1CL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://images.openai.com/thumbnails/url/_H50Y3icDclJDoIwAADAFwF1QyAxpgQlYixLEAMXAi07QqVFlEf5H3-jc53vp-ScMk2Ssg4Pb8ozIvC0A2LBeMIrLOL-LrGyp7Tqiv1j9z8NIqKa2LPdCPk5zH2_bhOZIj00wAUSlQ5lZDDgHO_shcdNJZzDarUl1gI1MFUCECbPKziPjpf2pcuFWjabbhnIOrwF8bSeZWK2aZbYeB6bE3MOb8-0bJqzqVVQFP8AA54-FA",
-  "https://www.simplexfurniture.in/uploaded-files/product-images/Laboratory-Sinks.1713530378.jpg",
-  "https://image.made-in-china.com/202f0j00DebWjHZKbpYT/Luxury-Design-Black-Color-Floor-Standing-Wash-Basin-Sink-Wc-Bathroom-Pedestal-Basin-for-Hotle-or-Hosehold.webp",
-  "https://image.made-in-china.com/2f0j00ISTlQNnqJtGP/Factory-Price-Pedestal-Basin-Black-Funnel-Shaped-Basin-One-Piece-Bathroom-Free-Standing-Pedestal-Sink-Hand-Wash-Basin-for-Hotel.webp",
-  "https://www.inart.co.in/cdn/shop/files/71hv9D1snOL.jpg?v=1773470985&width=360",
-  "https://m.media-amazon.com/images/I/510SkLiw7fL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://images.unsplash.com/photo-1596495578065-6e0763fa1178?auto=format&fit=crop&w=1000&q=80"
-];
-
-const categories = [
-  'bowl-basin',
-  'wall-hung-full-pedestal',
-  'wall-hung-half-pedestal',
-  'wall-hung-no-pedestal',
-  'integrated-basin',
-  'countertop-basin',
-  'below-counter-basin',
-  'pedestals',
-  'lab-sink',
-  'freestanding-basin'
-];
+import { basinCollectionImages as imageUrls, basinCategoriesList as categories } from '../data/productData';
 
 export default function BasinCollection() {
   const { categoryId } = useParams();

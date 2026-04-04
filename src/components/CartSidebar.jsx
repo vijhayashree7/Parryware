@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ShoppingCart, CheckCircle2, ShoppingBag, ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line no-unused-vars
 import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
@@ -67,7 +67,7 @@ const CartSidebar = () => {
                     {cart.length}
                   </span>
                 </div>
-                <p className="text-[10px] uppercase tracking-[0.2em] text-[#8D6E63] mt-1 font-bold font-sans">Abirami Parryware Studio</p>
+                <p className="text-[10px] uppercase tracking-[0.2em] text-[#8D6E63] mt-1 font-bold font-sans text-center">Abirami Agency Parryware Studio</p>
               </div>
               <motion.button 
                 whileHover={{ rotate: 90, scale: 1.1 }}

@@ -4,66 +4,7 @@ import { ShoppingCart, Star, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
-const imageUrls = [
-  "https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-silver-stainless-steel-water-heater-with-steam-valve-image_2651541.jpg",
-  "https://www.jaquar.com/images/uploaded/6%20features%20of%20smart%20water%20heaters/image4.jpg",
-  "https://cdn.accentuate.io/119789879600/-1684323366940/water-heater-1-v1695623432791.png?560x800=",
-  "https://m.media-amazon.com/images/I/319NSNNPYJL._AC_SR290%2C290_.jpg",
-  "https://www.crompton.co.in/cdn/shop/files/Artboard-2-v1761382221096_1920x.jpg?v=1771395861",
-  "https://www.vguard.in/uploads/product/contino.jpg",
-  "https://m.media-amazon.com/images/I/71fWvSO-i2L._AC_UF1000%2C1000_QL80_.jpg",
-  "https://m.media-amazon.com/images/I/41bhhwzAGmL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://m.media-amazon.com/images/I/71LCL4KHiEL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://images.openai.com/static-rsc-1/-qLpK0JiIdBO1WPT-HXQ_qPGxIvuUWDO5WyHIQy3X7F8yNgH20pZXuJMKZPGNEKxJuB0xhE0McCm89iMyiLAHuxYLTR3au63P-Z3iGWIJRNa_y-UDpQT76fMLr5B0joNM6hGfE_kIrnLGiowTur7zQ",
-  "https://image.made-in-china.com/2f0j00IPfGecdnrAou/Latest-Technology-Air-to-Water-Air-Source-Heat-Pump-Water-Heater-for-Hotel.webp",
-  "https://m.media-amazon.com/images/I/51z-LKwnMpL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://cdn11.bigcommerce.com/s-7wqdm8gvmj/products/15069/images/52324/thumb_product_aerotherm_g2_50gal__33476.1766168095.500.750.png?c=2",
-  "https://www.lg.com/content/dam/channelbtb/lgcom/global/es/water-heater/es-hvac-2025-feature-water-heater-03-key-features-01-performance-m.jpg",
-  "https://www.lg.com/content/dam/channelbtb/lgcom/global/images/business/heating-waterheater/updated/water-heater-2025-flexible-installation-design-r290-water-heater-251025-m.jpg",
-  "https://bluebirdsolar.com/cdn/shop/articles/Solar_Water_Heater_4c141c9f-fb2b-4d73-910c-69dab6af0e9c.jpg?v=1761566083",
-  "https://d91ztqmtx7u1k.cloudfront.net/ClientContent/Images/ExtraLarge/50-litre-solar-water-heater-sy-20240904140002014.png",
-  "https://image.made-in-china.com/2f0j00QbaeGTCBRtkz/150L-None-Pressurized-Flat-Plate-Calentador-Solar-Geyser-Solar-Water-Heater.jpg",
-  "https://s.alicdn.com/%40sc04/kf/S94ab07b931504d31a3b89225c95aa1480/100L-120L-200L-300L-Non-Pressurized-Solar-Geyser-Solar-Water-Heater-System-for-Home-Commercial-Hotel-or-Residential.png_300x300.jpg",
-  "https://image.made-in-china.com/2f0j00HUwoJEusZRpy/Roof-Top-180-Liters-Solar-Water-Geyser-with-SUS304-Tank-and-Color-Steel-Housing-for-India.webp",
-  "https://images.openai.com/static-rsc-1/QHiBmyOZrnIU2lT1wTlE_sR6ERM8ae_fUVlKTHQsSMux_z0--RD9EmexSs952UGNNLJNCypLqrmum6qVEEQ5OoAMLaxRL6j3hDiiVn4l0tBiFh_efgfoPSCXEXCzQjYLEMr_FNV75yXrPd1KhOe6hg",
-  "https://image.made-in-china.com/2f0j00OWvBzdVqGkbK/60kw-75kw-High-Power-Condensing-System-Wall-Hung-Gas-Boiler-for-Villa.webp",
-  "https://www.warmhaus.com/storage/product/October2023/warmhaus-minerwa-combi-boilers-1.jpg",
-  "https://www.viessmann-climatesolutions.com/content/dam/public-family-climatesolutions/news/2019/08-07/News_Gas-Brennwerttechnik-der-naechsten-Generation_jpg_Neue-GWG_Bild_1_Vitodens-Wandgeraete.jpg/_jcr_content/renditions/original./News_Gas-Brennwerttechnik-der-naechsten-Generation_jpg_Neue-GWG_Bild_1_Vitodens-Wandgeraete.jpg",
-  "https://images.openai.com/static-rsc-1/aPJ3RSB3uAptSpqzj7s6uPl_NcDpOTJqzdNhly40kA3EQB9BUYmYM7BsdUa6cPb_FOgno8CLFLE26dNw2Q7BVNIJPwLjeLbsQKrWe_MbIXjBhizT-Y8jBvEFz_yOYhEWJi9nVDWKN5ex3p40svgrWA",
-  "https://tiimg.tistatic.com/fp/1/008/417/gas-water-heater-755.jpg",
-  "https://m.media-amazon.com/images/I/71Ue0oqqItL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://m.media-amazon.com/images/I/71stAdJVOkL._AC_UF350%2C350_QL80_.jpg",
-  "https://gaslandchef.com/cdn/shop/articles/035419ce-921e-48cb-ac97-8deb275c960f_d387ce17-4c60-46b5-a5cd-84745b2d95bc.jpg?v=1761901532",
-  "https://image.made-in-china.com/365f3j00ZYioTdUIHCbu/16L-LPG-Propane-Gas-Instant-Digital-Gas-Gyser-Water-Heater-for-Home.webp",
-  "https://m.media-amazon.com/images/I/41TDmGKwzAL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://www.jaquar.com/images/thumbs/0051309_image4.jpeg",
-  "https://m.media-amazon.com/images/I/61q-Ve7smrL._AC_UF1000%2C1000_QL80_.jpg",
-  "https://cdn.shopify.com/s/files/1/0843/7897/6562/files/what-is-a-point-of-use-water-heater-bathroom_1024x1024.jpg?v=1728388358",
-  "https://m.media-amazon.com/images/I/51oYAh5Te8L._AC_UF1000%2C1000_QL80_.jpg",
-  "https://m.media-amazon.com/images/I/51mab5hm9-L._AC_UF1000%2C1000_QL80_.jpg",
-  "https://image.made-in-china.com/202f0j00TYUokRJWJqrv/High-Technology-Energy-Saving-3500W-Indoor-Small-Size-Digital-Display-Electric-Tankless-Water-Heater.jpg",
-  "https://m.media-amazon.com/images/I/511c52JuLkL.jpg",
-  "https://images.news18.com/ibnlive/uploads/2025/10/smart-water-geyser-2025-10-e4a05684a436619ef07d68f76bdc2313-16x9.png?height=225&impolicy=website&width=400",
-  "https://glenindia.com/cdn/shop/articles/image_28_80e416c0-ebf1-446d-8be6-5f717369857e_1200x675.png?v=1764331803",
-  "https://www.hydro-smart.com/cdn/shop/files/CombiPanel.png?v=1723143339&width=1024",
-  "https://www.livemint.com/lm-img/img/2025/11/11/600x800/water_heaters_1762862662896_1762862670935_1762865544271.jpg",
-  "https://m.media-amazon.com/images/I/71Hb46DvGUL._AC_UF894%2C1000_QL80_.jpg",
-  "https://image.made-in-china.com/202f0j00nsFVNHtykoUD/Manufacture-Heating-System-Home-Use-Stainless-Steel-Hot-Water-Tank-60L-100L-200L-500L-1000L-Water-Heater-Tank-Water-Boiler-Heat-Pump-Water-Tank.webp",
-  "https://s.alicdn.com/%40sc04/kf/Hb560d383bfd34fe28c2bef657602e4b5S/Custom-Good-Quality-300L-500L-3000L-Hot-Water-Boiler-Electric-Heat-Pump-Water-Heater-Boiler-tank-with-or-Without-Coil.jpg"
-];
-
-const categories = [
-  'heater-storage',
-  'heater-tankless',
-  'heater-heat-pump',
-  'heater-solar',
-  'heater-condensing',
-  'heater-electric-pump',
-  'heater-gas',
-  'heater-point-of-use',
-  'heater-smart',
-  'heater-hydrolic-boiler'
-];
+import { waterHeaterCollectionImages as imageUrls, waterHeaterCategoriesList as categories } from '../data/productData';
 
 export default function WaterHeaterCollection() {
   const { categoryId } = useParams();

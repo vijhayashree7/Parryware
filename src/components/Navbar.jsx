@@ -33,7 +33,6 @@ const Navbar = ({ onMenuClick }) => {
 
   const navBg = scrolled || !isHomePage ? 'bg-white/95 backdrop-blur-md shadow-sm py-4' : 'bg-transparent py-6';
   const textColor = scrolled || !isHomePage ? 'text-[#4E342E]' : 'text-white';
-  const accentColor = scrolled || !isHomePage ? 'text-[#A68966]' : 'text-[#D7CCC8]';
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-40 transition-all duration-500 pointer-events-none ${navBg}`}>
@@ -58,8 +57,8 @@ const Navbar = ({ onMenuClick }) => {
         </div>
 
         {/* Center - Logo */}
-        <Link to="/" className={`absolute left-1/2 -translate-x-1/2 ${textColor} text-3xl md:text-5xl font-serif tracking-widest text-shadow cursor-pointer transition-transform hover:scale-105 pb-1`}>
-          Abirami
+        <Link to="/" className={`absolute left-1/2 -translate-x-1/2 ${textColor} text-2xl md:text-4xl font-serif tracking-widest text-shadow cursor-pointer transition-transform hover:scale-105 pb-1 text-center whitespace-nowrap`}>
+          Abirami Agency
         </Link>
 
         {/* Right - Icons */}

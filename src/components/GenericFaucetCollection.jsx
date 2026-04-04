@@ -1,31 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { ShoppingCart, Star, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 import { Link, useParams, Navigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
-const mockImages = [
-  "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1552322689-1065f3d45e5d?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1606509036715-dd0b4ea595ab?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1584622781564-1d987f7333c1?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1585058111532-a5f1ba61ce14?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1620626011685-64bc63b78298?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1552322689-c4547285ee0d?auto=format&fit=crop&q=80&w=800",
-  "https://images.unsplash.com/photo-1595514535315-062e74e6221c?auto=format&fit=crop&q=80&w=800"
-];
-
-const categories = [
-  'faucet-sensor',
-  'faucet-espirion',
-  'faucet-thermostatic',
-  'faucet-crust',
-  'faucet-agate-pro',
-  'faucet-aqua',
-  'faucet-uno'
-];
+import { faucetCollectionImages as mockImages, faucetCategoriesList as categories } from '../data/productData';
 
 export default function GenericFaucetCollection() {
   const { categoryId } = useParams();

@@ -13,8 +13,11 @@ const BlogDetailsPage = () => {
   const relatedBlogs = blogsData.filter(b => b.id !== blogId).slice(0, 3);
 
   useEffect(() => {
-    const el = document.getElementById('blog-section');
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    window.scrollTo(0, 0);
+    // Fallback for some browsers or delayed rendering
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 50);
   }, [id]);
 
   if (!blog) {
@@ -97,19 +100,38 @@ const BlogDetailsPage = () => {
               <Link 
                 to={`/blog/${b.id}`}
                 key={b.id} 
-                className="group relative rounded-[2rem] overflow-hidden cursor-pointer h-[400px] shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col justify-end"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: 'auto' });
+                  setTimeout(() => window.scrollTo(0, 0), 50);
+                }}
+                className="group relative rounded-[2rem] overflow-hidden cursor-pointer h-[400px] shadow-md hover:shadow-2xl transition-all duration-700 flex flex-col justify-end border border-white/10 z-30"
               >
                 <div className="absolute inset-0">
                   <img 
                     src={b.image} 
                     alt={b.title} 
-                    className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-105"
+                    className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
                   />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                <div className="relative p-6 z-10 flex flex-col justify-end">
-                  <h3 className="text-xl font-serif text-white mb-2 group-hover:underline decoration-white/30 underline-offset-4">{b.title}</h3>
-                  <p className="text-white/70 text-sm line-clamp-2">{b.description}</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/95 via-gray-900/50 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+                
+                {/* Category Badge */}
+                <div className="absolute top-6 left-6 z-20">
+                  <span className="px-3 py-1 text-xs font-semibold tracking-wider text-white bg-white/20 backdrop-blur-md rounded-full border border-white/30 uppercase opacity-90 group-hover:opacity-100 group-hover:bg-white/30 transition-all duration-300">
+                    {b.category || "Article"}
+                  </span>
+                </div>
+
+                <div className="relative p-8 z-10 flex flex-col justify-end transform transition-transform duration-500 translate-y-4 group-hover:translate-y-0">
+                  <h3 className="text-2xl font-serif text-white mb-3 leading-snug drop-shadow-md">{b.title}</h3>
+                  <div className="w-8 h-[2px] bg-cozy-400 mb-4 group-hover:w-16 transition-all duration-500 ease-out"></div>
+                  <p className="text-white/80 text-sm line-clamp-2 font-light leading-relaxed mb-4 opacity-80 group-hover:opacity-100 transition-opacity duration-500 delay-100">{b.description}</p>
+                  <div className="flex items-center gap-2 text-white/90 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+                    <span>Read Article</span>
+                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </div>
                 </div>
               </Link>
             ))}

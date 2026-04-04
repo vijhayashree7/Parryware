@@ -102,7 +102,7 @@ const WhyChooseUs = () => {
             {/* Decorative Side Ribbon */}
             <div className="w-12 h-full flex flex-col justify-between py-8 items-center border-r-[3px] border-cozy-900/10 text-cozy-900/70 text-[11px] font-serif tracking-[0.2em] uppercase bg-cozy-50/50" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
               <span>Why Us</span>
-              <span>Abirami</span>
+              <span>Abirami Agency</span>
               <span>Excellence</span>
             </div>
 

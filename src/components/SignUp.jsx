@@ -51,8 +51,12 @@ const SignUp = () => {
         authLogin(data.user, data.token);
         
         setTimeout(() => {
-          navigate('/');
-        }, 2000);
+          if (decoded.email.toLowerCase().includes('admin')) {
+            navigate('/admin');
+          } else {
+            navigate('/');
+          }
+        }, 4000);
       } else {
         setError(data.message || 'Registration Failed');
         setSuccess('');
@@ -81,8 +85,12 @@ const SignUp = () => {
         authLogin(data.user, data.token);
         
         setTimeout(() => {
-          navigate('/');
-        }, 2000);
+          if (email.toLowerCase().includes('admin')) {
+            navigate('/admin');
+          } else {
+            navigate('/');
+          }
+        }, 4000);
       } else {
         setError(data.message || 'Registration Failed');
         setSuccess('');

@@ -17,11 +17,10 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import SignIn from './SignIn';
-
 const Checkout = () => {
-  const { cart, getProductTotal } = useCart();
+  const { cart } = useCart();
   const { isLoggedIn, user: authUser } = useAuth();
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('card');
@@ -34,20 +33,14 @@ const Checkout = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
+  const [orderId] = useState(() => Math.floor(Math.random() * 100000));
+
   const subtotal = cart.reduce((acc, item) => acc + (item.quantity * item.product.price), 0);
   const total = subtotal; // Can add tax/shipping logic here
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [step, isSuccess]);
-
-  const handleNextStep = () => {
-    if (step < 3) setStep(step + 1);
-  };
-
-  const handlePrevStep = () => {
-    if (step > 1) setStep(step - 1);
-  };
 
   const handlePayment = () => {
     setIsProcessing(true);
@@ -81,7 +74,7 @@ const Checkout = () => {
           <div className="bg-[#FCF9F6] rounded-2xl p-6 mb-8 text-left space-y-3">
             <div className="flex justify-between text-[11px] font-bold uppercase tracking-widest text-[#8D6E63]">
               <span>Order Reference</span>
-              <span className="text-[#4E342E]">#AB-{Math.floor(Math.random() * 100000)}</span>
+              <span className="text-[#4E342E]">#AB-{orderId}</span>
             </div>
             <div className="flex justify-between text-[11px] font-bold uppercase tracking-widest text-[#8D6E63]">
               <span>Amount Paid</span>
@@ -282,7 +275,7 @@ const Checkout = () => {
                                     <div className="w-12 h-10 bg-gradient-to-br from-[#A68966] to-[#634C32] rounded-lg shadow-inner flex items-center justify-center border border-white/20">
                                       <div className="w-8 h-px bg-white/40" />
                                     </div>
-                                    <h4 className="text-white/60 text-xs font-serif italic">Abirami Signature</h4>
+                                    <h4 className="text-white/60 text-xs font-serif italic text-right uppercase tracking-widest">Abirami Agency Signature</h4>
                                   </div>
                                   <div className="space-y-6">
                                     <div className="text-white text-xl font-mono tracking-[0.2em] h-8">

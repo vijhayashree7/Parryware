@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useContext } from 'react';
 
 const ProductContext = createContext();
@@ -5,123 +6,7 @@ const ProductContext = createContext();
 export const useProducts = () => useContext(ProductContext);
 
 // Initial state matching the Cardinal Collection products
-const initialProducts = [
-  {
-    id: 1,
-    name: 'Cardinal Matte Black Basin Faucet',
-    description: 'A sleek and modern matte black faucet designed for contemporary bathrooms with a bold premium finish.',
-    price: 2799,
-    mrp: 3999,
-    image: '/images/faucets/cardinal_set1_1.png',
-    rating: 4.8,
-    reviews: 1124,
-    category: 'faucets',
-    tags: ['Best Seller'],
-    variants: [{ id: 1, key: 'Size', value: 'Standard' }, { id: 2, key: 'Color', value: 'Matte Black' }]
-  },
-  {
-    id: 2,
-    name: 'Cardinal Matte Black Basin Faucet',
-    description: 'A sleek and modern matte black faucet designed for contemporary bathrooms with a bold premium finish.',
-    price: 2799,
-    mrp: 3999,
-    image: '/images/faucets/cardinal_set1_2.png',
-    rating: 4.8,
-    reviews: 842,
-    category: 'faucets',
-    tags: ['Offer'],
-    variants: [{ id: 1, key: 'Installation', value: 'Deck Mount' }]
-  },
-  {
-    id: 3,
-    name: 'Cardinal Chrome Classic Faucet',
-    description: 'A timeless chrome-finished faucet with a polished shine, suitable for modern and traditional interiors.',
-    price: 3499,
-    mrp: 4599,
-    image: '/images/faucets/cardinal_set1_3.png',
-    rating: 4.6,
-    reviews: 2301,
-    category: 'faucets'
-  },
-  {
-    id: 4,
-    name: 'Cardinal Chrome Classic Faucet',
-    description: 'A timeless chrome-finished faucet with a polished shine, suitable for modern and traditional interiors.',
-    price: 3499,
-    mrp: 4599,
-    image: '/images/faucets/cardinal_set1_4.png',
-    rating: 4.7,
-    reviews: 1840,
-    category: 'faucets',
-    tags: ['Discount', 'Prime Products']
-  },
-  {
-    id: 5,
-    name: 'Cardinal Rose Gold Luxury Faucet',
-    description: 'Elegant rose gold faucet crafted for a luxurious bathroom experience with a warm metallic tone.',
-    price: 4299,
-    mrp: 5499,
-    image: '/images/faucets/cardinal_set1_5.jpg',
-    rating: 4.9,
-    reviews: 512,
-    category: 'faucets'
-  },
-  {
-    id: 6,
-    name: 'Cardinal Rose Gold Luxury Faucet',
-    description: 'Elegant rose gold faucet crafted for a luxurious bathroom experience with a warm metallic tone.',
-    price: 4299,
-    mrp: 5499,
-    image: '/images/faucets/cardinal_new_6.png',
-    rating: 4.9,
-    reviews: 320,
-    category: 'faucets'
-  },
-  {
-    id: 7,
-    name: 'Cardinal Rose Gold Luxury Faucet',
-    description: 'Elegant rose gold faucet crafted for a luxurious bathroom experience with a warm metallic tone.',
-    price: 4299,
-    mrp: 5499,
-    image: '/images/faucets/cardinal_new_7.png',
-    rating: 4.8,
-    reviews: 415,
-    category: 'faucets'
-  },
-  {
-    id: 8,
-    name: 'Cardinal Wall-Mounted Slim Faucet',
-    description: 'A space-saving wall-mounted faucet with a clean and minimal modern design.',
-    price: 3899,
-    mrp: 4999,
-    image: '/images/faucets/cardinal_new_8.png',
-    rating: 4.5,
-    reviews: 198,
-    category: 'faucets'
-  },
-  {
-    id: 9,
-    name: 'Cardinal Wall-Mounted Slim Faucet',
-    description: 'A space-saving wall-mounted faucet with a clean and minimal modern design.',
-    price: 3899,
-    mrp: 4999,
-    image: '/images/faucets/cardinal_new_9.png',
-    rating: 4.7,
-    reviews: 254,
-    category: 'faucets'
-  },
-  {
-    id: 10,
-    name: 'Cardinal Waterfall Designer Faucet',
-    description: 'A stunning waterfall-style faucet delivering smooth natural flow for a spa-like experience.',
-    price: 4999,
-    mrp: 6499,
-    image: '/images/faucets/cardinal_new_10.jpg',
-    rating: 5.0,
-    reviews: 88,
-    category: 'faucets'
-  }
-];
+import { cardinalProducts as initialProducts } from '../data/productData';
 
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState(initialProducts);

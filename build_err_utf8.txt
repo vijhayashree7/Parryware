@@ -1,0 +1,81 @@
+﻿
+> ware@0.0.0 build
+> vite build
+
+[36mvite v8.0.3 [32mbuilding client environment for production...[36m[39m
+[2K
+transforming...Γ£ô 2754 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                  0.84 kB Γöé gzip:   0.47 kB
+dist/assets/basin_p1-CXKLbegE.png               47.00 kB
+dist/assets/basin_p5-gmOTHwDr.png               49.86 kB
+dist/assets/faucets_p6-D3ObHegV.png             51.65 kB
+dist/assets/basin_p3-D9Bd8r7X.png               64.09 kB
+dist/assets/water_heater_p1-jx47tXkj.png        69.90 kB
+dist/assets/basin_p4-BWeZM3kh.png               70.07 kB
+dist/assets/basin_p2-BKOwM9qa.png               75.32 kB
+dist/assets/closet_p4-DrBNu2qF.png             108.59 kB
+dist/assets/closet_p5-C8a6YC1Q.png             117.94 kB
+dist/assets/chimney_p3-DrJz4ZD1.png            145.82 kB
+dist/assets/faucets_p1-DwAOS_zh.png            170.70 kB
+dist/assets/closet_p3-CzPVwhDs.png             179.88 kB
+dist/assets/faucets_cover-CgDnhKPs.png         194.55 kB
+dist/assets/chimney_p1-oA2ZkZwE.png            196.62 kB
+dist/assets/chimney_p5-BuKMh0hx.png            226.92 kB
+dist/assets/chimney_p4-vOloBfsc.png            239.86 kB
+dist/assets/basin_cover-BrpRoAAu.png           240.79 kB
+dist/assets/closet_p2-BV5p48Ao.png             252.32 kB
+dist/assets/chimney_cover-ypZtihyi.png         253.05 kB
+dist/assets/faucets_p5-JSLaASNH.png            280.42 kB
+dist/assets/closet_cover-DbJ6b5oe.jpg          291.58 kB
+dist/assets/tiles_cover-BuSaN7TU.jpg           314.01 kB
+dist/assets/water_heater_cover-CQ4_qNtU.png    317.83 kB
+dist/assets/closet_p1-eT1LCnF7.png             396.21 kB
+dist/assets/faucets_p4-DR7n9fvA.png            463.04 kB
+dist/assets/faucets_p8-CuY7upcX.png            627.21 kB
+dist/assets/chimney_p2-Deju7ax2.png            664.63 kB
+dist/assets/faucets_p2-CLkWVwoD.png            727.13 kB
+dist/assets/faucets_p7-S2pTL7GI.png            802.47 kB
+dist/assets/faucets_p3-CzE_1UbP.png            830.22 kB
+dist/assets/index-CCB0JuXH.css                  73.94 kB Γöé gzip:  12.08 kB
+dist/assets/index-nKAIpI9f.js                1,013.75 kB Γöé gzip: 295.30 kB
+
+[32mΓ£ô built in 1.84s[39m
+node.exe : [33m[plugin 
+builtin:vite-reporter] 
+At C:\nvm4w\nodejs\npm.ps
+1:16 char:5
++     & 
+"$basedir/node$exe"  "$ba
+sedir/node_modules/npm/bi
+n/npm-cli.js" ...
++     ~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo       
+       : NotSpecified:   
+  ([33m[plugin builti   
+ n:vite-reporter] :St    
+ring) [], RemoteExce    
+ption
+    + FullyQualifiedErro 
+   rId : NativeCommandE  
+  rror
+ 
+(!) Some chunks are 
+larger than 500 kB after 
+minification. Consider:
+- Using dynamic import() 
+to code-split the 
+application
+- Use build.rolldownOptio
+ns.output.codeSplitting 
+to improve chunking: http
+s://rolldown.rs/reference
+/OutputOptions.codeSplitt
+ing
+- Adjust chunk size 
+limit for this warning 
+via build.chunkSizeWarnin
+gLimit.[39m
