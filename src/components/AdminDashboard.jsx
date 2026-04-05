@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, ShoppingCart, CalendarCheck, UtensilsCrossed, Users, 
   Truck, Settings, Search, Plus, LogOut, Edit, Trash2, X, ArrowLeft, 
-  ChevronDown, ChevronUp, Bell, CheckCircle2, Tag, Lock
+  ChevronDown, ChevronUp, Bell, CheckCircle2, Tag, Lock, MessageSquare
 } from 'lucide-react';
 import { useProducts } from '../context/ProductContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,14 +13,20 @@ const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { id: 'orders', label: 'Orders', icon: ShoppingCart },
   { id: 'menu', label: 'Manage Products', icon: UtensilsCrossed },
+  { id: 'users', label: 'Members', icon: Users },
+  { id: 'feedbacks', label: 'Feedbacks', icon: MessageSquare },
 ];
 
 const AVAILABLE_TAGS = ['Offer', 'Discount', 'Best Seller', 'Prime Products'];
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('dashboard'); // Default to dashboard to see charts
+  const [activeTab, setActiveTab] = useState('dashboard');
   const navigate = useNavigate();
-  const { products, addProduct, updateProduct, deleteProduct, orders, updateOrderStatus } = useProducts();
+  const { products, addProduct, updateProduct, deleteProduct, orders, updateOrderStatus, feedbacks, users, fetchUsers } = useProducts();
+  
+  useEffect(() => {
+    if (activeTab === 'users') fetchUsers();
+  }, [activeTab]);
   
   // Tag / Variant states for Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -448,6 +454,121 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* 4. Feedback Management Tab */}
+          {activeTab === 'feedbacks' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex justify-between items-center bg-white/60 border border-[#3E2723]/10 p-8 rounded-3xl shadow-xl backdrop-blur-xl">
+                <div>
+                  <h3 className="text-[#3E2723] font-black tracking-[0.3em] text-[10px] uppercase mb-1">Customer Sentiment</h3>
+                  <p className="text-[#3E2723]/40 text-[9px] uppercase tracking-widest">Total Feedback Entries: <span className="text-[#3E2723] font-black">{feedbacks.length}</span></p>
+                </div>
+              </div>
+
+              <div className="bg-white/60 border border-[#3E2723]/10 rounded-3xl overflow-hidden shadow-xl backdrop-blur-md">
+                <table className="w-full text-left text-[15px]">
+                  <thead className="bg-[#3E2723]/5 text-[#3E2723] uppercase tracking-[0.2em]">
+                    <tr>
+                      <th className="px-10 py-8 font-black">Submission Date</th>
+                      <th className="px-10 py-8 font-black">Experience</th>
+                      <th className="px-10 py-8 font-black">Feedback & Review</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#3E2723]/5">
+                    {feedbacks.map((fb) => (
+                      <tr key={fb.id} className="hover:bg-[#3E2723]/5 transition-colors group">
+                        <td className="px-10 py-8">
+                          <p className="font-black text-[#3E2723] uppercase tracking-widest leading-none mb-1">{fb.date}</p>
+                          <p className="text-[10px] text-[#3E2723]/40 uppercase font-black">Verified User</p>
+                        </td>
+                        <td className="px-10 py-8">
+                          <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                            fb.rating === 'GOOD' ? 'bg-green-100 text-green-700 border border-green-200' : 
+                            fb.rating === 'AVERAGE' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' : 
+                            'bg-red-100 text-red-700 border border-red-200'
+                          }`}>
+                            {fb.rating}
+                          </span>
+                        </td>
+                        <td className="px-10 py-8">
+                          <p className="text-[#3E2723] font-black uppercase tracking-widest text-[13px] leading-relaxed max-w-lg">
+                            {fb.suggestion}
+                          </p>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* 5. User Management Tab */}
+          {activeTab === 'users' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex justify-between items-center bg-white/60 border border-[#3E2723]/10 p-8 rounded-3xl shadow-xl backdrop-blur-xl">
+                <div>
+                  <h3 className="text-[#3E2723] font-black tracking-[0.3em] text-[10px] uppercase mb-1">User Activity Registry</h3>
+                  <p className="text-[#3E2723]/40 text-[9px] uppercase tracking-widest">Tracking signups and logins: <span className="text-[#3E2723] font-black">{users.length} Enrolled</span></p>
+                </div>
+              </div>
+
+              <div className="bg-white/60 border border-[#3E2723]/10 rounded-3xl overflow-hidden shadow-xl backdrop-blur-md">
+                <table className="w-full text-left text-[14px]">
+                  <thead className="bg-[#3E2723]/5 text-[#3E2723] uppercase tracking-[0.2em]">
+                    <tr>
+                      <th className="px-10 py-7 font-black">User Identity</th>
+                      <th className="px-10 py-7 font-black">Signed Up</th>
+                      <th className="px-10 py-7 font-black">Last Login</th>
+                      <th className="px-10 py-7 font-black">Auth Mode</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#3E2723]/5">
+                    {users.map((row, idx) => (
+                      <tr key={idx} className="hover:bg-[#3E2723]/5 transition-colors group">
+                        <td className="px-10 py-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 rounded-full overflow-hidden bg-[#3E2723]/10 flex items-center justify-center border border-[#3E2723]/10">
+                              {row.picture ? (
+                                <img src={row.picture} alt="Avatar" className="w-full h-full object-cover" />
+                              ) : (
+                                <div className="text-[12px] font-black text-[#3E2723]/40 uppercase">{row.name?.substring(0,2)}</div>
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-black text-[#3E2723] uppercase tracking-widest text-[13px]">{row.name}</p>
+                              <p className="text-[10px] text-[#3E2723]/40 font-bold uppercase">{row.email}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-10 py-6 whitespace-nowrap">
+                          <p className="font-black text-[#3E2723] uppercase tracking-widest text-[11px]">{row.createdAt ? new Date(row.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric'}) : 'Initial'}</p>
+                        </td>
+                        <td className="px-10 py-6 whitespace-nowrap">
+                          <p className="font-black text-[#3E2723] uppercase tracking-widest text-[11px]">{row.lastLogin ? new Date(row.lastLogin).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit'}) : 'Never'}</p>
+                          <p className="text-[9px] text-[#3E2723]/40 uppercase font-black">{row.lastLogin ? new Date(row.lastLogin).toLocaleDateString() : 'N/A'}</p>
+                        </td>
+                        <td className="px-10 py-6">
+                          <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${
+                            row.authType === 'GOOGLE' ? 'bg-blue-100 text-blue-700 border border-blue-200' : 'bg-[#3E2723]/10 text-[#3E2723] border border-[#3E2723]/10'
+                          }`}>
+                            {row.authType || 'MANUAL'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                    {users.length === 0 && (
+                      <tr>
+                        <td colSpan={4} className="px-10 py-20 text-center text-[#3E2723]/40 font-black uppercase tracking-widest italic">
+                          No registered user records detected in registry.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}

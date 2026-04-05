@@ -45,8 +45,20 @@ app.post('/api/auth/google', async (req, res) => {
     
     let user = users.find(u => u.email === email);
     if (!user) {
-      user = { googleId: sub, email, name, picture, createdAt: new Date() };
+      user = { 
+        googleId: sub, 
+        email, 
+        name, 
+        picture, 
+        createdAt: new Date().toISOString(),
+        lastLogin: new Date().toISOString(),
+        authType: 'GOOGLE'
+      };
       users.push(user);
+    } else {
+      user.lastLogin = new Date().toISOString();
+      user.name = name; // Sync display name
+      user.picture = picture; // Sync avatar
     }
     
     const token = jwt.sign({ userId: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -66,7 +78,14 @@ app.post('/api/auth/register', (req, res) => {
     return res.status(400).json({ success: false, message: 'Email already registered' });
   }
   
-  const newUser = { email, password, name, createdAt: new Date() };
+  const newUser = { 
+    email, 
+    password, 
+    name, 
+    createdAt: new Date().toISOString(),
+    lastLogin: new Date().toISOString(),
+    authType: 'MANUAL'
+  };
   users.push(newUser);
   
   const token = jwt.sign({ userId: email }, process.env.JWT_SECRET, { expiresIn: '7d' });
@@ -81,9 +100,25 @@ app.post('/api/auth/login', (req, res) => {
   if (!user || user.password !== password) {
     return res.status(401).json({ success: false, message: 'Invalid credentials' });
   }
+
+  user.lastLogin = new Date().toISOString();
   
   const token = jwt.sign({ userId: email }, process.env.JWT_SECRET, { expiresIn: '7d' });
   res.json({ success: true, token, user: { name: user.name, email: user.email } });
+});
+
+// --- User Registry for Admin ---
+app.get('/api/admin/users', (req, res) => {
+  // Map to exclude passwords and sensitive internal IDs
+  const userRegistry = users.map(u => ({
+    name: u.name,
+    email: u.email,
+    authType: u.authType || 'MANUAL',
+    createdAt: u.createdAt,
+    lastLogin: u.lastLogin,
+    picture: u.picture || null
+  }));
+  res.json({ success: true, users: userRegistry });
 });
 
 app.listen(PORT, '0.0.0.0', () => {

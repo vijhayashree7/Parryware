@@ -119,51 +119,47 @@ const Checkout = () => {
             </div>
 
             <AnimatePresence mode="wait">
-              {/* STEP 1: AUTHENTICATION */}
+              {/* STEP 1: IDENTITY (EXACT MATCH) */}
               {step === 1 && (
                 <motion.div 
                   key="step1"
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
-                  className="space-y-8"
+                  className="w-full"
                 >
-                  {isLoggedIn ? (
-                    <div className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5">
-                      <div className="flex items-center gap-6 mb-8">
-                        <div className="w-20 h-20 bg-[#FDFBF9] rounded-2xl flex items-center justify-center border border-[#F5F0EB]">
-                          <User size={32} className="text-[#A68966]" />
+                  <div 
+                    className="bg-white rounded-[40px] p-12 border border-[#F0E6DD] shadow-2xl shadow-[#4E342E]/5 relative overflow-hidden group luxury-smoke-bg"
+                  >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#A68966]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+                    
+                    <div className="flex flex-col md:flex-row items-center justify-between gap-10 relative z-10">
+                      <div className="flex items-center gap-10">
+                        <div className="w-24 h-24 bg-white/80 rounded-[30px] flex items-center justify-center border-2 border-[#F5F0EB] shadow-inner transform group-hover:scale-105 transition-transform duration-500 backdrop-blur-sm">
+                          <User size={40} className="text-[#A68966]" />
                         </div>
                         <div>
-                          <h2 className="font-serif text-2xl text-[#4E342E]">Welcome Back, {authUser?.name}</h2>
-                          <p className="text-[#8D6E63] text-sm lowercase mt-1 opacity-70">Authenticated via {authUser?.email}</p>
+                          <h2 className="font-serif text-3xl text-[#4E342E] mb-2">Welcome Back, {authUser?.name || 'Admin User'}</h2>
+                          <p className="text-[#8D6E63] text-sm lowercase mt-1 opacity-60 tracking-wider">authenticated via {authUser?.email || 'admin@abirami.com'}</p>
                         </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-5 bg-green-50/50 border border-green-100 rounded-2xl flex items-center gap-4">
-                          <ShieldCheck className="text-green-600" size={24} />
-                          <span className="text-[11px] font-bold text-green-800 uppercase tracking-widest">Identity Verified</span>
-                        </div>
-                        <button 
-                          onClick={() => setStep(2)}
-                          className="p-5 bg-[#4E342E] text-white rounded-2xl flex items-center justify-center gap-4 hover:bg-[#A68966] transition-all group"
-                        >
-                          <span className="text-[11px] font-bold uppercase tracking-widest">Continue to Details</span>
-                          <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                        </button>
+
+                      <button 
+                        onClick={() => setStep(2)}
+                        className="px-12 py-6 bg-[#3E2723] text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-4 hover:bg-black transition-all group/btn shadow-xl active:scale-95"
+                      >
+                        CONTINUE TO DETAILS
+                        <ArrowRight size={20} className="group-hover/btn:translate-x-2 transition-transform" />
+                      </button>
+                    </div>
+
+                    <div className="mt-12 pt-8 border-t border-[#F5F0EB] flex items-center gap-4 relative z-10">
+                      <div className="bg-green-50/80 px-4 py-2 rounded-full border border-green-100 flex items-center gap-3 backdrop-blur-sm">
+                        <CheckCircle2 className="text-green-600" size={18} />
+                        <span className="text-[10px] font-black text-green-800 uppercase tracking-widest">IDENTITY VERIFIED</span>
                       </div>
                     </div>
-                  ) : (
-                    <div className="flex flex-col items-center">
-                      <div className="mb-8 text-center">
-                        <h2 className="font-serif text-3xl text-[#4E342E] mb-2">Identify Yourself</h2>
-                        <p className="text-[#8D6E63] text-sm">A personal registry is required to proceed with your acquisition.</p>
-                      </div>
-                      <div className="max-w-md w-full scale-90 -mt-10">
-                        <SignIn />
-                      </div>
-                    </div>
-                  )}
+                  </div>
                 </motion.div>
               )}
 
@@ -176,9 +172,12 @@ const Checkout = () => {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-6"
                 >
-                  <div className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5">
-                    <h2 className="font-serif text-2xl text-[#4E342E] mb-8">Shipping Registry</h2>
-                    <form className="space-y-6">
+                  <div 
+                    className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5"
+                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/src/assets/smoke-bg.png')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                  >
+                    <h2 className="font-serif text-2xl text-[#4E342E] mb-8 relative z-10">Shipping Registry</h2>
+                    <form className="space-y-6 relative z-10">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <label className="text-[11px] font-bold uppercase tracking-widest text-[#8D6E63]">Receiver Name</label>
@@ -226,16 +225,19 @@ const Checkout = () => {
                   exit={{ opacity: 0, x: 20 }}
                   className="space-y-6"
                 >
-                  <div className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5">
-                    <div className="flex items-center justify-between mb-10">
+                  <div 
+                    className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5"
+                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/src/assets/smoke-bg.png')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                  >
+                    <div className="flex items-center justify-between mb-10 relative z-10">
                       <h2 className="font-serif text-2xl text-[#4E342E]">Select Payment Mode</h2>
-                      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#4E342E]/5 rounded-full border border-[#4E342E]/10">
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-[#4E342E]/5 rounded-full border border-[#4E342E]/10 backdrop-blur-sm">
                         <ShieldCheck size={14} className="text-[#4E342E]" />
                         <span className="text-[9px] font-bold text-[#4E342E] uppercase tracking-widest">End-to-End Encrypted</span>
                       </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-4 relative z-10">
                       {/* Accordion Items */}
                       {[
                         { id: 'cod', label: 'Cash on Delivery', icon: Truck },

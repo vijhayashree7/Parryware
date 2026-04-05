@@ -33,6 +33,7 @@ import WaterHeaterPage from './components/WaterHeaterPage';
 import ChimneyPage from './components/ChimneyPage';
 import TilesSurfacePage from './components/TilesSurfacePage';
 import ClosetPage from './components/ClosetPage';
+import Feedback from './components/Feedback';
 
 import BasinCollection from './components/BasinCollection';
 import CardinalCollection from './components/CardinalCollection';
@@ -82,6 +83,7 @@ function App() {
                 <Route path="/blog/:id" element={<BlogDetailsPage />} />
                 <Route path="/catalog" element={<Catalog />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/feedback" element={<Feedback />} />
                 <Route path="/locations" element={<Locations />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />

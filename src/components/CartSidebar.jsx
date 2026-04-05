@@ -221,8 +221,11 @@ const CartSidebar = () => {
 
             {/* Footer / Checkout - Premium Gradient */}
             {cart.length > 0 && (
-              <div className="border-t border-[#F0E6DD] bg-white p-8 space-y-6">
-                <div className="space-y-4">
+              <div 
+                className="border-t border-[#F0E6DD] bg-white p-8 space-y-6 relative overflow-hidden"
+                style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/src/assets/smoke-bg.png')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              >
+                <div className="space-y-4 relative z-10">
                   <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.2em] font-bold text-[#8D6E63]">
                     <span>Item Summary</span>
                     <span>{selectedItems.length} Selected</span>

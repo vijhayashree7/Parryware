@@ -19,6 +19,22 @@ export const ProductProvider = ({ children }) => {
     { id: '#ORD-9915', cx: 'Anjali P.', items: ['Closet Set (1)', 'Floor Tiles (50 sqft)'], total: '₹9,450', packed: true, delivery: 'In Transit', date: '2026-04-03' },
   ]);
 
+  const [feedbacks, setFeedbacks] = useState([
+    { id: 1, rating: 'GOOD', suggestion: 'Excellent service and premium quality products!', date: '2026-04-01' },
+    { id: 2, rating: 'AVERAGE', suggestion: 'Product range is good but delivery took longer than expected.', date: '2026-04-02' },
+  ]);
+  const [users, setUsers] = useState([]);
+
+  const fetchUsers = async () => {
+    try {
+      const resp = await fetch('http://127.0.0.1:5000/api/admin/users');
+      const data = await resp.json();
+      if (data.success) setUsers(data.users);
+    } catch (err) {
+      console.error('Failed to fetch users:', err);
+    }
+  };
+
   const addProduct = (newProd) => {
     setProducts([{ ...newProd, id: Date.now() }, ...products]);
   };
@@ -42,6 +58,15 @@ export const ProductProvider = ({ children }) => {
     setOrders(prev => prev.map(o => o.id === id ? { ...o, [field]: value } : o));
   };
 
+  const addFeedback = (feedback) => {
+    const newFeedback = { 
+      ...feedback, 
+      id: Date.now(), 
+      date: new Date().toISOString().split('T')[0] 
+    };
+    setFeedbacks([newFeedback, ...feedbacks]);
+  };
+
   return (
     <ProductContext.Provider value={{
       products,
@@ -50,7 +75,11 @@ export const ProductProvider = ({ children }) => {
       deleteProduct,
       orders,
       addOrder,
-      updateOrderStatus
+      updateOrderStatus,
+      feedbacks,
+      addFeedback,
+      users,
+      fetchUsers
     }}>
       {children}
     </ProductContext.Provider>
