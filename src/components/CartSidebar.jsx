@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import smokeBg from '../assets/smoke-bg.jpg';
 
 const CartSidebar = () => {
   const {
@@ -69,7 +68,7 @@ const CartSidebar = () => {
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 h-full w-full max-w-[480px] bg-[#FCF9F6] z-[101] shadow-[-20px_0_50px_rgba(78,52,46,0.15)] flex flex-col overflow-hidden"
+            className="fixed top-0 right-0 h-full w-full max-w-[480px] bg-white/80 backdrop-blur-xl z-[101] shadow-[-20px_0_50px_rgba(78,52,46,0.15)] flex flex-col overflow-hidden"
           >
             
             {/* Header - Luxury Minimalist */}
@@ -236,8 +235,7 @@ const CartSidebar = () => {
             {/* Footer / Checkout - Premium Gradient */}
             {cart.length > 0 && (
               <div 
-                className="border-t border-[#F0E6DD] bg-white p-8 space-y-6 relative overflow-hidden"
-                style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                className="border-t border-[#F0E6DD] bg-white/70 backdrop-blur-md p-8 space-y-6 relative overflow-hidden"
               >
                 <div className="space-y-4 relative z-10">
                   <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.2em] font-bold text-[#8D6E63]">

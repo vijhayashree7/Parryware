@@ -6,7 +6,6 @@ import { jwtDecode } from 'jwt-decode';
 
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../utils/api';
-import smokeBg from '../assets/smoke-bg.jpg';
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -17,6 +16,7 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
 
   React.useEffect(() => {
     const checkServer = async () => {
@@ -109,13 +109,8 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-start justify-center px-4 relative pt-24 md:pt-32 pb-20 overflow-hidden" 
-      style={{ 
-        fontFamily: "'Times New Roman', Times, serif",
-        backgroundImage: `linear-gradient(rgba(252, 251, 249, 0.96), rgba(252, 251, 249, 0.96)), url(${smokeBg})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}
+    <div className="min-h-screen w-full flex items-start justify-center px-4 relative pt-24 md:pt-32 pb-20 overflow-hidden"
+      style={{ fontFamily: "'Times New Roman', Times, serif" }}
     >
       {/* Background Motifs */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#A68966]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
@@ -149,6 +144,8 @@ const SignIn = () => {
             theme="filled_black"
             size="large"
             shape="rectangular"
+            auto_select={false}
+            cancel_on_tap_outside={true}
           />
         </div>
 
@@ -191,7 +188,6 @@ const SignIn = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 className="w-full glass-input-premium pr-10"
-                style={{ WebkitTextSecurity: showPassword ? 'none' : 'disc' }}
               />
               <button
                 type="button"

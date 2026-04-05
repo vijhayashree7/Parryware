@@ -20,7 +20,6 @@ import { useAuth } from '../context/AuthContext';
 import { useProducts } from '../context/ProductContext';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SignIn from './SignIn';
-import smokeBg from '../assets/smoke-bg.jpg';
 const Checkout = () => {
   const { cart, clearCart } = useCart();
   const { isLoggedIn, user: authUser } = useAuth();
@@ -85,7 +84,7 @@ const Checkout = () => {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-[#FCFBF9] pt-32 pb-20 px-6 flex flex-col items-center justify-center relative overflow-hidden">
+      <div className="min-h-screen bg-transparent pt-32 pb-20 px-6 flex flex-col items-center justify-center relative overflow-hidden">
         {/* Background Motifs */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#A68966]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#4E342E]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
@@ -93,8 +92,7 @@ const Checkout = () => {
         <motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="max-w-md w-full bg-white rounded-[40px] p-10 text-center shadow-2xl shadow-[#4E342E]/10 border border-[#F0E6DD] relative z-10 overflow-hidden"
-          style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+          className="max-w-md w-full bg-white/75 backdrop-blur-md rounded-[40px] p-10 text-center shadow-2xl shadow-[#4E342E]/10 border border-[#F0E6DD] relative z-10 overflow-hidden"
         >
           <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8 relative">
             <CheckCircle2 className="w-12 h-12 text-green-500" />
@@ -131,7 +129,7 @@ const Checkout = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] pt-24 pb-20 relative overflow-hidden">
+    <div className="min-h-screen bg-transparent pt-24 pb-20 relative overflow-hidden">
       {/* Background Motifs */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#A68966]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#4E342E]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
@@ -167,8 +165,7 @@ const Checkout = () => {
                   className="w-full"
                 >
                   <div 
-                    className="bg-white rounded-[40px] p-12 border border-[#F0E6DD] shadow-2xl shadow-[#4E342E]/5 relative overflow-hidden group"
-                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                    className="bg-white/70 backdrop-blur-md rounded-[40px] p-12 border border-[#F0E6DD] shadow-2xl shadow-[#4E342E]/5 relative overflow-hidden group"
                   >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#A68966]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
                     
@@ -212,8 +209,7 @@ const Checkout = () => {
                   className="space-y-6"
                 >
                   <div 
-                    className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5"
-                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                    className="bg-white/70 backdrop-blur-md rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5"
                   >
                     <h2 className="font-serif text-2xl text-[#4E342E] mb-8 relative z-10">Shipping Registry</h2>
                     <form className="space-y-6 relative z-10">
@@ -265,8 +261,7 @@ const Checkout = () => {
                   className="space-y-6"
                 >
                   <div 
-                    className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5"
-                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                    className="bg-white/70 backdrop-blur-md rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5"
                   >
                     <div className="flex items-center justify-between mb-10 relative z-10">
                       <h2 className="font-serif text-2xl text-[#4E342E]">Select Payment Mode</h2>
@@ -420,8 +415,7 @@ const Checkout = () => {
           {/* Sidebar Order Summary */}
           <div className="w-full lg:w-[400px] shrink-0 sticky top-32">
             <div 
-              className="bg-white rounded-[32px] overflow-hidden border border-[#F0E6DD] shadow-xl shadow-[#4E342E]/5"
-              style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+              className="bg-white/70 backdrop-blur-md rounded-[32px] overflow-hidden border border-[#F0E6DD] shadow-xl shadow-[#4E342E]/5"
             >
               <div className="px-8 py-6 bg-[#4E342E] text-white">
                 <h3 className="font-serif text-xl">Sanctuary Summary</h3>
