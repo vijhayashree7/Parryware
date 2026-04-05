@@ -17,11 +17,24 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { Link } from 'react-router-dom';
+import { useProducts } from '../context/ProductContext';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import SignIn from './SignIn';
+import smokeBg from '../assets/smoke-bg.jpg';
 const Checkout = () => {
-  const { cart } = useCart();
+  const { cart, clearCart } = useCart();
   const { isLoggedIn, user: authUser } = useAuth();
+  const { addOrder } = useProducts();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // If not logged in, redirect to signin with return path
+    if (!isLoggedIn) {
+      navigate('/signin', { state: { from: '/checkout' }, replace: true });
+    }
+  }, [isLoggedIn, navigate]);
+
   const [step, setStep] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState('card');
   const [cardData, setCardData] = useState({
@@ -42,21 +55,46 @@ const Checkout = () => {
     window.scrollTo(0, 0);
   }, [step, isSuccess]);
 
-  const handlePayment = () => {
+  const handlePayment = async () => {
     setIsProcessing(true);
-    setTimeout(() => {
+    
+    // Create the order object
+    const newOrderData = {
+      id: `#AB-${orderId}`,
+      cx: authUser?.name || 'Valued Client',
+      email: authUser?.email,
+      items: cart.map(item => `${item.product.name} (${item.quantity})`),
+      total: `₹${total.toLocaleString('en-IN')}`,
+      date: new Date().toISOString().split('T')[0]
+    };
+
+    console.log('--- Submitting Order to Registry ---', newOrderData);
+    const result = await addOrder(newOrderData);
+    
+    if (result) {
+      setTimeout(() => {
+        setIsProcessing(false);
+        setIsSuccess(true);
+        clearCart(); // Empty the cart after successful payment
+      }, 2000);
+    } else {
       setIsProcessing(false);
-      setIsSuccess(true);
-    }, 2000);
+      alert('Registry Error: Failed to save transaction. Please try again.');
+    }
   };
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-[#FCF9F6] pt-32 pb-20 px-6 flex flex-col items-center justify-center">
+      <div className="min-h-screen bg-[#FCFBF9] pt-32 pb-20 px-6 flex flex-col items-center justify-center relative overflow-hidden">
+        {/* Background Motifs */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#A68966]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#4E342E]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
+        
         <motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="max-w-md w-full bg-white rounded-[40px] p-10 text-center shadow-2xl shadow-[#4E342E]/10 border border-[#F0E6DD]"
+          className="max-w-md w-full bg-white rounded-[40px] p-10 text-center shadow-2xl shadow-[#4E342E]/10 border border-[#F0E6DD] relative z-10 overflow-hidden"
+          style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
         >
           <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8 relative">
             <CheckCircle2 className="w-12 h-12 text-green-500" />
@@ -129,7 +167,8 @@ const Checkout = () => {
                   className="w-full"
                 >
                   <div 
-                    className="bg-white rounded-[40px] p-12 border border-[#F0E6DD] shadow-2xl shadow-[#4E342E]/5 relative overflow-hidden group luxury-smoke-bg"
+                    className="bg-white rounded-[40px] p-12 border border-[#F0E6DD] shadow-2xl shadow-[#4E342E]/5 relative overflow-hidden group"
+                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                   >
                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#A68966]/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
                     
@@ -139,8 +178,8 @@ const Checkout = () => {
                           <User size={40} className="text-[#A68966]" />
                         </div>
                         <div>
-                          <h2 className="font-serif text-3xl text-[#4E342E] mb-2">Welcome Back, {authUser?.name || 'Admin User'}</h2>
-                          <p className="text-[#8D6E63] text-sm lowercase mt-1 opacity-60 tracking-wider">authenticated via {authUser?.email || 'admin@abirami.com'}</p>
+                          <h2 className="font-serif text-3xl text-[#4E342E] mb-2">Welcome Back, {authUser?.name || 'Valued Client'}</h2>
+                          <p className="text-[#8D6E63] text-sm lowercase mt-1 opacity-60 tracking-wider">authenticated via {authUser?.email}</p>
                         </div>
                       </div>
 
@@ -174,7 +213,7 @@ const Checkout = () => {
                 >
                   <div 
                     className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5"
-                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/src/assets/smoke-bg.png')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                   >
                     <h2 className="font-serif text-2xl text-[#4E342E] mb-8 relative z-10">Shipping Registry</h2>
                     <form className="space-y-6 relative z-10">
@@ -227,7 +266,7 @@ const Checkout = () => {
                 >
                   <div 
                     className="bg-white rounded-[32px] p-8 border border-[#F0E6DD] shadow-lg shadow-[#4E342E]/5"
-                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/src/assets/smoke-bg.png')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                    style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
                   >
                     <div className="flex items-center justify-between mb-10 relative z-10">
                       <h2 className="font-serif text-2xl text-[#4E342E]">Select Payment Mode</h2>
@@ -380,7 +419,10 @@ const Checkout = () => {
 
           {/* Sidebar Order Summary */}
           <div className="w-full lg:w-[400px] shrink-0 sticky top-32">
-            <div className="bg-white rounded-[32px] overflow-hidden border border-[#F0E6DD] shadow-xl shadow-[#4E342E]/5">
+            <div 
+              className="bg-white rounded-[32px] overflow-hidden border border-[#F0E6DD] shadow-xl shadow-[#4E342E]/5"
+              style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            >
               <div className="px-8 py-6 bg-[#4E342E] text-white">
                 <h3 className="font-serif text-xl">Sanctuary Summary</h3>
                 <p className="text-[10px] uppercase tracking-widest text-white/60 mt-1">Review your selections</p>

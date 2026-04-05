@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,6 +15,17 @@ const categories = [
 const Products = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const navigate = useNavigate();
+  const sectionRef = useRef(null);
+
+  // Scroll animations for sticky header
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"]
+  });
+
+  const headerOpacity = useTransform(scrollYProgress, [0, 0.4, 0.6], [1, 1, 0]);
+  const headerScale = useTransform(scrollYProgress, [0, 0.4], [1, 0.9]);
+  const headerY = useTransform(scrollYProgress, [0, 0.4], [0, -20]);
 
   // Unstoppable auto-play every 2000ms
   useEffect(() => {
@@ -43,17 +54,32 @@ const Products = () => {
   };
 
   return (
-    <section className="py-24 max-w-[100vw] overflow-hidden bg-transparent">
+    <section 
+      ref={sectionRef} 
+      className="relative py-24 max-w-[100vw] min-h-[200vh] bg-transparent"
+    >
       
-      <div className="mb-20 flex flex-col items-center text-center relative z-40 px-6">
-        <h2 className="text-4xl md:text-5xl lg:text-5xl font-sans font-bold text-cozy-900 mb-4 tracking-tight">Redefine Your Sanctuary</h2>
-        <p className="text-xl md:text-2xl text-cozy-700 max-w-3xl font-serif italic leading-relaxed mx-auto text-center">
-          Immerse yourself in our masterfully crafted collections. Elevate your daily rituals with uncompromising quality and breathtaking design. Explore our products below.
-        </p>
+      {/* Sticky Header Container */}
+      <div className="sticky top-40 md:top-48 z-40 w-full mb-12 flex flex-col items-center">
+        <motion.div 
+          style={{ 
+            opacity: headerOpacity, 
+            scale: headerScale,
+            y: headerY
+          }}
+          className="flex flex-col items-center text-center px-6 pointer-events-none"
+        >
+          <h2 className="text-4xl md:text-5xl lg:text-5xl font-sans font-bold text-cozy-900 mb-4 tracking-tight drop-shadow-sm">
+            Redefine Your Sanctuary
+          </h2>
+          <p className="text-xl md:text-2xl text-cozy-700 max-w-3xl font-serif italic leading-relaxed mx-auto text-center opacity-80">
+            Immerse yourself in our masterfully crafted collections. Elevate your daily rituals with uncompromising quality and breathtaking design. Explore our products below.
+          </p>
+        </motion.div>
       </div>
 
       <div 
-        className="relative h-[450px] md:h-[600px] w-full max-w-5xl mx-auto flex items-center justify-center perspective-[1000px]"
+        className="relative h-[450px] md:h-[600px] w-full max-w-5xl mx-auto flex items-center justify-center perspective-[1000px] mt-24"
       >
         {categories.map((cat, idx) => {
           const style = getCardStyle(cat.id);

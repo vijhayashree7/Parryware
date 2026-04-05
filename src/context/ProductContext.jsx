@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import React, { createContext, useState, useContext } from 'react';
+import { API_BASE_URL } from '../utils/api';
 
 const ProductContext = createContext();
 
@@ -11,13 +12,18 @@ import { cardinalProducts as initialProducts } from '../data/productData';
 export const ProductProvider = ({ children }) => {
   const [products, setProducts] = useState(initialProducts);
   
-  // Manage Global Orders
-  const [orders, setOrders] = useState([
-    { id: '#ORD-9912', cx: 'Jane Doe', items: ['Cardinal Faucet (1)', 'Praseo Basin (1)'], total: '₹2,799', packed: true, delivery: 'Delivered', date: '2026-04-01' },
-    { id: '#ORD-9913', cx: 'Rahul K.', items: ['Praseo Basin (2)'], total: '₹14,200', packed: true, delivery: 'In Transit', date: '2026-04-02' },
-    { id: '#ORD-9914', cx: 'Siva M.', items: ['Chimney Pro (1)'], total: '₹18,500', packed: false, delivery: 'Pending', date: '2026-04-03' },
-    { id: '#ORD-9915', cx: 'Anjali P.', items: ['Closet Set (1)', 'Floor Tiles (50 sqft)'], total: '₹9,450', packed: true, delivery: 'In Transit', date: '2026-04-03' },
-  ]);
+  const [orders, setOrders] = useState([]);
+
+  const fetchOrders = async () => {
+    try {
+      const resp = await fetch(`${API_BASE_URL}/api/orders?isAdmin=true`);
+      const data = await resp.json();
+      if (data.success) setOrders(data.orders);
+    } catch (err) {
+      console.error('Failed to fetch orders:', err);
+    }
+  };
+
 
   const [feedbacks, setFeedbacks] = useState([
     { id: 1, rating: 'GOOD', suggestion: 'Excellent service and premium quality products!', date: '2026-04-01' },
@@ -27,7 +33,7 @@ export const ProductProvider = ({ children }) => {
 
   const fetchUsers = async () => {
     try {
-      const resp = await fetch('http://127.0.0.1:5001/api/admin/users');
+      const resp = await fetch(`${API_BASE_URL}/api/admin/users`);
       const data = await resp.json();
       if (data.success) setUsers(data.users);
     } catch (err) {
@@ -47,15 +53,38 @@ export const ProductProvider = ({ children }) => {
     setProducts(products.filter(p => p.id !== id));
   };
 
-  const addOrder = (order) => {
-    // Generate a mockup ID, e.g., #ORD-9916 logic
-    const mockId = `#ORD-${Math.floor(1000 + Math.random() * 9000)}`;
-    const newOrder = { ...order, id: mockId, packed: false, delivery: 'Pending', date: new Date().toISOString().split('T')[0] };
-    setOrders([newOrder, ...orders]);
+  const addOrder = async (order) => {
+    try {
+      const resp = await fetch(`${API_BASE_URL}/api/orders`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order)
+      });
+      const data = await resp.json();
+      if (data.success) {
+        setOrders(prev => [data.order, ...prev]);
+        return data.order;
+      }
+    } catch (err) {
+      console.error('Failed to add order:', err);
+    }
+    return null;
   };
 
-  const updateOrderStatus = (id, field, value) => {
-    setOrders(prev => prev.map(o => o.id === id ? { ...o, [field]: value } : o));
+  const updateOrderStatus = async (id, field, value) => {
+    try {
+      const resp = await fetch(`${API_BASE_URL}/api/orders/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ field, value })
+      });
+      const data = await resp.json();
+      if (data.success) {
+        setOrders(prev => prev.map(o => o.id === id ? data.order : o));
+      }
+    } catch (err) {
+      console.error('Failed to update order status:', err);
+    }
   };
 
   const addFeedback = (feedback) => {
@@ -74,6 +103,7 @@ export const ProductProvider = ({ children }) => {
       updateProduct,
       deleteProduct,
       orders,
+      fetchOrders,
       addOrder,
       updateOrderStatus,
       feedbacks,

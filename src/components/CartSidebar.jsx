@@ -1,8 +1,9 @@
-import React from 'react';
-import { X, Trash2, Plus, Minus, ShoppingCart, CheckCircle2, ShoppingBag, ArrowRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion'; // eslint-disable-line no-unused-vars
-import { Link, useNavigate } from 'react-router-dom';
+import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import smokeBg from '../assets/smoke-bg.jpg';
 
 const CartSidebar = () => {
   const {
@@ -19,7 +20,20 @@ const CartSidebar = () => {
   } = useCart();
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const { isLoggedIn } = useAuth();
   const handleClose = () => setIsSidebarOpen(false);
+
+  const handleCheckoutClick = (e) => {
+    e.preventDefault();
+    handleClose();
+    if (isLoggedIn) {
+      navigate('/checkout');
+    } else {
+      // Redirect to signin, but remember where we were going
+      navigate('/signin', { state: { from: '/checkout' } });
+    }
+  };
 
   // Calculate totals for selected items
   const selectedItems = cart.filter(item => item.selected);
@@ -223,7 +237,7 @@ const CartSidebar = () => {
             {cart.length > 0 && (
               <div 
                 className="border-t border-[#F0E6DD] bg-white p-8 space-y-6 relative overflow-hidden"
-                style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('/src/assets/smoke-bg.png')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+                style={{ backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url(${smokeBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
               >
                 <div className="space-y-4 relative z-10">
                   <div className="flex justify-between items-center text-[10px] uppercase tracking-[0.2em] font-bold text-[#8D6E63]">
@@ -241,9 +255,8 @@ const CartSidebar = () => {
                   </div>
                 </div>
 
-                <Link 
-                  to="/checkout"
-                  onClick={handleClose}
+                <button 
+                  onClick={handleCheckoutClick}
                   className={`block w-full py-5 text-white font-bold text-xs uppercase tracking-[0.3em] rounded-2xl shadow-xl transition-all duration-500 overflow-hidden relative group text-center ${
                     selectedItems.length === 0 
                       ? 'bg-[#F0E6DD] text-[#D1C6BD] pointer-events-none' 
@@ -255,7 +268,7 @@ const CartSidebar = () => {
                     <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-[#4E342E] via-[#8D6E63] to-[#4E342E] translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out opacity-20" />
-                </Link>
+                </button>
               </div>
             )}
           </motion.div>

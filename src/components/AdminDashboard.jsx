@@ -22,10 +22,11 @@ const AVAILABLE_TAGS = ['Offer', 'Discount', 'Best Seller', 'Prime Products'];
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const navigate = useNavigate();
-  const { products, addProduct, updateProduct, deleteProduct, orders, updateOrderStatus, feedbacks, users, fetchUsers } = useProducts();
+  const { products, addProduct, updateProduct, deleteProduct, orders, updateOrderStatus, feedbacks, users, fetchUsers, fetchOrders } = useProducts();
   
   useEffect(() => {
     if (activeTab === 'users') fetchUsers();
+    if (activeTab === 'orders') fetchOrders();
   }, [activeTab]);
   
   // Tag / Variant states for Modal

@@ -38,13 +38,6 @@
     @apply text-[10px] uppercase tracking-[0.6em] font-black text-[#3E2723] mb-1 block;
     font-family: 'Times New Roman', Times, serif;
   }
-
-  .luxury-smoke-bg {
-    background-image: linear-gradient(rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.92)), url('/src/assets/smoke-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
 }
 
 .ken-burns {

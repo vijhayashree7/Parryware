@@ -21,6 +21,7 @@ import Checkout from './components/Checkout';
 
 import BlogsPage from './pages/BlogsPage';
 import BlogDetailsPage from './pages/BlogDetailsPage';
+import AccountDashboard from './pages/AccountDashboard';
 
 import Contact from './components/Contact';
 import Catalog from './components/Catalog';
@@ -89,6 +90,7 @@ function App() {
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/account" element={<AccountDashboard />} />
                 <Route path="/admin" element={<AdminDashboard />} />
 
                 {/* Product Routes */}

@@ -1,11 +1,12 @@
 import React from 'react';
+import smokeBg from '../assets/smoke-bg.jpg';
 
 const Hero = () => {
   return (
     <section className="relative w-full h-screen overflow-hidden bg-cozy-900">
       
       {/* Background Video */}
-      <div className="absolute inset-0 w-full h-full">
+      <div className="absolute inset-0 w-full h-full bg-[#1A1A1A]">
         <video 
           autoPlay 
           loop 
@@ -13,11 +14,12 @@ const Hero = () => {
           playsInline
           src="/abirami video parryware.mp4" 
           className="w-full h-full object-cover filter brightness-[0.6]"
+          poster={smokeBg}
         />
       </div>
 
-      {/* Overlay to ensure text readability */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60"></div>
+      {/* Subtle Mist Overlay for Contrast */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60 shadow-[inset_0_0_100px_rgba(0,0,0,0.3)]"></div>
 
       {/* Content */}
       <div className="absolute inset-0 flex flex-col items-center justify-end pb-24 text-white z-10 pointer-events-none">

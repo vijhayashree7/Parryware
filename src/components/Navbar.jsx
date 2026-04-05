@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, ShoppingBag, User, Menu } from 'lucide-react';
+import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ onMenuClick }) => {
@@ -12,6 +13,7 @@ const Navbar = ({ onMenuClick }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { cart, setIsSidebarOpen } = useCart();
+  const { isLoggedIn, user, logout } = useAuth();
   const isHomePage = location.pathname === '/';
 
   const handleSearch = () => {
@@ -160,36 +162,80 @@ const Navbar = ({ onMenuClick }) => {
                   style={{ fontFamily: "'Times New Roman', Times, serif" }}
                 >
                   <div className="px-6 mb-4">
-                    <p className="text-[#A68966] text-[10px] uppercase tracking-[0.2em] font-bold">Welcome</p>
+                    <p className="text-[#A68966] text-[10px] uppercase tracking-[0.2em] font-bold">
+                      {isLoggedIn ? `Greeting, ${user?.name?.split(' ')[0]}` : 'Welcome Sanctuary'}
+                    </p>
+                    {isLoggedIn && (
+                      <p className="text-[#3E2723]/60 text-[10px] lowercase truncate mt-1">{user?.email}</p>
+                    )}
                   </div>
                   
                   <div className="space-y-1">
-                    <Link 
-                      to="/signin" 
-                      onClick={() => setIsUserDropdownOpen(false)}
-                      className="flex items-center px-6 py-3 text-sm text-[#3E2723] hover:bg-gray-100 rounded-xl gap-3 font-medium"
-                    >
-                      <User size={14} />
-                      Sign In
-                    </Link>
+                    {!isLoggedIn ? (
+                      <>
+                        <Link 
+                          to="/signin" 
+                          onClick={() => setIsUserDropdownOpen(false)}
+                          className="flex items-center px-6 py-3 text-sm text-[#3E2723] hover:bg-gray-100 rounded-xl gap-3 font-medium transition-colors"
+                        >
+                          <User size={14} />
+                          Sign In
+                        </Link>
 
-                    <Link 
-                      to="/signup" 
-                      onClick={() => setIsUserDropdownOpen(false)}
-                      className="flex items-center px-6 py-3 text-sm text-[#3E2723] hover:bg-gray-100 rounded-xl gap-3 font-medium"
-                    >
-                      <Search size={14} />
-                      Create Account
-                    </Link>
+                        <Link 
+                          to="/signup" 
+                          onClick={() => setIsUserDropdownOpen(false)}
+                          className="flex items-center px-6 py-3 text-sm text-[#3E2723] hover:bg-gray-100 rounded-xl gap-3 font-medium transition-colors"
+                        >
+                          <Search size={14} />
+                          Create Account
+                        </Link>
+                      </>
+                    ) : (
+                      <>
+                        <Link 
+                          to="/account" 
+                          onClick={() => setIsUserDropdownOpen(false)}
+                          className="flex items-center px-6 py-3 text-sm text-[#3E2723] hover:bg-gray-100 rounded-xl gap-3 font-medium transition-colors"
+                        >
+                          <User size={14} />
+                          Member Dashboard
+                        </Link>
+                        
+                        <Link 
+                          to="/account?tab=orders" 
+                          onClick={() => setIsUserDropdownOpen(false)}
+                          className="flex items-center px-6 py-3 text-sm text-[#3E2723] hover:bg-gray-100 rounded-xl gap-3 font-medium transition-colors"
+                        >
+                          <ShoppingBag size={14} />
+                          Order History
+                        </Link>
+
+                        <button 
+                          onClick={() => {
+                            logout();
+                            setIsUserDropdownOpen(false);
+                            navigate('/');
+                          }}
+                          className="w-full flex items-center px-6 py-3 text-sm text-red-600 hover:bg-red-50 rounded-xl gap-3 font-medium transition-colors mt-2 border-t border-gray-100 pt-4"
+                        >
+                          <X size={14} />
+                          Sign Out
+                        </button>
+                      </>
+                    )}
                   </div>
 
-                  <div className="mx-6 my-4 h-px bg-gray-200"></div>
-
-                  <div className="px-6">
-                    <p className="text-xs text-gray-500">
-                      Log in to access your wishlist and orders.
-                    </p>
-                  </div>
+                  {!isLoggedIn && (
+                    <>
+                      <div className="mx-6 my-4 h-px bg-gray-200"></div>
+                      <div className="px-6">
+                        <p className="text-[10px] text-gray-400 uppercase tracking-widest leading-relaxed">
+                          Enter your sanctuary to manage wishlist & orders.
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

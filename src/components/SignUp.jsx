@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Mail, Lock, User, AlertCircle, CheckCircle, Eye, EyeOff, X } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../utils/api';
+import smokeBg from '../assets/smoke-bg.jpg';
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login: authLogin } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,7 +22,7 @@ const SignUp = () => {
   React.useEffect(() => {
     const checkServer = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5001/api/health');
+        const res = await fetch(`${API_BASE_URL}/api/health`);
         if (!res.ok) throw new Error();
         console.log('--- Server Protocol Online ---');
       } catch (err) {
@@ -39,7 +42,7 @@ const SignUp = () => {
       setEmail(decoded.email || '');
       setPassword('••••••••'); 
 
-      const response = await fetch('http://127.0.0.1:5001/api/auth/google', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ credential: credentialResponse.credential })
@@ -50,13 +53,11 @@ const SignUp = () => {
         setSuccess('ACCOUNT CREATED SUCCESSFULLY!');
         authLogin(data.user, data.token);
         
+        const from = location.state?.from || (decoded.email.toLowerCase().includes('admin') ? '/admin' : '/');
+        
         setTimeout(() => {
-          if (decoded.email.toLowerCase().includes('admin')) {
-            navigate('/admin');
-          } else {
-            navigate('/');
-          }
-        }, 4000);
+          navigate(from, { replace: true });
+        }, 1500);
       } else {
         setError(data.message || 'Registration Failed');
         setSuccess('');
@@ -73,7 +74,7 @@ const SignUp = () => {
     setSuccess('Establishing Profile...');
     
     try {
-      const response = await fetch('http://127.0.0.1:5001/api/auth/register', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password })
@@ -84,13 +85,11 @@ const SignUp = () => {
         setSuccess('ACCOUNT CREATED SUCCESSFULLY!');
         authLogin(data.user, data.token);
         
+        const from = location.state?.from || (email.toLowerCase().includes('admin') ? '/admin' : '/');
+        
         setTimeout(() => {
-          if (email.toLowerCase().includes('admin')) {
-            navigate('/admin');
-          } else {
-            navigate('/');
-          }
-        }, 4000);
+          navigate(from, { replace: true });
+        }, 1500);
       } else {
         setError(data.message || 'Registration Failed');
         setSuccess('');
@@ -102,7 +101,17 @@ const SignUp = () => {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-start justify-center px-4 relative pt-24 md:pt-32 pb-20 overflow-hidden" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
+    <div className="min-h-screen w-full flex items-start justify-center px-4 relative pt-24 md:pt-32 pb-20 overflow-hidden" 
+      style={{ 
+        fontFamily: "'Times New Roman', Times, serif",
+        backgroundImage: `linear-gradient(rgba(252, 251, 249, 0.96), rgba(252, 251, 249, 0.96)), url(${smokeBg})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center'
+      }}
+    >
+      {/* Background Motifs */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#A68966]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[#4E342E]/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/4 pointer-events-none" />
 
       <div className="authenticate-box z-10 p-6 flex flex-col items-center shadow-xl">
         <div className="text-center mb-4">
@@ -205,7 +214,7 @@ const SignUp = () => {
         <div className="mt-8 text-center pt-6 border-t border-[#3E2723]/5 w-full">
           <p className="text-[#3E2723]/40 text-[10px] font-black uppercase tracking-widest">
             Member Already? {' '}
-            <Link to="/signin" className="text-[#3E2723] hover:underline underline-offset-8 decoration-2">Authenticate</Link>
+            <Link to="/signin" state={location.state} className="text-[#3E2723] hover:underline underline-offset-8 decoration-2">Authenticate</Link>
           </p>
         </div>
       </div>
