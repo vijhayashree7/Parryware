@@ -11,6 +11,7 @@ import WhyChooseUs from './components/WhyChooseUs';
 import Blogs from './components/Blogs';
 import Footer from './components/Footer';
 import BackgroundMist from './components/BackgroundMist';
+import WhatsAppChatbot from './components/WhatsAppChatbot';
 
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -112,6 +113,7 @@ function App() {
             </div>
             
             {!isAdmin && <Footer />}
+            {!isAdmin && <WhatsAppChatbot />}
           </div>
         </ProductProvider>
       </CartProvider>

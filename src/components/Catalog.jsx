@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, Camera, ChevronLeft, ChevronRight, X, BookOpen, MessageCircle, Mail } from 'lucide-react';
+import HTMLFlipBook from 'react-pageflip';
 import waterHeaterCover from '../assets/catalog/water_heater_cover.png';
 import closetCover from '../assets/catalog/closet_cover.jpg';
 import basinCover from '../assets/catalog/basin_cover.png';
@@ -119,29 +120,43 @@ const catalogues = [
 ];
 
 /* ─────────────────────────────────────────────
-   SIMPLE CATALOG VIEWER (Fallback)
+   FLIP BOOK VIEWER
 ───────────────────────────────────────────── */
 const FlipBookViewer = ({ catalog, onClose }) => {
+  const bookRef = useRef();
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = catalog.pages.length;
-
-  const goNext = () => { if (currentPage < totalPages - 1) setCurrentPage(c => c + 1); };
-  const goPrev = () => { if (currentPage > 0) setCurrentPage(c => c - 1); };
 
   const handleDownload = () => {
     if (catalog.downloadUrl) window.open(catalog.downloadUrl, '_blank');
   };
 
+  const onFlip = (e) => {
+    setCurrentPage(e.data);
+  };
+
+  const goNext = () => {
+    if (bookRef.current) {
+      bookRef.current.pageFlip().flipNext();
+    }
+  };
+
+  const goPrev = () => {
+    if (bookRef.current) {
+      bookRef.current.pageFlip().flipPrev();
+    }
+  };
+
   return (
     <motion.div
-      className="fixed inset-0 z-[200] flex flex-col bg-transparent"
+      className="fixed inset-0 z-[200] flex flex-col bg-transparent backdrop-blur-md"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
     >
       {/* ── Top Bar ── */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0 backdrop-blur-sm bg-black/20">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 flex-shrink-0 bg-black/60">
         <div className="flex items-center gap-3">
           <BookOpen size={20} className="text-[#D7CCC8]" />
           <div>
@@ -173,7 +188,7 @@ const FlipBookViewer = ({ catalog, onClose }) => {
       </div>
 
       {/* ── Book Stage ── */}
-      <div className="flex-1 flex items-center justify-center relative overflow-hidden bg-black/30 p-6 md:p-12">
+      <div className="flex-1 flex items-center justify-center relative overflow-hidden bg-black/40 p-4 md:p-12">
         {/* Prev Arrow */}
         <motion.button
           onClick={goPrev}
@@ -184,13 +199,33 @@ const FlipBookViewer = ({ catalog, onClose }) => {
           <ChevronLeft size={24} />
         </motion.button>
 
-        {/* Image Container */}
-        <div className="relative w-full h-full flex justify-center items-center rounded-2xl overflow-hidden shadow-2xl">
-          <img 
-            src={catalog.pages[currentPage]} 
-            alt={`Page ${currentPage + 1}`} 
-            className="max-w-full max-h-full object-contain pointer-events-none select-none" 
-          />
+        {/* FlipBook */}
+        <div className="relative w-full max-w-6xl h-[70vh] flex justify-center items-center">
+          <HTMLFlipBook
+            width={600}
+            height={400}
+            size="stretch"
+            minWidth={300}
+            maxWidth={900}
+            minHeight={200}
+            maxHeight={600}
+            maxShadowOpacity={0.5}
+            showCover={true}
+            mobileScrollSupport={true}
+            onFlip={onFlip}
+            className="shadow-2xl"
+            ref={bookRef}
+          >
+            {catalog.pages.map((page, index) => (
+              <div key={index} className="demoPage h-full w-full">
+                <img
+                  src={page}
+                  alt={`Page ${index + 1}`}
+                  className="w-full h-full object-cover pointer-events-none select-none"
+                />
+              </div>
+            ))}
+          </HTMLFlipBook>
         </div>
 
         {/* Next Arrow */}
@@ -205,7 +240,7 @@ const FlipBookViewer = ({ catalog, onClose }) => {
       </div>
 
       {/* ── Bottom Bar ── */}
-      <div className="px-6 py-4 border-t border-white/10 flex-shrink-0 bg-black/20 backdrop-blur-sm flex items-center justify-center gap-6">
+      <div className="px-6 py-4 border-t border-white/10 flex-shrink-0 bg-black/60 flex items-center justify-center gap-6">
         <p className="text-[#A68966] text-xs font-bold tracking-widest uppercase">
           {totalPages > 0
             ? currentPage === 0 ? 'Cover' : `Page ${currentPage} / ${totalPages - 1}`

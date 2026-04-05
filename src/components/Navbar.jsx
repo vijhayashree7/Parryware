@@ -1,15 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { Search, ShoppingBag, User, Menu } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = ({ onMenuClick }) => {
   const [scrolled, setScrolled] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
   const { cart, setIsSidebarOpen } = useCart();
   const isHomePage = location.pathname === '/';
+
+  const handleSearch = () => {
+    if (!searchQuery) {
+      setIsSearchOpen(!isSearchOpen);
+      return;
+    }
+
+    const query = searchQuery.toLowerCase().trim();
+    
+    if (query.includes('basin') || query.includes('sink')) {
+      navigate('/basin');
+    } else if (query.includes('faucet') || query.includes('tap')) {
+      navigate('/faucets');
+    } else if (query.includes('heater') || query.includes('geyser')) {
+      navigate('/water-heater');
+    } else if (query.includes('chimney') || query.includes('hood')) {
+      navigate('/chimney');
+    } else if (query.includes('tile') || query.includes('surface')) {
+      navigate('/tiles-and-surface');
+    } else if (query.includes('closet') || query.includes('toilet') || query.includes('commode')) {
+      navigate('/closet');
+    } else {
+      navigate('/catalog');
+    }
+    
+    setSearchQuery('');
+    setIsSearchOpen(false);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -64,7 +95,42 @@ const Navbar = ({ onMenuClick }) => {
         {/* Right - Icons */}
         <div className={`flex items-center gap-6 ${textColor}`}>
           
-          <Search size={24} strokeWidth={1.5} className="hover:text-[#A68966] transition-colors cursor-pointer" />
+          {/* Search Bar */}
+          <div className="flex items-center relative">
+            <AnimatePresence>
+              {isSearchOpen && (
+                <motion.input
+                  initial={{ width: 0, opacity: 0 }}
+                  animate={{ width: window.innerWidth < 640 ? 120 : 200, opacity: 1 }}
+                  exit={{ width: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onBlur={() => {
+                    setTimeout(() => {
+                      if (!searchQuery) setIsSearchOpen(false);
+                    }, 200);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
+                  className={`bg-transparent border-b ${textColor === 'text-white' ? 'border-white/50 text-white placeholder:text-white/70' : 'border-[#4E342E]/30 text-[#4E342E] placeholder:text-[#4E342E]/70'} px-2 py-1 outline-none text-sm mr-2`}
+                  autoFocus
+                />
+              )}
+            </AnimatePresence>
+            <Search 
+              size={24} 
+              strokeWidth={1.5} 
+              className="hover:text-[#A68966] transition-colors cursor-pointer" 
+              onClick={handleSearch}
+            />
+          </div>
+
           <div className="relative cursor-pointer" onClick={() => setIsSidebarOpen(true)}>
             <ShoppingBag size={24} strokeWidth={1.5} className="hover:text-[#A68966] transition-colors" />
             {cart.length > 0 && (

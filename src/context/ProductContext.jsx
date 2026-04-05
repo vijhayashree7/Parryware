@@ -27,7 +27,7 @@ export const ProductProvider = ({ children }) => {
 
   const fetchUsers = async () => {
     try {
-      const resp = await fetch('http://127.0.0.1:5000/api/admin/users');
+      const resp = await fetch('http://127.0.0.1:5001/api/admin/users');
       const data = await resp.json();
       if (data.success) setUsers(data.users);
     } catch (err) {

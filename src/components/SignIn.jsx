@@ -18,7 +18,7 @@ const SignIn = () => {
   React.useEffect(() => {
     const checkServer = async () => {
       try {
-        const res = await fetch('http://127.0.0.1:5000/api/health');
+        const res = await fetch('http://127.0.0.1:5001/api/health');
         if (!res.ok) throw new Error();
         console.log('--- Server Protocol Online ---');
       } catch (err) {
@@ -37,7 +37,7 @@ const SignIn = () => {
       setEmail(decoded.email || '');
       setPassword('••••••••'); 
 
-      const response = await fetch('http://127.0.0.1:5000/api/auth/google', {
+      const response = await fetch('http://127.0.0.1:5001/api/auth/google', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ credential: credentialResponse.credential })
@@ -71,7 +71,7 @@ const SignIn = () => {
     setSuccess('Checking Registry...');
     
     try {
-      const response = await fetch('http://127.0.0.1:5000/api/auth/login', {
+      const response = await fetch('http://127.0.0.1:5001/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
