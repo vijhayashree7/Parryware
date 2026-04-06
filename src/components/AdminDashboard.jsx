@@ -5,13 +5,13 @@ import {
   Truck, Settings, Search, Plus, LogOut, Edit, Trash2, X, ArrowLeft, 
   ChevronDown, ChevronUp, Bell, CheckCircle2, Tag, Lock, MessageSquare, Star
 } from 'lucide-react';
-import { useProducts } from '../context/ProductContext';
 import { useNavigate } from 'react-router-dom';
 import { 
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, 
-  ResponsiveContainer, AreaChart, Area, Legend 
+  ResponsiveContainer, AreaChart, Area, Legend, Bar, BarChart
 } from 'recharts';
 import { format, subDays, startOfDay, endOfDay, isWithinInterval, parseISO, startOfMonth, startOfYear } from 'date-fns';
+import { useProducts } from '../context/ProductContext';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -27,12 +27,12 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const navigate = useNavigate();
   const { products, addProduct, updateProduct, deleteProduct, orders, updateOrderStatus, feedbacks, users, fetchUsers, fetchOrders } = useProducts();
-  
+
   useEffect(() => {
     if (activeTab === 'users') fetchUsers();
     if (activeTab === 'orders') fetchOrders();
   }, [activeTab]);
-  
+
   // Tag / Variant states for Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -75,7 +75,7 @@ export default function AdminDashboard() {
   const addVariantField = () => {
     setFormData(prev => ({ ...prev, variants: [...prev.variants, { id: Date.now(), key: '', value: '' }] }));
   };
-  
+
   const updateVariant = (id, field, val) => {
     setFormData(prev => ({
       ...prev,
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
 
     if (editingProduct) updateProduct(editingProduct.id, payload);
     else addProduct(payload);
-    
+
     setIsModalOpen(false);
     notifySMS(editingProduct ? 'Product Updated Successfully' : 'Product Added Successfully');
   };
@@ -116,7 +116,6 @@ export default function AdminDashboard() {
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
 
   const getFilteredData = () => {
-    // Generate dates based on active tab & range
     const data = [];
     let daysToTrack = analyticsTab === 'Daily' ? 7 : analyticsTab === 'Monthly' ? 30 : 365;
     
@@ -158,8 +157,6 @@ export default function AdminDashboard() {
     notifySMS(`📞 SMS Sent: Order ${id} is now ${newStatus}!`);
   };
 
-  const THEME_BROWN = '#8C513E';
-
   // --- SUB-COMPONENTS ---
   const MetricCard = ({ label, value, icon: Icon, color = 'blue' }) => (
     <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-[#3E2723]/5 flex items-center gap-6 group hover:shadow-md transition-all">
@@ -176,10 +173,9 @@ export default function AdminDashboard() {
   return (
     <div className="flex h-screen text-[#3E2723] font-serif overflow-hidden relative bg-white" style={{ fontFamily: 'Times New Roman, serif' }}>
       <div className="absolute inset-0 bg-white z-0 pointer-events-none"></div>
-      
       <AnimatePresence>
         {toastMessage && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="absolute top-6 left-1/2 -translate-x-1/2 z-[100] bg-green-600 text-white px-6 py-3 rounded-full font-bold shadow-2xl flex items-center gap-2 border border-green-500"
           >
@@ -199,7 +195,7 @@ export default function AdminDashboard() {
           </div>
         </div>
         <p className="px-8 text-[10px] uppercase tracking-widest text-[#3E2723]/40 font-black mb-4">Admin Registry</p>
-        
+
         <nav className="flex-1 px-4 space-y-1 overflow-y-auto pt-4">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -208,9 +204,8 @@ export default function AdminDashboard() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-4 px-6 py-5 rounded-xl transition-all duration-300 text-[14px] font-black uppercase tracking-[0.2em] ${
-                  isActive ? 'bg-[#3E2723] text-white shadow-xl translate-x-2' : 'text-[#3E2723]/60 hover:text-[#3E2723] hover:bg-[#3E2723]/5'
-                }`}
+                className={`w-full flex items-center gap-4 px-6 py-5 rounded-xl transition-all duration-300 text-[14px] font-black uppercase tracking-[0.2em] ${isActive ? 'bg-[#3E2723] text-white shadow-xl translate-x-2' : 'text-[#3E2723]/60 hover:text-[#3E2723] hover:bg-[#3E2723]/5'
+                  }`}
               >
                 <Icon size={18} strokeWidth={isActive ? 3 : 2} />
                 {item.label}
@@ -244,7 +239,6 @@ export default function AdminDashboard() {
         <main className="flex-1 overflow-y-auto p-8 scrollbar-hide">
           {activeTab === 'dashboard' && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              {/* Reference Style Metric Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <MetricCard label="Total Users" value={stats.totalUsers} icon={Users} color="blue" />
                 <MetricCard label="Daily Signups" value={stats.dailySignups} icon={CalendarCheck} color="blue" />
@@ -252,7 +246,6 @@ export default function AdminDashboard() {
                 <MetricCard label="Monthly Enrollment" value={stats.monthlySignups} icon={Tag} color="teal" />
               </div>
 
-              {/* User Analytics Section (Ref Image Style) */}
               <div className="bg-white rounded-[2.5rem] border border-[#3E2723]/5 shadow-sm p-10 overflow-visible relative">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
                   <div className="flex items-center gap-4">
@@ -260,12 +253,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div className="flex flex-wrap items-center gap-4">
-                    {/* Date Formatting Range */}
-                    <div className="text-[11px] font-black text-[#3E2723]/40 uppercase tracking-widest mr-4">
-                      Date Range:
-                    </div>
-
-                    {/* Custom Range Picker Toggle */}
+                    <div className="text-[11px] font-black text-[#3E2723]/40 uppercase tracking-widest mr-4">Date Range:</div>
                     <div className="relative">
                       <button 
                         onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
@@ -274,7 +262,6 @@ export default function AdminDashboard() {
                         {format(dateRange.start, 'MMM dd, yyyy')} — {format(dateRange.end, 'MMM dd, yyyy')}
                         <CalendarCheck size={14} className="text-blue-500" />
                       </button>
-
                       <AnimatePresence>
                         {isDatePickerOpen && (
                           <motion.div 
@@ -298,34 +285,15 @@ export default function AdminDashboard() {
                                     </button>
                                   ))}
                                 </div>
-                                <div className="pt-4 border-t border-[#3E2723]/5">
-                                  <label className="text-[10px] font-black uppercase tracking-widest text-[#3E2723]/30 block mb-2 text-center">Manual Range</label>
-                                  <div className="flex items-center gap-2">
-                                    <input type="date" className="flex-1 bg-[#3E2723]/5 p-2 rounded-lg text-[10px]" />
-                                    <span>-</span>
-                                    <input type="date" className="flex-1 bg-[#3E2723]/5 p-2 rounded-lg text-[10px]" />
-                                  </div>
-                                </div>
                                 <button onClick={() => setIsDatePickerOpen(false)} className="w-full bg-blue-500 text-white py-3 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg">Apply</button>
                              </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
                     </div>
-
-                    {/* Simple Filter Dropdown */}
-                    <div className="flex items-center gap-3 bg-[#3E2723]/5 px-6 py-2 rounded-xl border border-[#3E2723]/10">
-                      <span className="text-[10px] font-black text-[#3E2723]/30 uppercase">Filter by:</span>
-                      <select className="bg-transparent text-[11px] font-black uppercase outline-none cursor-pointer">
-                        <option>All</option>
-                        <option>Manual</option>
-                        <option>Google</option>
-                      </select>
-                    </div>
                   </div>
                 </div>
 
-                {/* Daily/Monthly/Yearly Switcher Header */}
                 <div className="flex gap-2 mb-8 bg-[#3E2723]/5 p-1.5 rounded-2xl w-fit">
                    {['Daily', 'Monthly', 'Yearly'].map(tab => (
                      <button 
@@ -354,27 +322,9 @@ export default function AdminDashboard() {
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#3E2723" strokeOpacity={0.05} />
-                      <XAxis 
-                        dataKey="name" 
-                        axisLine={false} tickLine={false} 
-                        tick={{fontSize: 10, fontWeight: 900, fill: '#3E2723', opacity: 0.4}} 
-                        dy={10}
-                      />
-                      <YAxis 
-                        axisLine={false} tickLine={false} 
-                        tick={{fontSize: 10, fontWeight: 900, fill: '#3E2723', opacity: 0.4}}
-                        dx={-10}
-                      />
-                      <RechartsTooltip 
-                        contentStyle={{ 
-                          backgroundColor: '#fff', 
-                          borderRadius: '16px', 
-                          border: '1px solid #3E272310', 
-                          boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)',
-                          padding: '12px' 
-                        }}
-                        labelStyle={{fontSize: '10px', fontWeight: '900', color: '#3E2723', textTransform: 'uppercase', marginBottom: '8px'}}
-                      />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#3E2723', opacity: 0.4}} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#3E2723', opacity: 0.4}} dx={-10} />
+                      <RechartsTooltip contentStyle={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #3E272310', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', padding: '12px' }} labelStyle={{fontSize: '10px', fontWeight: '900', color: '#3E2723', textTransform: 'uppercase', marginBottom: '8px'}} />
                       <Area type="monotone" dataKey="signups" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorSignups)" dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
                       <Area type="monotone" dataKey="logins" stroke="#0d9488" strokeWidth={3} fillOpacity={1} fill="url(#colorLogins)" dot={{ r: 4, fill: '#0d9488', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
                       <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{paddingTop: '20px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase'}} />
@@ -408,14 +358,8 @@ export default function AdminDashboard() {
                           <td className="px-10 py-8 font-black uppercase tracking-widest text-[13px]">{row.id}</td>
                           <td className="px-10 py-8 font-bold uppercase">{row.cx}</td>
                           <td className="px-10 py-8">
-                             <select 
-                                value={row.status || 'Ordered'} 
-                                onChange={(e) => handleUpdateStatus(row.id, e.target.value)}
-                                className="bg-white/10 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl outline-none border border-white/10 cursor-pointer focus:bg-[#3E2723]"
-                             >
-                               {['Ordered', 'Pending', 'Ready to Deliver', 'Delivered'].map(s => (
-                                 <option key={s} value={s} className="bg-[#3E2723]">{s}</option>
-                               ))}
+                             <select value={row.status || 'Ordered'} onChange={(e) => handleUpdateStatus(row.id, e.target.value)} className="bg-white/10 text-white text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl outline-none border border-white/10 cursor-pointer focus:bg-[#3E2723]">
+                               {['Ordered', 'Pending', 'Ready to Deliver', 'Delivered'].map(s => <option key={s} value={s} className="bg-[#3E2723]">{s}</option>)}
                              </select>
                           </td>
                           <td className="px-10 py-8 text-right">
@@ -427,9 +371,7 @@ export default function AdminDashboard() {
                             <td colSpan={4} className="px-10 py-8 border-l-8 border-white/20">
                                <p className="text-[10px] text-white/40 uppercase mb-4 font-black">Items Included:</p>
                                <div className="flex flex-wrap gap-4">
-                                  {row.items?.map((it, i) => (
-                                    <span key={i} className="bg-white/5 px-4 py-2 rounded-lg text-[13px] font-bold uppercase tracking-wide">✓ {it}</span>
-                                  ))}
+                                  {row.items?.map((it, i) => <span key={i} className="bg-white/5 px-4 py-2 rounded-lg text-[13px] font-bold uppercase tracking-wide">✓ {it}</span>)}
                                </div>
                                <p className="mt-8 text-xl font-black">{row.total}</p>
                             </td>
@@ -514,21 +456,30 @@ export default function AdminDashboard() {
                   <table className="w-full text-left">
                     <thead className="bg-black/20 text-white uppercase tracking-widest text-[11px] font-black">
                       <tr>
-                        <th className="px-10 py-8">Identity</th>
-                        <th className="px-10 py-8">Enrolled</th>
-                        <th className="px-10 py-8">Auth</th>
+                        <th className="px-10 py-8">Member</th>
+                        <th className="px-10 py-8">Enrollment Date</th>
+                        <th className="px-10 py-8">Last Presence</th>
+                        <th className="px-10 py-8">Method</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/10 text-[14px]">
-                      {users.map((row, idx) => (
-                        <tr key={idx} className="hover:bg-white/5 transition-colors">
+                      {users.map((user, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-colors">
                           <td className="px-10 py-8">
-                             <p className="font-black uppercase tracking-widest text-[13px]">{row.name}</p>
-                             <p className="text-[10px] text-white/40 font-bold uppercase">{row.email}</p>
+                             <div className="flex items-center gap-4">
+                               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center font-black text-[10px] uppercase">
+                                 {user.picture ? <img src={user.picture} alt="" className="w-full h-full rounded-full" /> : user.name?.charAt(0) || 'U'}
+                               </div>
+                               <div>
+                                 <p className="font-black uppercase tracking-widest text-[12px]">{user.name || 'Anonymous'}</p>
+                                 <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest">{user.email}</p>
+                               </div>
+                             </div>
                           </td>
-                          <td className="px-10 py-8 text-white/60 font-black uppercase text-[11px]">{row.createdAt ? new Date(row.createdAt).toLocaleDateString() : 'Initial'}</td>
+                          <td className="px-10 py-8 font-bold uppercase text-[11px] text-white/60">{user.createdAt ? format(new Date(user.createdAt), 'MMM dd, yyyy') : 'Unknown'}</td>
+                          <td className="px-10 py-8 font-black uppercase text-[11px]">{user.lastLogin ? format(new Date(user.lastLogin), 'hh:mm a') : 'N/A'}</td>
                           <td className="px-10 py-8">
-                             <span className="text-[10px] font-black uppercase px-4 py-1.5 bg-white/10 rounded-full">{row.authType || 'Manual'}</span>
+                             <span className="bg-white/10 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest text-[#FFEFE5]">{user.authType || 'MANUAL'}</span>
                           </td>
                         </tr>
                       ))}
@@ -542,40 +493,59 @@ export default function AdminDashboard() {
 
       <AnimatePresence>
         {isModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-6">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)} className="absolute inset-0 bg-[#3E2723]/60 backdrop-blur-md" />
-            <motion.div initial={{ opacity: 0, scale: 0.9, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 30 }} className="bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl relative z-10 flex flex-col max-h-[90vh] overflow-hidden text-[#3E2723]">
-              <div className="px-10 py-10 border-b border-[#3E2723]/5 flex justify-between items-center shrink-0">
-                 <h3 className="font-black uppercase tracking-[0.3em] text-[18px]">Product Registry</h3>
-                 <button onClick={() => setIsModalOpen(false)} className="text-[#3E2723]/30 hover:text-[#3E2723] transition-colors"><X size={24} /></button>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)} className="absolute inset-0 bg-[#3E2723]/80 backdrop-blur-md" />
+            <motion.div initial={{ opacity: 0, scale: 0.9, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9, y: 20 }} className="relative w-full max-w-4xl bg-white rounded-[3rem] shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+              <div className="p-10 border-b border-[#3E2723]/5 flex justify-between items-center bg-[#8C513E] text-white">
+                <div>
+                  <h3 className="text-xl font-serif tracking-wide">{editingProduct ? 'Update Product Details' : 'Add New Inventory'}</h3>
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40 mt-2">Registry Publication System</p>
+                </div>
+                <button onClick={() => setIsModalOpen(false)} className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-all text-white"><X size={24} /></button>
               </div>
-              <form onSubmit={handleSave} className="p-10 space-y-10 overflow-y-auto flex-1 scrollbar-hide">
-                 <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#3E2723]/30">Identification Name</label>
-                    <input required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-[#3E2723]/5 px-8 py-5 rounded-2xl font-black uppercase tracking-widest outline-none focus:bg-white focus:shadow-xl transition-all" />
-                 </div>
-                 <div className="grid grid-cols-2 gap-10">
-                    <div className="space-y-3">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-[#3E2723]/30">Valuation (INR)</label>
-                       <input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full bg-[#3E2723]/5 px-8 py-5 rounded-2xl font-black uppercase tracking-widest outline-none focus:bg-white focus:shadow-xl transition-all" />
+              <div className="flex-1 overflow-y-auto p-10 scrollbar-hide">
+                <form onSubmit={handleSave} className="space-y-10">
+                  <div className="grid grid-cols-2 gap-10">
+                    <div className="space-y-6">
+                      <p className="text-[11px] font-black uppercase tracking-widest text-[#3E2723]/30">Primary Information</p>
+                      <input type="text" placeholder="Product Name" className="w-full bg-[#3E2723]/5 px-8 py-5 rounded-2xl border border-[#3E2723]/10 outline-none focus:border-[#8C513E] font-bold uppercase text-[13px] tracking-widest transition-all" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required />
+                      <textarea placeholder="Technical Specification" className="w-full bg-[#3E2723]/5 px-8 py-5 rounded-2xl border border-[#3E2723]/10 outline-none focus:border-[#8C513E] font-bold uppercase text-[12px] tracking-widest transition-all h-32 resize-none leading-relaxed" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
                     </div>
-                    <div className="space-y-3">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-[#3E2723]/30">Asset Image URL</label>
-                       <input required value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})} className="w-full bg-[#3E2723]/5 px-8 py-5 rounded-2xl font-black uppercase tracking-widest outline-none focus:bg-white focus:shadow-xl transition-all" />
+                    <div className="space-y-6">
+                      <p className="text-[11px] font-black uppercase tracking-widest text-[#3E2723]/30">Valuation & Assets</p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <input type="number" placeholder="Net Price" className="bg-[#3E2723]/5 px-8 py-5 rounded-2xl border border-[#3E2723]/10 outline-none focus:border-[#8C513E] font-bold text-[15px]" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} required />
+                        <input type="number" placeholder="MRP" className="bg-[#3E2723]/5 px-8 py-5 rounded-2xl border border-[#3E2723]/10 outline-none focus:border-[#8C513E] font-bold text-[15px]" value={formData.mrp} onChange={e => setFormData({ ...formData, mrp: e.target.value })} />
+                      </div>
+                      <input type="text" placeholder="Media URL" className="w-full bg-[#3E2723]/5 px-8 py-5 rounded-2xl border border-[#3E2723]/10 outline-none focus:border-[#8C513E] font-bold text-[12px]" value={formData.image} onChange={e => setFormData({ ...formData, image: e.target.value })} required />
                     </div>
-                    <div className="space-y-3">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-[#3E2723]/30">Enrollment Date</label>
-                       <input type="date" required value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className="w-full bg-[#3E2723]/5 px-8 py-5 rounded-2xl font-black uppercase tracking-widest outline-none focus:bg-white focus:shadow-xl transition-all cursor-pointer" />
+                  </div>
+                  <div className="space-y-6">
+                    <p className="text-[11px] font-black uppercase tracking-widest text-[#3E2723]/30">Dynamic Variants</p>
+                    <div className="grid grid-cols-2 gap-6">
+                       {formData.variants.map(v => (
+                         <div key={v.id} className="flex gap-2 items-center bg-[#3E2723]/5 p-2 rounded-xl border border-[#3E2723]/10">
+                            <input type="text" placeholder="Key" className="flex-1 bg-transparent px-4 py-2 text-[11px] font-black uppercase outline-none" value={v.key} onChange={e => updateVariant(v.id, 'key', e.target.value)} />
+                            <input type="text" placeholder="Value" className="flex-1 bg-transparent px-4 py-2 text-[11px] font-black uppercase outline-none border-l border-[#3E2723]/10" value={v.value} onChange={e => updateVariant(v.id, 'value', e.target.value)} />
+                            <button type="button" onClick={() => removeVariant(v.id)} className="p-2 text-red-500"><Trash2 size={16} /></button>
+                         </div>
+                       ))}
+                       <button type="button" onClick={addVariantField} className="border-2 border-dashed border-[#3E2723]/10 rounded-xl p-4 flex items-center justify-center text-[#3E2723]/40 hover:border-[#8C513E] hover:text-[#8C513E] transition-all"><Plus size={20} /></button>
                     </div>
-                 </div>
-                 <div className="space-y-3">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-[#3E2723]/30">Descriptive Narrative</label>
-                    <textarea rows="4" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full bg-[#3E2723]/5 px-8 py-6 rounded-2xl font-bold text-[#3E2723] outline-none focus:bg-white focus:shadow-xl transition-all resize-none leading-relaxed" />
-                 </div>
-              </form>
-              <div className="p-10 border-t border-[#3E2723]/5 flex justify-end gap-6 shrink-0">
-                 <button onClick={() => setIsModalOpen(false)} className="text-[12px] font-black uppercase tracking-widest text-[#3E2723]/30 hover:text-[#3E2723]">Discard</button>
-                 <button onClick={handleSave} className="bg-[#8C513E] text-white px-12 py-5 rounded-2xl font-black uppercase tracking-widest text-[12px] shadow-2xl hover:bg-[#3E2723] transition-all">Authorize Publication</button>
+                  </div>
+                  <div className="space-y-6">
+                    <p className="text-[11px] font-black uppercase tracking-widest text-[#3E2723]/30">Taxonomy Tags</p>
+                    <div className="flex flex-wrap gap-3">
+                       {AVAILABLE_TAGS.map(tag => (
+                         <button key={tag} type="button" onClick={() => toggleTag(tag)} className={`px-6 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${formData.tags.includes(tag) ? 'bg-[#3E2723] text-white shadow-xl' : 'bg-[#3E2723]/5 text-[#3E2723]/40 hover:bg-[#3E2723]/10'}`}>{tag}</button>
+                       ))}
+                    </div>
+                  </div>
+                  <div className="pt-10 border-t border-[#3E2723]/5 flex gap-4">
+                    <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 bg-[#3E2723]/5 text-[#3E2723] py-6 font-black uppercase tracking-[0.3em] text-[12px] rounded-3xl hover:bg-[#3E2723]/10 transition-all">Cancel</button>
+                    <button type="submit" className="flex-[2] bg-[#8C513E] text-white py-6 font-black uppercase tracking-[0.3em] text-[12px] rounded-3xl hover:bg-black transition-all shadow-2xl">Publish</button>
+                  </div>
+                </form>
               </div>
             </motion.div>
           </div>

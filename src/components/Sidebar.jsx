@@ -96,9 +96,9 @@ const Sidebar = ({ isOpen, onClose }) => {
           <Link to="/locations" onClick={onClose} className="block text-[20px] font-black uppercase tracking-widest hover:text-[#A68966] transition-colors">Location of Store</Link>
           <Link to="/catalog" onClick={onClose} className="block text-[20px] font-black uppercase tracking-widest hover:text-[#A68966] transition-colors">Catalogue</Link>
           <Link to="/contact" onClick={onClose} className="block text-[20px] font-black uppercase tracking-widest hover:text-[#A68966] transition-colors">Contact Us</Link>
-          <Link to="/feedback" onClick={onClose} className="block text-[20px] font-black uppercase tracking-widest text-[#A68966] hover:text-[#3E2723] transition-colors">Feedback & Review</Link>
+          <Link to="/feedback" onClick={onClose} className="block text-[20px] font-black uppercase tracking-widest hover:text-[#A68966] transition-colors">Feedback & Review</Link>
           
-          <Link to="/admin" onClick={onClose} className="block text-[14px] font-black uppercase tracking-[0.4em] text-[#A68966] mt-10 hover:text-[#3E2723] transition-colors border-t border-[#3E2723]/5 pt-10">Admin Dashboard</Link>
+          <Link to="/admin" onClick={onClose} className="block text-[20px] font-black uppercase tracking-widest hover:text-[#A68966] transition-colors">Admin Dashboard</Link>
         </div>
 
         <div className="p-10 text-[10px] text-[#3E2723]/30 uppercase tracking-[0.3em] font-black bg-white/50 border-t border-[#3E2723]/5">

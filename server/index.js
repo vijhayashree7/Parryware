@@ -98,7 +98,7 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
-  'http://localhost:5173', 'http://127.0.0.1:5173', 
+  'http://localhost:5173', 'http://127.0.0.1:5173',
   'http://localhost:5174', 'http://127.0.0.1:5174',
   'http://localhost:5175', 'http://127.0.0.1:5175',
   'http://localhost:5176', 'http://127.0.0.1:5176',
@@ -133,14 +133,14 @@ app.get('/api/health', (req, res) => {
 // --- Google Auth ---
 app.post('/api/auth/google', async (req, res) => {
   const { credential } = req.body;
-  
+
   try {
     const ticket = await client.verifyIdToken({
       idToken: credential, audience: process.env.GOOGLE_CLIENT_ID
     });
-    
+
     const { sub, email, name, picture } = ticket.getPayload();
-    
+
     let user = users.find(u => u.email === email);
     if (!user) {
       user = { 
@@ -162,9 +162,9 @@ app.post('/api/auth/google', async (req, res) => {
       user.name = name; // Sync display name
       user.picture = picture; // Sync avatar
     }
-    
+
     saveUsers(users); // Persist registry
-    
+
     const token = jwt.sign({ userId: user.email }, process.env.JWT_SECRET, { expiresIn: '7d' });
     res.json({ success: true, token, user: { name: user.name, email: user.email, picture: user.picture } });
   } catch (error) {
@@ -177,11 +177,11 @@ app.post('/api/auth/google', async (req, res) => {
 // --- Manual Register ---
 app.post('/api/auth/register', (req, res) => {
   const { email, password, name } = req.body;
-  
+
   if (users.find(u => u.email === email)) {
     return res.status(400).json({ success: false, message: 'Email already registered' });
   }
-  
+
   const newUser = { 
     id: generateNextId('CUST', users),
     email, 
@@ -193,7 +193,7 @@ app.post('/api/auth/register', (req, res) => {
   };
   users.push(newUser);
   saveUsers(users); // Persist registry
-  
+
   const token = jwt.sign({ userId: email }, process.env.JWT_SECRET, { expiresIn: '7d' });
   res.json({ success: true, token, user: { name, email } });
 });
@@ -202,7 +202,7 @@ app.post('/api/auth/register', (req, res) => {
 app.post('/api/auth/login', (req, res) => {
   const { email, password } = req.body;
   const user = users.find(u => u.email === email);
-  
+
   if (!user || user.password !== password) {
     return res.status(401).json({ success: false, message: 'Invalid credentials' });
   }
@@ -210,9 +210,7 @@ app.post('/api/auth/login', (req, res) => {
   user.lastLogin = new Date().toISOString();
   if (!user.logins) user.logins = [];
   user.logins.push(new Date().toISOString());
-  saveUsers(users);
- // Persist registry update
-  
+  saveUsers(users); // Persist registry update
   const token = jwt.sign({ userId: email }, process.env.JWT_SECRET, { expiresIn: '7d' });
   res.json({ success: true, token, user: { name: user.name, email: user.email } });
 });
@@ -237,7 +235,7 @@ app.get('/api/admin/users', (req, res) => {
 // 1. Fetch Orders (Public with Email filter or Admin all)
 app.get('/api/orders', (req, res) => {
   const { email, isAdmin } = req.query;
-  
+
   if (isAdmin === 'true') {
     return res.json({ success: true, orders });
   }
@@ -257,6 +255,10 @@ app.post('/api/orders', (req, res) => {
 
   const { cx, email, items, total, date } = req.body;
 
+  if (!email) {
+    return res.status(400).json({ success: false, message: 'Invalid order payload' });
+  }
+
   const newOrder = {
     id: generateNextId('ORD', orders),
     cx,
@@ -269,7 +271,7 @@ app.post('/api/orders', (req, res) => {
 
   orders.unshift(newOrder);
   saveOrders(orders);
-  
+
   res.json({ success: true, order: newOrder });
 });
 
@@ -285,7 +287,7 @@ app.patch('/api/orders/:id', (req, res) => {
 
   orders[orderIndex] = { ...orders[orderIndex], status };
   saveOrders(orders);
-  
+
   res.json({ success: true, order: orders[orderIndex] });
 });
 

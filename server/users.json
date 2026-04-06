@@ -3,8 +3,62 @@
     "name": "Admin Authority",
     "email": "admin@abirami.com",
     "authType": "MANUAL",
-    "password": "password123",
+    "password": "$2b$10$dehbewdwKi7YHM42kHwNnew4ppaMKikoMS8747rscYNzA0elBdM3S",
     "createdAt": "2026-03-31T10:00:00Z",
     "lastLogin": "2026-04-05T22:38:00.000Z"
+  },
+  {
+    "googleId": "104817196969548322258",
+    "email": "shree782005@gmail.com",
+    "name": "Vijhaya Shree A",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocJMVEoQcwTcjlZ8ex8enF0ig_hZXDqrNdSDsHNN1zdPx4npdQ=s96-c",
+    "createdAt": "2026-04-05T18:54:49.259Z",
+    "lastLogin": "2026-04-05T19:08:41.598Z",
+    "authType": "GOOGLE"
+  },
+  {
+    "googleId": "105257160993351097237",
+    "email": "230584.it@rmkec.ac.in",
+    "name": "3114 VIJHAYA SHREE A",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocIfAb9AYQ9_67RyLSYW5P1wMipg8AfPQxJpviz5jZCHEEZbQw=s96-c",
+    "createdAt": "2026-04-05T19:01:09.056Z",
+    "lastLogin": "2026-04-05T19:01:09.056Z",
+    "authType": "GOOGLE"
+  },
+  {
+    "googleId": "114932541563147841862",
+    "email": "vijhayashreeariganesan@gmail.com",
+    "name": "Vijhaya shree Ari ganesan",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocLi_scDfv5OqdMhns0RaJI7rceXyZ3C-5Xd8T5gHnVfDjO1Vg=s96-c",
+    "createdAt": "2026-04-05T19:03:25.730Z",
+    "lastLogin": "2026-04-05T19:03:25.730Z",
+    "authType": "GOOGLE"
+  },
+  {
+    "googleId": "108897009144892096004",
+    "email": "vijhayashree7@gmail.com",
+    "name": "Shree",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocLf1luSt9U9TIAE6KUjGdAxdq63KRE2yl94JEStp1W_KpOeEA=s96-c",
+    "createdAt": "2026-04-05T19:09:03.604Z",
+    "lastLogin": "2026-04-05T19:09:03.604Z",
+    "authType": "GOOGLE"
+  },
+  {
+    "googleId": "109951437765704155986",
+    "email": "shereentaj2005@gmail.com",
+    "name": "S Sheeren Taj",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocJodlULrYkHxxNKw91DqeRZ2NbMrO1zgrezpyQqpfNxme7xcMY=s96-c",
+    "createdAt": "2026-04-06T05:04:36.301Z",
+    "lastLogin": "2026-04-06T05:40:39.993Z",
+    "authType": "GOOGLE"
+  },
+  {
+    "googleId": "115095495041159387148",
+    "email": "230118.it@rmkec.ac.in",
+    "name": "S Sheeren Taj",
+    "picture": "https://lh3.googleusercontent.com/a/ACg8ocIR-s-f__gqMLo3QziDjk3UERVX57zA_c-R3ST4p8Va5VIA=s96-c",
+    "createdAt": "2026-04-06T05:11:07.269Z",
+    "lastLogin": "2026-04-06T05:26:20.303Z",
+    "authType": "GOOGLE"
   }
 ]

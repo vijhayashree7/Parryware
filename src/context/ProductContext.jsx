@@ -25,10 +25,17 @@ export const ProductProvider = ({ children }) => {
   };
 
 
-  const [feedbacks, setFeedbacks] = useState([
-    { id: 1, rating: 'GOOD', suggestion: 'Excellent service and premium quality products!', date: '2026-04-01' },
-    { id: 2, rating: 'AVERAGE', suggestion: 'Product range is good but delivery took longer than expected.', date: '2026-04-02' },
-  ]);
+  const [feedbacks, setFeedbacks] = useState([]);
+
+  const fetchFeedbacks = async () => {
+    try {
+      const resp = await fetch(`${API_BASE_URL}/api/feedbacks`);
+      const data = await resp.json();
+      if (data.success) setFeedbacks(data.feedbacks);
+    } catch (err) {
+      console.error('Failed to fetch feedbacks:', err);
+    }
+  };
   const [users, setUsers] = useState([]);
 
   const fetchUsers = async () => {
@@ -87,13 +94,22 @@ export const ProductProvider = ({ children }) => {
     }
   };
 
-  const addFeedback = (feedback) => {
-    const newFeedback = { 
-      ...feedback, 
-      id: Date.now(), 
-      date: new Date().toISOString().split('T')[0] 
-    };
-    setFeedbacks([newFeedback, ...feedbacks]);
+  const addFeedback = async (feedback) => {
+    try {
+      const resp = await fetch(`${API_BASE_URL}/api/feedbacks`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(feedback)
+      });
+      const data = await resp.json();
+      if (data.success) {
+        setFeedbacks(prev => [data.feedback, ...prev]);
+        return data.feedback;
+      }
+    } catch (err) {
+      console.error('Failed to add feedback:', err);
+    }
+    return null;
   };
 
   return (
@@ -107,6 +123,7 @@ export const ProductProvider = ({ children }) => {
       addOrder,
       updateOrderStatus,
       feedbacks,
+      fetchFeedbacks,
       addFeedback,
       users,
       fetchUsers

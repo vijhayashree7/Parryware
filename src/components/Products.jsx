@@ -56,11 +56,11 @@ const Products = () => {
   return (
     <section 
       ref={sectionRef} 
-      className="relative py-24 max-w-[100vw] min-h-[200vh] bg-transparent"
+      className="relative py-4 max-w-[100vw] min-h-[90vh] bg-transparent"
     >
       
       {/* Sticky Header Container */}
-      <div className="sticky top-40 md:top-48 z-40 w-full mb-12 flex flex-col items-center">
+      <div className="sticky top-20 md:top-24 z-40 w-full mb-4 flex flex-col items-center">
         <motion.div 
           style={{ 
             opacity: headerOpacity, 
@@ -69,17 +69,17 @@ const Products = () => {
           }}
           className="flex flex-col items-center text-center px-6 pointer-events-none"
         >
-          <h2 className="text-4xl md:text-5xl lg:text-5xl font-sans font-bold text-cozy-900 mb-4 tracking-tight drop-shadow-sm">
+          <h2 className="text-3xl md:text-4xl lg:text-4xl font-sans font-bold text-cozy-900 mb-2 tracking-tight drop-shadow-sm">
             Redefine Your Sanctuary
           </h2>
-          <p className="text-xl md:text-2xl text-cozy-700 max-w-3xl font-serif italic leading-relaxed mx-auto text-center opacity-80">
+          <p className="text-lg md:text-xl text-cozy-700 max-w-3xl font-serif italic leading-relaxed mx-auto text-center opacity-80">
             Immerse yourself in our masterfully crafted collections. Elevate your daily rituals with uncompromising quality and breathtaking design. Explore our products below.
           </p>
         </motion.div>
       </div>
 
       <div 
-        className="relative h-[450px] md:h-[600px] w-full max-w-5xl mx-auto flex items-center justify-center perspective-[1000px] mt-24"
+        className="relative h-[450px] md:h-[600px] w-full max-w-5xl mx-auto flex items-center justify-center perspective-[1000px] mt-6"
       >
         {categories.map((cat, idx) => {
           const style = getCardStyle(cat.id);
