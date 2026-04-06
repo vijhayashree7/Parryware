@@ -117,24 +117,59 @@ export default function AdminDashboard() {
 
   const getFilteredData = () => {
     const data = [];
-    let daysToTrack = analyticsTab === 'Daily' ? 7 : analyticsTab === 'Monthly' ? 30 : 365;
-    
-    for (let i = daysToTrack; i >= 0; i--) {
-      const d = subDays(new Date(), i);
-      const dStr = format(d, 'yyyy-MM-dd');
-      
-      const daySignups = users.filter(u => u.createdAt?.startsWith(dStr)).length;
-      const dayLogins = users.filter(u => u.logins?.some(l => l.startsWith(dStr))).length;
-      
-      data.push({
-        name: analyticsTab === 'Daily' ? format(d, 'EEE') : format(d, 'MMM dd'),
-        signups: daySignups,
-        logins: dayLogins,
-        fullDate: dStr
-      });
+    const now = new Date();
+
+    if (analyticsTab === 'Daily') {
+      for (let i = 7; i >= 0; i--) {
+        const d = subDays(now, i);
+        const dStr = format(d, 'yyyy-MM-dd');
+        
+        const daySignups = users.filter(u => u.createdAt?.startsWith(dStr)).length;
+        const dayLogins = users.filter(u => u.logins?.some(l => l.startsWith(dStr))).length;
+        
+        data.push({
+          name: format(d, 'EEE'),
+          signups: daySignups,
+          logins: dayLogins,
+          fullDate: dStr
+        });
+      }
+    } else if (analyticsTab === 'Monthly') {
+      // Group by months of the current year (Jan to Dec)
+      for (let i = 0; i < 12; i++) {
+        const d = new Date(now.getFullYear(), i, 1);
+        const monthStr = format(d, 'yyyy-MM');
+        
+        const monthSignups = users.filter(u => u.createdAt?.startsWith(monthStr)).length;
+        const monthLogins = users.filter(u => u.logins?.some(l => l.startsWith(monthStr))).length;
+        
+        data.push({
+          name: format(d, 'MMM'),
+          signups: monthSignups,
+          logins: monthLogins,
+          fullDate: monthStr
+        });
+      }
+    } else if (analyticsTab === 'Yearly') {
+      // Group by last 5 years
+      const currentYear = now.getFullYear();
+      for (let i = currentYear - 4; i <= currentYear; i++) {
+        const yearStr = i.toString();
+        
+        const yearSignups = users.filter(u => u.createdAt?.startsWith(yearStr)).length;
+        const yearLogins = users.filter(u => u.logins?.some(l => l.startsWith(yearStr))).length;
+        
+        data.push({
+          name: yearStr,
+          signups: yearSignups,
+          logins: yearLogins,
+          fullDate: yearStr
+        });
+      }
     }
     return data;
   };
+
 
   const dashboardData = getFilteredData();
 
@@ -308,29 +343,32 @@ export default function AdminDashboard() {
                    ))}
                 </div>
 
-                <div className="h-[400px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={dashboardData}>
-                      <defs>
-                        <linearGradient id="colorSignups" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.1}/>
-                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                        </linearGradient>
-                        <linearGradient id="colorLogins" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#0d9488" stopOpacity={0.1}/>
-                          <stop offset="95%" stopColor="#0d9488" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#3E2723" strokeOpacity={0.05} />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#3E2723', opacity: 0.4}} dy={10} />
-                      <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fontWeight: 900, fill: '#3E2723', opacity: 0.4}} dx={-10} />
-                      <RechartsTooltip contentStyle={{ backgroundColor: '#fff', borderRadius: '16px', border: '1px solid #3E272310', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.1)', padding: '12px' }} labelStyle={{fontSize: '10px', fontWeight: '900', color: '#3E2723', textTransform: 'uppercase', marginBottom: '8px'}} />
-                      <Area type="monotone" dataKey="signups" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorSignups)" dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-                      <Area type="monotone" dataKey="logins" stroke="#0d9488" strokeWidth={3} fillOpacity={1} fill="url(#colorLogins)" dot={{ r: 4, fill: '#0d9488', strokeWidth: 2, stroke: '#fff' }} activeDot={{ r: 6 }} />
-                      <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{paddingTop: '20px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase'}} />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                <div className="bg-[#8C513E] rounded-[2.5rem] overflow-hidden shadow-xl text-white">
+                  <table className="w-full text-left">
+                    <thead className="bg-black/20 text-white uppercase tracking-widest text-[11px] font-black">
+                      <tr>
+                        <th className="px-10 py-8 italic uppercase tracking-[0.2em]">Reporting Period</th>
+                        <th className="px-10 py-8 italic uppercase tracking-[0.2em] text-center">New Member Enrollment</th>
+                        <th className="px-10 py-8 italic uppercase tracking-[0.2em] text-center">Active User Sessions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10 text-[14px]">
+                      {dashboardData.map((row, i) => (
+                        <tr key={i} className="hover:bg-white/5 transition-all duration-300">
+                          <td className="px-10 py-6 font-black uppercase tracking-widest text-[13px]">{row.name}</td>
+                          <td className="px-10 py-6 font-bold uppercase text-center text-blue-100">{row.signups.toLocaleString()}</td>
+                          <td className="px-10 py-6 font-bold uppercase text-center text-teal-100">{row.logins.toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {dashboardData.length === 0 && (
+                    <div className="p-20 text-center text-white/40 uppercase tracking-widest font-black text-[12px]">
+                      No analytic data recorded for this registry period
+                    </div>
+                  )}
                 </div>
+
               </div>
             </div>
           )}
