@@ -1,13 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  LayoutDashboard, ShoppingCart, CalendarCheck, UtensilsCrossed, Users, 
-  Truck, Settings, Search, Plus, LogOut, Edit, Trash2, X, ArrowLeft, 
-  ChevronDown, ChevronUp, Bell, CheckCircle2, Tag, Lock, MessageSquare
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  ArrowLeft,
+  CheckCircle2,
+  Edit,
+  LayoutDashboard,
+  MessageSquare,
+  Plus,
+  ShoppingCart,
+  Trash2,
+  Users,
+  UtensilsCrossed,
+  X
 } from 'lucide-react';
-import { useProducts } from '../context/ProductContext';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import { Bar, BarChart, CartesianGrid, Line, LineChart, Tooltip as RechartsTooltip, ResponsiveContainer, XAxis, YAxis } from 'recharts';
+import { useProducts } from '../context/ProductContext';
 
 const navItems = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -23,12 +31,12 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const navigate = useNavigate();
   const { products, addProduct, updateProduct, deleteProduct, orders, updateOrderStatus, feedbacks, users, fetchUsers, fetchOrders } = useProducts();
-  
+
   useEffect(() => {
     if (activeTab === 'users') fetchUsers();
     if (activeTab === 'orders') fetchOrders();
   }, [activeTab]);
-  
+
   // Tag / Variant states for Modal
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -70,7 +78,7 @@ export default function AdminDashboard() {
   const addVariantField = () => {
     setFormData(prev => ({ ...prev, variants: [...prev.variants, { id: Date.now(), key: '', value: '' }] }));
   };
-  
+
   const updateVariant = (id, field, val) => {
     setFormData(prev => ({
       ...prev,
@@ -95,7 +103,7 @@ export default function AdminDashboard() {
 
     if (editingProduct) updateProduct(editingProduct.id, payload);
     else addProduct(payload);
-    
+
     setIsModalOpen(false);
     notifySMS(editingProduct ? 'Product Updated Successfully' : 'Product Added Successfully');
   };
@@ -118,10 +126,10 @@ export default function AdminDashboard() {
 
   const getAnalytics = (filter) => {
     const mult = filter === 'Daily' ? 1 : filter === 'Weekly' ? 7 : 30;
-    return { 
-      loggedIn: baseStats.loggedIn * mult, 
-      signedUp: baseStats.signedUp * mult, 
-      visitors: baseStats.visitors * mult 
+    return {
+      loggedIn: baseStats.loggedIn * mult,
+      signedUp: baseStats.signedUp * mult,
+      visitors: baseStats.visitors * mult
     };
   };
   const currentStats = getAnalytics(analyticsFilter);
@@ -149,7 +157,7 @@ export default function AdminDashboard() {
 
   const handleUpdateStatus = (id, field, value) => {
     updateOrderStatus(id, field, value);
-    
+
     // Trigger mock SMS
     if (field === 'packed' && value === true) {
       notifySMS(`📞 SMS Sent: Order ${id} has been packed!`);
@@ -162,11 +170,11 @@ export default function AdminDashboard() {
   return (
     <div className="flex h-screen text-[#3E2723] font-serif-elegant overflow-hidden relative bg-transparent">
       <div className="absolute inset-0 bg-white/10 z-0 pointer-events-none backdrop-blur-sm"></div>
-      
+
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="absolute top-6 left-1/2 -translate-x-1/2 z-[100] bg-green-500 text-white px-6 py-3 rounded-full font-bold shadow-2xl flex items-center gap-2 border border-green-400"
           >
@@ -186,7 +194,7 @@ export default function AdminDashboard() {
           </div>
         </div>
         <p className="px-8 text-[10px] uppercase tracking-widest text-[#3E2723]/40 font-black mb-4">Admin Registry</p>
-        
+
         <nav className="flex-1 px-4 space-y-1 overflow-y-auto pt-4">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -195,9 +203,8 @@ export default function AdminDashboard() {
               <button
                 key={item.id}
                 onClick={() => setActiveTab(item.id)}
-                className={`w-full flex items-center gap-4 px-6 py-5 rounded-xl transition-all duration-300 text-[14px] font-black uppercase tracking-[0.2em] ${
-                  isActive ? 'bg-[#3E2723] text-white shadow-xl translate-x-2' : 'text-[#3E2723]/60 hover:text-[#3E2723] hover:bg-[#3E2723]/5'
-                }`}
+                className={`w-full flex items-center gap-4 px-6 py-5 rounded-xl transition-all duration-300 text-[14px] font-black uppercase tracking-[0.2em] ${isActive ? 'bg-[#3E2723] text-white shadow-xl translate-x-2' : 'text-[#3E2723]/60 hover:text-[#3E2723] hover:bg-[#3E2723]/5'
+                  }`}
               >
                 <Icon size={18} strokeWidth={isActive ? 3 : 2} />
                 {item.label}
@@ -223,7 +230,7 @@ export default function AdminDashboard() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-8 scrollbar-hide">
-          
+
           {/* 1. Dashboard Tab & User Analytics */}
           {activeTab === 'dashboard' && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -267,10 +274,10 @@ export default function AdminDashboard() {
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={revenueData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#3E2723" strokeOpacity={0.05} vertical={false} />
-                        <XAxis dataKey="name" stroke="#3E2723" strokeOpacity={0.3} tick={{fontSize: 12, fontWeight: 900}} tickLine={false} axisLine={false} />
-                        <YAxis stroke="#3E2723" strokeOpacity={0.3} tick={{fontSize: 12, fontWeight: 900}} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val/1000}k`} />
-                        <RechartsTooltip contentStyle={{backgroundColor: 'white', borderColor: '#3E272310', borderRadius: '16px', color: '#3E2723', boxShadow: '0 20px 40px rgba(0,0,0,0.1)'}} itemStyle={{color: '#3E2723', fontSize: '13px', fontWeight: '900', textTransform: 'uppercase'}} />
-                        <Line type="monotone" dataKey="revenue" stroke="#3E2723" strokeWidth={3} dot={{fill: 'white', stroke: '#3E2723', strokeWidth: 2, r: 4}} activeDot={{r: 6, fill: '#A68966'}} />
+                        <XAxis dataKey="name" stroke="#3E2723" strokeOpacity={0.3} tick={{ fontSize: 12, fontWeight: 900 }} tickLine={false} axisLine={false} />
+                        <YAxis stroke="#3E2723" strokeOpacity={0.3} tick={{ fontSize: 12, fontWeight: 900 }} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val / 1000}k`} />
+                        <RechartsTooltip contentStyle={{ backgroundColor: 'white', borderColor: '#3E272310', borderRadius: '16px', color: '#3E2723', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} itemStyle={{ color: '#3E2723', fontSize: '13px', fontWeight: '900', textTransform: 'uppercase' }} />
+                        <Line type="monotone" dataKey="revenue" stroke="#3E2723" strokeWidth={3} dot={{ fill: 'white', stroke: '#3E2723', strokeWidth: 2, r: 4 }} activeDot={{ r: 6, fill: '#A68966' }} />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
@@ -282,9 +289,9 @@ export default function AdminDashboard() {
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={categoryData}>
                         <CartesianGrid strokeDasharray="3 3" stroke="#3E2723" strokeOpacity={0.05} vertical={false} />
-                        <XAxis dataKey="name" stroke="#3E2723" strokeOpacity={0.3} tick={{fontSize: 12, fontWeight: 900}} tickLine={false} axisLine={false} />
-                        <YAxis stroke="#3E2723" strokeOpacity={0.3} tick={{fontSize: 12, fontWeight: 900}} tickLine={false} axisLine={false} />
-                        <RechartsTooltip cursor={{fill: '#3E2723', opacity: 0.03}} contentStyle={{backgroundColor: 'white', borderColor: '#3E272310', borderRadius: '16px', color: '#3E2723', boxShadow: '0 20px 40px rgba(0,0,0,0.1)'}} itemStyle={{color: '#3E2723', fontSize: '13px', fontWeight: '900'}} />
+                        <XAxis dataKey="name" stroke="#3E2723" strokeOpacity={0.3} tick={{ fontSize: 12, fontWeight: 900 }} tickLine={false} axisLine={false} />
+                        <YAxis stroke="#3E2723" strokeOpacity={0.3} tick={{ fontSize: 12, fontWeight: 900 }} tickLine={false} axisLine={false} />
+                        <RechartsTooltip cursor={{ fill: '#3E2723', opacity: 0.03 }} contentStyle={{ backgroundColor: 'white', borderColor: '#3E272310', borderRadius: '16px', color: '#3E2723', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }} itemStyle={{ color: '#3E2723', fontSize: '13px', fontWeight: '900' }} />
                         <Bar dataKey="sales" fill="#3E2723" fillOpacity={0.8} radius={[6, 6, 0, 0]} />
                       </BarChart>
                     </ResponsiveContainer>
@@ -325,8 +332,8 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-10 py-8 text-[#3E2723] font-bold uppercase tracking-widest">{row.cx}</td>
                           <td className="px-10 py-8">
-                            <select 
-                              value={row.packed ? 'packed' : 'not_packed'} 
+                            <select
+                              value={row.packed ? 'packed' : 'not_packed'}
                               onChange={(e) => handleUpdateStatus(row.id, 'packed', e.target.value === 'packed')}
                               className={`bg-white/80 text-[13px] font-black uppercase tracking-widest px-6 py-3 rounded-full border outline-none cursor-pointer transition-all ${row.packed ? 'border-green-600/30 text-green-700' : 'border-red-600/30 text-red-700'}`}
                             >
@@ -335,8 +342,8 @@ export default function AdminDashboard() {
                             </select>
                           </td>
                           <td className="px-10 py-8">
-                            <select 
-                              value={row.delivery} 
+                            <select
+                              value={row.delivery}
                               onChange={(e) => handleUpdateStatus(row.id, 'delivery', e.target.value)}
                               className="bg-white/80 text-[13px] font-black uppercase tracking-widest px-6 py-3 rounded-full border border-[#A68966]/30 text-[#A68966] outline-none cursor-pointer"
                             >
@@ -346,7 +353,7 @@ export default function AdminDashboard() {
                             </select>
                           </td>
                           <td className="px-10 py-8 text-right">
-                            <button 
+                            <button
                               onClick={() => setExpandedOrder(expandedOrder === row.id ? null : row.id)}
                               className="text-[13px] font-black uppercase tracking-widest text-[#3E2723] hover:underline underline-offset-4"
                             >
@@ -378,7 +385,7 @@ export default function AdminDashboard() {
                                     <input type="text" placeholder="AWB / Tracking Identity" className="w-full glass-input-premium !text-[15px] !py-4" id={`track-${row.id}`} />
                                     <button onClick={() => {
                                       const val = document.getElementById(`track-${row.id}`).value;
-                                      if(val) notifySMS(`📞 SMS to Mobile: Your Order ${row.id} Tracking Details: ${val}`);
+                                      if (val) notifySMS(`📞 SMS to Mobile: Your Order ${row.id} Tracking Details: ${val}`);
                                     }} className="w-full bg-[#3E2723] text-white text-[12px] font-black px-10 py-5 uppercase tracking-[0.3em] rounded-xl hover:bg-black transition-all shadow-xl active:scale-95">Dispatch SMS</button>
                                   </div>
                                 </div>
@@ -397,13 +404,13 @@ export default function AdminDashboard() {
           {/* 3. Manage Menu / Products Tab */}
           {activeTab === 'menu' && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-              
+
               <div className="bg-white/60 border border-[#3E2723]/10 p-8 rounded-3xl flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl backdrop-blur-xl">
                 <div>
                   <h3 className="text-[#3E2723] font-black tracking-[0.3em] text-[13px] uppercase mb-1.5">Catalog Inventory</h3>
                   <p className="text-[#3E2723]/40 text-[11px] uppercase tracking-widest">Manage product details, pricing architectures, and variants.</p>
                 </div>
-                <button 
+                <button
                   onClick={() => handleOpenModal()}
                   className="bg-[#3E2723] hover:bg-black text-white font-black uppercase tracking-widest text-[11px] px-10 py-5 rounded-xl flex items-center gap-3 transition-all shadow-xl active:scale-95"
                 >
@@ -415,7 +422,7 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8">
                 {products.map(product => (
                   <div key={product.id} className="bg-white/60 rounded-3xl overflow-hidden border border-[#3E2723]/10 hover:border-[#3E2723]/30 transition-all group flex flex-col shadow-xl relative backdrop-blur-md">
-                    
+
                     {/* Render Tags */}
                     {product.tags && product.tags.length > 0 && (
                       <div className="absolute top-6 left-6 z-20 flex flex-col gap-2">
@@ -437,7 +444,7 @@ export default function AdminDashboard() {
                     <div className="p-10 flex-1 flex flex-col">
                       <h4 className="text-[#3E2723] font-black leading-snug line-clamp-2 text-[15px] uppercase tracking-widest mb-3">{product.name}</h4>
                       <span className="text-[#A68966] font-black tracking-widest text-[18px] mb-5">₹{product.price.toLocaleString()}</span>
-                      
+
                       {/* Render Variant Info */}
                       {product.variants && product.variants.length > 0 && (
                         <div className="flex flex-wrap gap-2.5 mb-5">
@@ -448,7 +455,7 @@ export default function AdminDashboard() {
                           ))}
                         </div>
                       )}
-                      
+
                       <p className="text-[#3E2723]/60 text-[12px] line-clamp-3 leading-relaxed font-bold uppercase tracking-wider mt-auto italic">
                         {product.description}
                       </p>
@@ -486,11 +493,10 @@ export default function AdminDashboard() {
                           <p className="text-[10px] text-[#3E2723]/40 uppercase font-black">Verified User</p>
                         </td>
                         <td className="px-10 py-8">
-                          <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                            fb.rating === 'GOOD' ? 'bg-green-100 text-green-700 border border-green-200' : 
-                            fb.rating === 'AVERAGE' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' : 
-                            'bg-red-100 text-red-700 border border-red-200'
-                          }`}>
+                          <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${fb.rating === 'GOOD' ? 'bg-green-100 text-green-700 border border-green-200' :
+                            fb.rating === 'AVERAGE' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+                              'bg-red-100 text-red-700 border border-red-200'
+                            }`}>
                             {fb.rating}
                           </span>
                         </td>
@@ -536,7 +542,7 @@ export default function AdminDashboard() {
                               {row.picture ? (
                                 <img src={row.picture} alt="Avatar" className="w-full h-full object-cover" />
                               ) : (
-                                <div className="text-[12px] font-black text-[#3E2723]/40 uppercase">{row.name?.substring(0,2)}</div>
+                                <div className="text-[12px] font-black text-[#3E2723]/40 uppercase">{row.name?.substring(0, 2)}</div>
                               )}
                             </div>
                             <div>
@@ -546,16 +552,15 @@ export default function AdminDashboard() {
                           </div>
                         </td>
                         <td className="px-10 py-6 whitespace-nowrap">
-                          <p className="font-black text-[#3E2723] uppercase tracking-widest text-[11px]">{row.createdAt ? new Date(row.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric'}) : 'Initial'}</p>
+                          <p className="font-black text-[#3E2723] uppercase tracking-widest text-[11px]">{row.createdAt ? new Date(row.createdAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Initial'}</p>
                         </td>
                         <td className="px-10 py-6 whitespace-nowrap">
-                          <p className="font-black text-[#3E2723] uppercase tracking-widest text-[11px]">{row.lastLogin ? new Date(row.lastLogin).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit'}) : 'Never'}</p>
+                          <p className="font-black text-[#3E2723] uppercase tracking-widest text-[11px]">{row.lastLogin ? new Date(row.lastLogin).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : 'Never'}</p>
                           <p className="text-[9px] text-[#3E2723]/40 uppercase font-black">{row.lastLogin ? new Date(row.lastLogin).toLocaleDateString() : 'N/A'}</p>
                         </td>
                         <td className="px-10 py-6">
-                          <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${
-                            row.authType === 'GOOGLE' ? 'bg-blue-100 text-blue-700 border border-blue-200' : 'bg-[#3E2723]/10 text-[#3E2723] border border-[#3E2723]/10'
-                          }`}>
+                          <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest ${row.authType === 'GOOGLE' ? 'bg-blue-100 text-blue-700 border border-blue-200' : 'bg-[#3E2723]/10 text-[#3E2723] border border-[#3E2723]/10'
+                            }`}>
                             {row.authType || 'MANUAL'}
                           </span>
                         </td>
@@ -582,7 +587,7 @@ export default function AdminDashboard() {
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsModalOpen(false)} className="absolute inset-0 bg-[#3E2723]/20 backdrop-blur-sm" />
             <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 20 }} className="bg-white/90 backdrop-blur-3xl border border-[#3E2723]/10 w-full max-w-2xl rounded-3xl shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] relative z-10 flex flex-col max-h-[90vh] overflow-hidden">
-              
+
               <div className="px-10 py-8 border-b border-[#3E2723]/5 flex justify-between items-center bg-white/50">
                 <div>
                   <h3 className="text-[#3E2723] font-black tracking-[0.3em] uppercase text-[15px]">
@@ -592,33 +597,33 @@ export default function AdminDashboard() {
                 </div>
                 <button onClick={() => setIsModalOpen(false)} className="text-[#3E2723]/40 hover:text-[#3E2723] transition-colors"><X size={20} /></button>
               </div>
-              
+
               <form onSubmit={handleSave} className="p-10 space-y-10 overflow-y-auto custom-scrollbar flex-1">
-                
+
                 {/* Core Details */}
                 <div className="space-y-6">
                   <h4 className="text-[12px] text-[#3E2723]/40 uppercase tracking-[0.3em] font-black border-b border-[#3E2723]/5 pb-4">Primary Specifications</h4>
                   <div className="space-y-4">
                     <label className="luxury-label !mb-2">Identification Name</label>
-                    <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full glass-input-premium !text-lg" placeholder="e.g. Cardinal Faucet" />
+                    <input required type="text" value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} className="w-full glass-input-premium !text-lg" placeholder="e.g. Cardinal Faucet" />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-10">
                     <div className="space-y-4">
                       <label className="luxury-label !mb-2">Valuation (INR)</label>
-                      <input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full glass-input-premium !text-lg" placeholder="2799" />
+                      <input required type="number" value={formData.price} onChange={e => setFormData({ ...formData, price: e.target.value })} className="w-full glass-input-premium !text-lg" placeholder="2799" />
                     </div>
                     <div className="space-y-4">
                       <label className="luxury-label !mb-2 flex justify-between">
                         <span>Digital Asset URL</span>
                       </label>
-                      <input required type="text" value={formData.image} onChange={e => setFormData({...formData, image: e.target.value})} className="w-full glass-input-premium !text-lg" placeholder="/images/product-id.png" />
+                      <input required type="text" value={formData.image} onChange={e => setFormData({ ...formData, image: e.target.value })} className="w-full glass-input-premium !text-lg" placeholder="/images/product-id.png" />
                     </div>
                   </div>
 
                   <div className="space-y-4">
                     <label className="luxury-label !mb-2">Descriptive Narrative</label>
-                    <textarea required rows="3" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} className="w-full glass-input-premium !text-lg resize-none" placeholder="Enter product details..." />
+                    <textarea required rows="3" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} className="w-full glass-input-premium !text-lg resize-none" placeholder="Enter product details..." />
                   </div>
                 </div>
 
@@ -643,9 +648,9 @@ export default function AdminDashboard() {
                     <h4 className="text-[12px] text-[#3E2723]/40 uppercase tracking-[0.3em] font-black">Variant Parameters</h4>
                     <button type="button" onClick={addVariantField} className="text-[#3E2723] text-[11px] font-black uppercase tracking-widest hover:underline">+ Append Parameter</button>
                   </div>
-                  
+
                   {formData.variants.length === 0 && <p className="text-[11px] text-[#3E2723]/20 uppercase tracking-widest italic font-black">No parameters defined.</p>}
-                  
+
                   <div className="space-y-6">
                     {formData.variants.map((variant) => (
                       <div key={variant.id} className="flex items-center gap-6">
@@ -659,7 +664,7 @@ export default function AdminDashboard() {
                 </div>
 
               </form>
-              
+
               <div className="p-10 border-t border-[#3E2723]/5 flex justify-end gap-6 bg-white/50 backdrop-blur-xl">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-10 py-4 text-[12px] font-black uppercase tracking-widest text-[#3E2723]/40 hover:text-[#3E2723] transition-colors">Discard</button>
                 <button onClick={handleSave} className="px-12 py-5 text-[12px] font-black uppercase tracking-widest bg-[#3E2723] text-white rounded-xl hover:bg-black transition-all shadow-2xl active:scale-95">

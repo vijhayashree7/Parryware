@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Mail, Lock, AlertCircle, CheckCircle, Eye, EyeOff, X } from 'lucide-react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../utils/api';
@@ -34,11 +34,11 @@ const SignIn = () => {
   const handleGoogleSuccess = async (credentialResponse) => {
     setError('');
     setSuccess('Verified. Identifying Records...');
-    
+
     try {
       const decoded = jwtDecode(credentialResponse.credential);
       setEmail(decoded.email || '');
-      setPassword('••••••••'); 
+      setPassword('••••••••');
 
       const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: 'POST',
@@ -46,13 +46,13 @@ const SignIn = () => {
         body: JSON.stringify({ credential: credentialResponse.credential })
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setSuccess('SIGNED IN SUCCESSFULLY!');
         authLogin(data.user, data.token);
-        
+
         const from = location.state?.from || (data.user.email.toLowerCase().includes('admin') ? '/admin' : '/');
-        
+
         setTimeout(() => {
           navigate(from, { replace: true });
         }, 1500);
@@ -70,7 +70,7 @@ const SignIn = () => {
     e.preventDefault();
     setError('');
     setSuccess('Checking Registry...');
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
         method: 'POST',
@@ -78,13 +78,13 @@ const SignIn = () => {
         body: JSON.stringify({ email, password })
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setSuccess('SIGNED IN SUCCESSFULLY!');
         authLogin(data.user, data.token);
-        
+
         const from = location.state?.from || (email.toLowerCase().includes('admin') ? '/admin' : '/');
-        
+
         setTimeout(() => {
           navigate(from, { replace: true });
         }, 3000);
@@ -146,6 +146,7 @@ const SignIn = () => {
             shape="rectangular"
             auto_select={false}
             cancel_on_tap_outside={true}
+            prompt="select_account"
           />
         </div>
 
@@ -159,8 +160,8 @@ const SignIn = () => {
         <form className="w-full space-y-3" onSubmit={handleManualLogin}>
           <div className="space-y-0.5">
             <label className="luxury-label">Email Handle</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -172,7 +173,7 @@ const SignIn = () => {
           <div className="space-y-0.5 relative">
             <div className="flex justify-between items-center">
               <label className="luxury-label">Passphrase</label>
-              <button 
+              <button
                 type="button"
                 onClick={handleForgotPassword}
                 className="text-[9px] uppercase tracking-widest font-black text-[#A68966] hover:text-[#3E2723] transition-colors"
@@ -181,8 +182,8 @@ const SignIn = () => {
               </button>
             </div>
             <div className="relative group">
-              <input 
-                type={showPassword ? "text" : "password"} 
+              <input
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -203,7 +204,7 @@ const SignIn = () => {
             </div>
           </div>
 
-          <button 
+          <button
             type="submit"
             className="w-full bg-[#3E2723] text-white py-4 rounded-lg font-black uppercase tracking-[0.6em] text-[10px] shadow-2xl hover:bg-black transition-all active:scale-95"
           >

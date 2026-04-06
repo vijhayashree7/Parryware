@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Mail, Lock, User, AlertCircle, CheckCircle, Eye, EyeOff, X } from 'lucide-react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { AlertCircle, CheckCircle, Eye, EyeOff } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useAuth } from '../context/AuthContext';
 import { API_BASE_URL } from '../utils/api';
@@ -35,12 +35,12 @@ const SignUp = () => {
   const handleGoogleSuccess = async (credentialResponse) => {
     setError('');
     setSuccess('Verified. Creating profile identity...');
-    
+
     try {
       const decoded = jwtDecode(credentialResponse.credential);
       setName(decoded.name || '');
       setEmail(decoded.email || '');
-      setPassword('••••••••'); 
+      setPassword('••••••••');
 
       const response = await fetch(`${API_BASE_URL}/api/auth/google`, {
         method: 'POST',
@@ -48,13 +48,13 @@ const SignUp = () => {
         body: JSON.stringify({ credential: credentialResponse.credential })
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setSuccess('ACCOUNT CREATED SUCCESSFULLY!');
         authLogin(data.user, data.token);
-        
+
         const from = location.state?.from || (decoded.email.toLowerCase().includes('admin') ? '/admin' : '/');
-        
+
         setTimeout(() => {
           navigate(from, { replace: true });
         }, 1500);
@@ -72,7 +72,7 @@ const SignUp = () => {
     e.preventDefault();
     setError('');
     setSuccess('Establishing Profile...');
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
         method: 'POST',
@@ -80,13 +80,13 @@ const SignUp = () => {
         body: JSON.stringify({ name, email, password })
       });
       const data = await response.json();
-      
+
       if (data.success) {
         setSuccess('ACCOUNT CREATED SUCCESSFULLY!');
         authLogin(data.user, data.token);
-        
+
         const from = location.state?.from || (email.toLowerCase().includes('admin') ? '/admin' : '/');
-        
+
         setTimeout(() => {
           navigate(from, { replace: true });
         }, 1500);
@@ -139,6 +139,7 @@ const SignUp = () => {
             text="signup_with"
             auto_select={false}
             cancel_on_tap_outside={true}
+            prompt="select_account"
           />
         </div>
 
@@ -152,8 +153,8 @@ const SignUp = () => {
         <form className="w-full space-y-3" onSubmit={handleManualRegister}>
           <div className="space-y-0.5">
             <label className="luxury-label">Full Name</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
@@ -164,8 +165,8 @@ const SignUp = () => {
 
           <div className="space-y-0.5">
             <label className="luxury-label">Email Handle</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -177,8 +178,8 @@ const SignUp = () => {
           <div className="space-y-0.5 relative">
             <label className="luxury-label">Secret Passkey</label>
             <div className="relative group">
-              <input 
-                type={showPassword ? "text" : "password"} 
+              <input
+                type={showPassword ? "text" : "password"}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -199,7 +200,7 @@ const SignUp = () => {
             </div>
           </div>
 
-          <button 
+          <button
             type="submit"
             className="w-full bg-[#3E2723] text-white py-4 rounded-lg font-black uppercase tracking-[0.6em] text-[10px] shadow-2xl hover:bg-black transition-all active:scale-95 mt-4"
           >

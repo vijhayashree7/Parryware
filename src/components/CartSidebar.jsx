@@ -68,7 +68,7 @@ const CartSidebar = () => {
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 h-full w-full max-w-[480px] bg-white/80 backdrop-blur-xl z-[101] shadow-[-20px_0_50px_rgba(78,52,46,0.15)] flex flex-col overflow-hidden"
+            className="fixed top-0 right-0 h-full w-full max-w-[480px] luxury-smoke-bg backdrop-blur-xl z-[101] shadow-[-20px_0_50px_rgba(78,52,46,0.15)] flex flex-col overflow-hidden"
           >
             
             {/* Header - Luxury Minimalist */}
