@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoppingCart, Star, Check, ArrowLeft, Trash2, Plus, Minus } from 'lucide-react';
 import { Link, useParams, Navigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { basinCollectionImages as imageUrls, basinCategoriesList as categories } from '../data/productData';
 

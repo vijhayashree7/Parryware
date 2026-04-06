@@ -8,6 +8,7 @@ require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 const ORDERS_FILE = path.join(__dirname, 'orders.json');
+const FEEDBACKS_FILE = path.join(__dirname, 'feedbacks.json');
 
 // Helper to load users from file
 const loadUsers = () => {
@@ -53,8 +54,44 @@ const saveOrders = (ordersToSave) => {
   }
 };
 
+// Helper to load feedbacks from file
+const loadFeedbacks = () => {
+  try {
+    if (fs.existsSync(FEEDBACKS_FILE)) {
+      const data = fs.readFileSync(FEEDBACKS_FILE, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (error) {
+    console.error('--- Error Loading Feedbacks ---', error.message);
+  }
+  return [];
+};
+
+// Helper to save feedbacks to file
+const saveFeedbacks = (feedbacksToSave) => {
+  try {
+    fs.writeFileSync(FEEDBACKS_FILE, JSON.stringify(feedbacksToSave, null, 2), 'utf8');
+  } catch (error) {
+    console.error('--- Error Saving Feedbacks ---', error.message);
+  }
+};
+
+// Sequential ID Generator
+const generateNextId = (prefix, list) => {
+  const numericIds = list
+    .map(item => {
+      const match = String(item.id || item.customerId || '').match(new RegExp(`${prefix}(\\d+)`));
+      return match ? parseInt(match[1]) : 0;
+    })
+    .filter(id => !isNaN(id));
+  
+  const maxId = numericIds.length > 0 ? Math.max(...numericIds) : 0;
+  return `${prefix}${String(maxId + 1).padStart(3, '0')}`;
+};
+
 let users = loadUsers();
 let orders = loadOrders();
+let feedbacks = loadFeedbacks();
 
 const app = express();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -107,17 +144,21 @@ app.post('/api/auth/google', async (req, res) => {
     let user = users.find(u => u.email === email);
     if (!user) {
       user = { 
+        id: generateNextId('CUST', users),
         googleId: sub, 
         email, 
         name, 
         picture, 
         createdAt: new Date().toISOString(),
         lastLogin: new Date().toISOString(),
+        logins: [new Date().toISOString()],
         authType: 'GOOGLE'
       };
       users.push(user);
     } else {
       user.lastLogin = new Date().toISOString();
+      if (!user.logins) user.logins = [];
+      user.logins.push(new Date().toISOString());
       user.name = name; // Sync display name
       user.picture = picture; // Sync avatar
     }
@@ -142,6 +183,7 @@ app.post('/api/auth/register', (req, res) => {
   }
   
   const newUser = { 
+    id: generateNextId('CUST', users),
     email, 
     password, 
     name, 
@@ -166,7 +208,10 @@ app.post('/api/auth/login', (req, res) => {
   }
 
   user.lastLogin = new Date().toISOString();
-  saveUsers(users); // Persist registry update
+  if (!user.logins) user.logins = [];
+  user.logins.push(new Date().toISOString());
+  saveUsers(users);
+ // Persist registry update
   
   const token = jwt.sign({ userId: email }, process.env.JWT_SECRET, { expiresIn: '7d' });
   res.json({ success: true, token, user: { name: user.name, email: user.email } });
@@ -181,6 +226,7 @@ app.get('/api/admin/users', (req, res) => {
     authType: u.authType || 'MANUAL',
     createdAt: u.createdAt,
     lastLogin: u.lastLogin,
+    logins: u.logins || [],
     picture: u.picture || null
   }));
   res.json({ success: true, users: userRegistry });
@@ -209,21 +255,16 @@ app.post('/api/orders', (req, res) => {
   console.log('--- Incoming Order Payload ---');
   console.log(JSON.stringify(req.body, null, 2));
 
-  const { id, cx, email, items, total, date } = req.body;
-  
-  if (!id || !email) {
-    return res.status(400).json({ success: false, message: 'Invalid order payload' });
-  }
+  const { cx, email, items, total, date } = req.body;
 
   const newOrder = {
-    id,
+    id: generateNextId('ORD', orders),
     cx,
     email,
     items,
     total,
     date: date || new Date().toISOString().split('T')[0],
-    packed: false,
-    delivery: 'Pending'
+    status: 'Ordered' // Default initial stage
   };
 
   orders.unshift(newOrder);
@@ -235,17 +276,44 @@ app.post('/api/orders', (req, res) => {
 // 3. Update Order Progress (Admin)
 app.patch('/api/orders/:id', (req, res) => {
   const { id } = req.params;
-  const { field, value } = req.body;
+  const { status } = req.body; // Expecting status field now
 
   const orderIndex = orders.findIndex(o => o.id === id);
   if (orderIndex === -1) {
     return res.status(404).json({ success: false, message: 'Order Not Found' });
   }
 
-  orders[orderIndex] = { ...orders[orderIndex], [field]: value };
+  orders[orderIndex] = { ...orders[orderIndex], status };
   saveOrders(orders);
   
   res.json({ success: true, order: orders[orderIndex] });
+});
+
+// --- Feedback Management ---
+
+// 1. Fetch Feedbacks (Public/Admin)
+app.get('/api/feedbacks', (req, res) => {
+  res.json({ success: true, feedbacks });
+});
+
+// 2. Create Feedback
+app.post('/api/feedbacks', (req, res) => {
+  const { customerName, customerId, rating, message, productReference, date } = req.body;
+  
+  const newFeedback = {
+    id: Date.now(),
+    customerName: customerName || 'Anonymous',
+    customerId: customerId || null,
+    rating: Number(rating) || 5,
+    message,
+    productReference: productReference || null,
+    date: date || new Date().toISOString().split('T')[0]
+  };
+
+  feedbacks.unshift(newFeedback);
+  saveFeedbacks(feedbacks);
+  
+  res.json({ success: true, feedback: newFeedback });
 });
 
 app.listen(PORT, '0.0.0.0', () => {

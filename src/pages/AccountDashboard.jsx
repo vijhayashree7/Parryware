@@ -159,9 +159,9 @@ const AccountDashboard = () => {
                               </div>
                               <div className="flex flex-col md:items-end gap-2">
                                 <p className="font-serif text-xl text-[#3E2723]">{order.total}</p>
-                                <div className="flex items-center gap-2 px-3 py-1 bg-green-50 text-green-700 border border-green-100 rounded-full">
+                                <div className="flex items-center gap-2 px-3 py-1 bg-[#3E2723]/5 text-[#3E2723] border border-[#3E2723]/10 rounded-full">
                                   <CheckCircle2 size={12} />
-                                  <span className="text-[9px] font-black uppercase tracking-widest">{order.delivery}</span>
+                                  <span className="text-[9px] font-black uppercase tracking-widest">{order.status || 'Ordered'}</span>
                                 </div>
                               </div>
                             </div>
@@ -180,26 +180,43 @@ const AccountDashboard = () => {
                                 <div className="absolute top-0 left-0 w-full h-[1px] bg-[#F0E6DD]"></div>
                                 <div className="flex items-center justify-between relative">
                                   {[
-                                    { label: 'Confirmed', status: 'done' },
-                                    { label: 'Crafting', status: 'done' },
-                                    { label: 'Transit', status: 'active' },
-                                    { label: 'Arrival', status: 'pending' }
-                                  ].map((step, sIdx) => (
-                                    <div key={sIdx} className="flex flex-col items-center gap-3 relative z-10">
-                                      <div className={`w-3 h-3 rounded-full border-2 transition-all duration-700 ${
-                                        step.status === 'done' ? 'bg-[#3E2723] border-[#3E2723]' : 
-                                        step.status === 'active' ? 'bg-white border-[#A68966] scale-125 shadow-[0_0_10px_rgba(166,137,102,0.4)]' : 
-                                        'bg-white border-[#F0E6DD]'
-                                      }`} />
-                                      <span className={`text-[8px] font-black uppercase tracking-[0.2em] transition-colors ${
-                                        step.status === 'pending' ? 'text-[#D1C6BD]' : 'text-[#3E2723]'
-                                      }`}>
-                                        {step.label}
-                                      </span>
-                                    </div>
-                                  ))}
-                                  {/* Progress Line Overlay */}
-                                  <div className="absolute top-[5.5px] left-0 w-2/3 h-[2px] bg-[#3E2723]/30 z-0 opacity-20"></div>
+                                    { label: 'Ordered', id: 'Ordered' },
+                                    { label: 'Pending', id: 'Pending' },
+                                    { label: 'Ready to Deliver', id: 'Ready to Deliver' },
+                                    { label: 'Delivered', id: 'Delivered' }
+                                  ].map((step, sIdx) => {
+                                    const statuses = ['Ordered', 'Pending', 'Ready to Deliver', 'Delivered'];
+                                    const currentStatus = order.status || 'Ordered';
+                                    const currentIdx = statuses.indexOf(currentStatus);
+                                    const stepIdx = statuses.indexOf(step.id);
+                                    
+                                    let statusType = 'pending';
+                                    if (stepIdx < currentIdx) statusType = 'done';
+                                    else if (stepIdx === currentIdx) statusType = 'active';
+
+                                    return (
+                                      <div key={sIdx} className="flex flex-col items-center gap-3 relative z-10">
+                                        <div className={`w-3 h-3 rounded-full border-2 transition-all duration-700 ${
+                                          statusType === 'done' ? 'bg-[#3E2723] border-[#3E2723]' : 
+                                          statusType === 'active' ? 'bg-white border-[#A68966] scale-125 shadow-[0_0_10px_rgba(166,137,102,0.4)]' : 
+                                          'bg-white border-[#F0E6DD]'
+                                        }`} />
+                                        <span className={`text-[8px] font-black uppercase tracking-[0.2em] transition-colors ${
+                                          statusType === 'pending' ? 'text-[#D1C6BD]' : 'text-[#3E2723]'
+                                        }`}>
+                                          {step.label}
+                                        </span>
+                                      </div>
+                                    );
+                                  })}
+                                  {/* Progress Line Overlay dynamic width */}
+                                  <div 
+                                    className="absolute top-[5.5px] left-0 h-[2px] bg-[#3E2723] z-0 transition-all duration-1000"
+                                    style={{ 
+                                      width: `${(['Ordered', 'Pending', 'Ready to Deliver', 'Delivered'].indexOf(order.status || 'Ordered') / 3) * 100}%`,
+                                      opacity: 0.3
+                                    }}
+                                  ></div>
                                 </div>
                               </div>
 

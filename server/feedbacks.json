@@ -1,0 +1,53 @@
+[
+  {
+    "id": 1775488786539,
+    "customerName": "sheeren",
+    "customerId": null,
+    "rating": 4,
+    "message": "Fine",
+    "productReference": null,
+    "date": "2026-04-06"
+  },
+  {
+    "id": 1775486270025,
+    "customerName": "Thrisha Velmurugan",
+    "customerId": null,
+    "rating": 4,
+    "message": "goodd",
+    "productReference": null,
+    "date": "2026-04-06"
+  },
+  {
+    "id": 1775485978176,
+    "customerName": "Thrisha Velmurugan",
+    "customerId": null,
+    "rating": 4,
+    "message": "good",
+    "productReference": null,
+    "date": "2026-04-06"
+  },
+  {
+    "id": 1,
+    "customerName": "Arjun Sharma",
+    "rating": 5,
+    "message": "The Cardinal collection is absolutely stunning. The finish is premium and fits perfectly in my modern bathroom.",
+    "date": "2026-04-01",
+    "productReference": "Cardinal Faucet"
+  },
+  {
+    "id": 2,
+    "customerName": "Priya Patel",
+    "rating": 4,
+    "message": "Very elegant designs. The customer service was helpful, though the delivery took a couple of extra days.",
+    "date": "2026-04-03",
+    "productReference": "Praseo Basin"
+  },
+  {
+    "id": 3,
+    "customerName": "Vikram Singh",
+    "rating": 5,
+    "message": "Parryware quality never disappoints. Replaced all my old fittings with the new Quattro series.",
+    "date": "2026-04-05",
+    "productReference": "Quattro Collection"
+  }
+]

@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Send, ChevronLeft, CheckCircle2 } from 'lucide-react';
+import { Star, Send, ChevronLeft, CheckCircle2, User, Package } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useProducts } from '../context/ProductContext';
+import { useAuth } from '../context/AuthContext';
 
 const Feedback = () => {
   const navigate = useNavigate();
   const { addFeedback } = useProducts();
-  const [rating, setRating] = useState('GOOD');
+  const { user } = useAuth();
+  
+  const [rating, setRating] = useState(5);
+  const [customerName, setCustomerName] = useState(user?.name || '');
   const [suggestion, setSuggestion] = useState('');
+  const [productRef, setProductRef] = useState('');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!suggestion.trim()) return;
     
-    addFeedback({ rating, suggestion });
+    await addFeedback({ 
+      customerName: customerName || 'Anonymous',
+      rating, 
+      message: suggestion,
+      productReference: productRef,
+      date
+    });
     setSubmitted(true);
     
     setTimeout(() => {
@@ -50,38 +62,72 @@ const Feedback = () => {
         </button>
 
         <div className="text-center mb-10 mt-6">
-          <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="w-16 h-16 bg-[#FDFBF9] rounded-2xl flex items-center justify-center text-[#A68966] mx-auto mb-6 shadow-sm border border-[#F5F0EB]"
-          >
-            <MessageSquare size={32} strokeWidth={1} />
-          </motion.div>
-          <h1 className="text-4xl font-serif text-[#4E342E] mb-3">Feedback & Review</h1>
-          <p className="text-[#A68966] text-sm font-light max-w-sm mx-auto leading-relaxed">
-            Help us improve our premium experience. We value your thoughts, suggestions, and complaints.
+          <h1 className="text-4xl md:text-5xl font-serif text-[#4E342E] mb-6 tracking-wide relative inline-block">
+            Feedback & Review
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-24 h-1 bg-[#8c7462] rounded-full"></div>
+          </h1>
+          <p className="text-[#A68966] text-sm font-light max-w-sm mx-auto leading-relaxed mt-4">
+            Your feedback helps us maintain our premium standards. Share your experience with Parryware.
           </p>
         </div>
 
-        <form className="space-y-8" onSubmit={handleSubmit}>
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#4E342E]/60 ml-1">
+                <User size={12} /> YOUR NAME
+              </label>
+              <input
+                type="text"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                placeholder="Name or Username"
+                className="w-full bg-black/5 border border-black/5 rounded-2xl p-4 text-[#4E342E] placeholder-[#4E342E]/30 focus:outline-none focus:ring-1 focus:ring-[#A68966]/30 transition-all font-light"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#4E342E]/60 ml-1">
+                <Package size={12} /> PRODUCT REF
+              </label>
+              <input
+                type="text"
+                value={productRef}
+                onChange={(e) => setProductRef(e.target.value)}
+                placeholder="e.g. Cardinal Faucet"
+                className="w-full bg-black/5 border border-black/5 rounded-2xl p-4 text-[#4E342E] placeholder-[#4E342E]/30 focus:outline-none focus:ring-1 focus:ring-[#A68966]/30 transition-all font-light"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#4E342E]/60 ml-1">
+                📅 SELECT DATE
+              </label>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full bg-black/5 border border-black/5 rounded-2xl p-4 text-[#4E342E] focus:outline-none focus:ring-1 focus:ring-[#A68966]/30 transition-all font-light cursor-pointer"
+              />
+            </div>
+          </div>
+
           <div>
             <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#4E342E]/60 mb-4 text-center">
-              OVERALL EXPERIENCE
+              RATING
             </label>
-            <div className="grid grid-cols-3 gap-3">
-              {['GOOD', 'AVERAGE', 'BAD'].map((type) => (
+            <div className="flex justify-center gap-3">
+              {[1, 2, 3, 4, 5].map((star) => (
                 <button
-                  key={type}
+                  key={star}
                   type="button"
-                  onClick={() => setRating(type)}
-                  className={`py-4 rounded-xl text-[10px] font-bold tracking-widest transition-all duration-500 border ${
-                    rating === type 
-                      ? 'bg-[#A68966] text-white border-[#A68966] shadow-lg' 
-                      : 'bg-white/50 text-[#4E342E]/40 border-transparent hover:border-[#A68966]/20'
-                  }`}
+                  onClick={() => setRating(star)}
+                  className="transition-all duration-300 hover:scale-125"
                 >
-                  {type}
+                  <Star 
+                    size={32} 
+                    fill={star <= rating ? "#A68966" : "transparent"} 
+                    stroke={star <= rating ? "#A68966" : "#4E342E"} 
+                    strokeWidth={star <= rating ? 0 : 1}
+                  />
                 </button>
               ))}
             </div>
@@ -89,7 +135,7 @@ const Feedback = () => {
 
           <div>
             <label className="block text-[10px] font-black uppercase tracking-[0.3em] text-[#4E342E]/60 mb-3 ml-1">
-              SUGGESTIONS OR COMPLAINTS *
+              SHARE YOUR EXPERIENCE *
             </label>
             <textarea
               required
@@ -107,7 +153,7 @@ const Feedback = () => {
             type="submit"
             className="w-full bg-[#8D6E63] text-white py-5 rounded-2xl flex items-center justify-center gap-3 text-[12px] font-black uppercase tracking-[0.3em] shadow-xl hover:bg-[#4E342E] transition-all duration-500"
           >
-            SUBMIT FEEDBACK <Send size={16} />
+            SUBMIT REVIEW <Send size={16} />
           </motion.button>
         </form>
 
