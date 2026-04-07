@@ -114,64 +114,34 @@ export default function AdminDashboard() {
     end: new Date() 
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+  const [viewMode, setViewMode] = useState('Daily'); // Daily, Weekly, Monthly
+  const [customStartDate, setCustomStartDate] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
+  const [customEndDate, setCustomEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
-  const getFilteredData = () => {
-    const data = [];
-    const now = new Date();
-
-    if (analyticsTab === 'Daily') {
-      for (let i = 7; i >= 0; i--) {
-        const d = subDays(now, i);
-        const dStr = format(d, 'yyyy-MM-dd');
-        
-        const daySignups = users.filter(u => u.createdAt?.startsWith(dStr)).length;
-        const dayLogins = users.filter(u => u.logins?.some(l => l.startsWith(dStr))).length;
-        
-        data.push({
-          name: format(d, 'EEE'),
-          signups: daySignups,
-          logins: dayLogins,
-          fullDate: dStr
-        });
-      }
-    } else if (analyticsTab === 'Monthly') {
-      // Group by months of the current year (Jan to Dec)
-      for (let i = 0; i < 12; i++) {
-        const d = new Date(now.getFullYear(), i, 1);
-        const monthStr = format(d, 'yyyy-MM');
-        
-        const monthSignups = users.filter(u => u.createdAt?.startsWith(monthStr)).length;
-        const monthLogins = users.filter(u => u.logins?.some(l => l.startsWith(monthStr))).length;
-        
-        data.push({
-          name: format(d, 'MMM'),
-          signups: monthSignups,
-          logins: monthLogins,
-          fullDate: monthStr
-        });
-      }
-    } else if (analyticsTab === 'Yearly') {
-      // Group by last 5 years
-      const currentYear = now.getFullYear();
-      for (let i = currentYear - 4; i <= currentYear; i++) {
-        const yearStr = i.toString();
-        
-        const yearSignups = users.filter(u => u.createdAt?.startsWith(yearStr)).length;
-        const yearLogins = users.filter(u => u.logins?.some(l => l.startsWith(yearStr))).length;
-        
-        data.push({
-          name: yearStr,
-          signups: yearSignups,
-          logins: yearLogins,
-          fullDate: yearStr
-        });
-      }
-    }
-    return data;
+  // Helper to parse currency string (e.g., "₹26,798") to number
+  const parseTotal = (totalStr) => {
+    if (!totalStr) return 0;
+    // Remove currency symbol and commas
+    const cleaned = totalStr.replace(/[₹,]/g, '');
+    return parseFloat(cleaned) || 0;
   };
 
+  const getBusinessData = () => {
+    const start = parseISO(customStartDate);
+    const end = parseISO(customEndDate);
+    
+    return orders.filter(o => {
+      const orderDate = parseISO(o.date);
+      return isWithinInterval(orderDate, { start, end });
+    }).map(o => ({
+      ...o,
+      numericTotal: parseTotal(o.total),
+      paymentStatus: o.packed ? 'Paid' : 'Pending', // Mocking based on status
+      deliveryDate: o.delivery === 'Delivered' ? o.date : 'Estimated: TBD'
+    }));
+  };
 
-  const dashboardData = getFilteredData();
+  const businessData = getBusinessData();
 
   const getMetricStats = () => {
     const today = format(new Date(), 'yyyy-MM-dd');
@@ -181,7 +151,11 @@ export default function AdminDashboard() {
       totalUsers: users.length,
       dailySignups: users.filter(u => u.createdAt?.startsWith(today)).length,
       dailyLogins: users.filter(u => u.logins?.some(l => l.startsWith(today))).length,
-      monthlySignups: users.filter(u => u.createdAt?.startsWith(thisMonth)).length
+      monthlySignups: users.filter(u => u.createdAt?.startsWith(thisMonth)).length,
+      totalOrders: orders.length,
+      totalRevenue: orders.reduce((sum, o) => sum + parseTotal(o.total), 0),
+      filteredOrders: businessData.length,
+      filteredRevenue: businessData.reduce((sum, o) => sum + o.numericTotal, 0)
     };
   };
 
@@ -277,98 +251,96 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <MetricCard label="Total Users" value={stats.totalUsers} icon={Users} color="blue" />
                 <MetricCard label="Daily Signups" value={stats.dailySignups} icon={CalendarCheck} color="blue" />
-                <MetricCard label="Daily Logins" value={stats.dailyLogins} icon={Lock} color="blue" />
-                <MetricCard label="Monthly Enrollment" value={stats.monthlySignups} icon={Tag} color="teal" />
+                <MetricCard label="Orders (Range)" value={stats.filteredOrders} icon={ShoppingCart} color="teal" />
+                <MetricCard label="Revenue (Range)" value={`₹${stats.filteredRevenue.toLocaleString()}`} icon={Tag} color="teal" />
               </div>
 
-              <div className="bg-white rounded-[2.5rem] border border-[#3E2723]/5 shadow-sm p-10 overflow-visible relative">
+              <div className="bg-[#FFEFE5]/30 rounded-[2.5rem] border border-[#3E2723]/5 shadow-sm p-10 overflow-visible relative">
                 <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
                   <div className="flex items-center gap-4">
-                    <h3 className="text-xl font-serif text-[#3E2723] tracking-wide">User Analytics</h3>
+                    <h3 className="text-xl font-serif text-[#3E2723] tracking-wide">Calendar-based Business Dashboard</h3>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-4">
-                    <div className="text-[11px] font-black text-[#3E2723]/40 uppercase tracking-widest mr-4">Date Range:</div>
-                    <div className="relative">
-                      <button 
-                        onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
-                        className="flex items-center gap-3 bg-[#3E2723]/5 px-6 py-3 rounded-xl border border-[#3E2723]/10 text-[11px] font-black uppercase tracking-widest hover:bg-white hover:shadow-md transition-all"
-                      >
-                        {format(dateRange.start, 'MMM dd, yyyy')} — {format(dateRange.end, 'MMM dd, yyyy')}
-                        <CalendarCheck size={14} className="text-blue-500" />
-                      </button>
-                      <AnimatePresence>
-                        {isDatePickerOpen && (
-                          <motion.div 
-                            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }}
-                            className="absolute right-0 mt-4 w-[320px] bg-white rounded-3xl shadow-2xl border border-[#3E2723]/10 z-[100] p-6 text-[#3E2723]"
-                          >
-                             <div className="space-y-4">
-                                <div className="grid grid-cols-2 gap-2">
-                                  {['Today', 'Yesterday', 'Last 7 Days', 'This Month'].map(preset => (
-                                    <button 
-                                      key={preset}
-                                      onClick={() => {
-                                        if (preset === 'Today') setDateRange({ start: new Date(), end: new Date() });
-                                        if (preset === 'Last 7 Days') setDateRange({ start: subDays(new Date(), 7), end: new Date() });
-                                        if (preset === 'This Month') setDateRange({ start: startOfMonth(new Date()), end: new Date() });
-                                        setIsDatePickerOpen(false);
-                                      }}
-                                      className="py-2 text-[10px] font-black uppercase tracking-widest bg-[#3E2723]/5 rounded-lg hover:bg-blue-500 hover:text-white transition-all text-center"
-                                    >
-                                      {preset}
-                                    </button>
-                                  ))}
-                                </div>
-                                <button onClick={() => setIsDatePickerOpen(false)} className="w-full bg-blue-500 text-white py-3 rounded-xl font-black uppercase tracking-widest text-[11px] shadow-lg">Apply</button>
-                             </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                  <div className="flex flex-wrap items-center gap-6">
+                    <div className="flex items-center gap-3">
+                      <p className="text-[10px] font-black uppercase text-[#3E2723]/40 tracking-widest">From</p>
+                      <input 
+                        type="date" 
+                        value={customStartDate} 
+                        onChange={(e) => setCustomStartDate(e.target.value)}
+                        className="bg-white border border-[#3E2723]/10 rounded-xl px-4 py-2 text-[11px] font-black uppercase outline-none focus:border-[#8C513E] transition-all"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <p className="text-[10px] font-black uppercase text-[#3E2723]/40 tracking-widest">To</p>
+                      <input 
+                        type="date" 
+                        value={customEndDate} 
+                        onChange={(e) => setCustomEndDate(e.target.value)}
+                        className="bg-white border border-[#3E2723]/10 rounded-xl px-4 py-2 text-[11px] font-black uppercase outline-none focus:border-[#8C513E] transition-all"
+                      />
+                    </div>
+                    <div className="flex gap-2 bg-[#3E2723]/5 p-1 rounded-xl">
+                      {['Daily', 'Weekly', 'Monthly'].map(mode => (
+                        <button 
+                          key={mode} 
+                          onClick={() => setViewMode(mode)}
+                          className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === mode ? 'bg-[#3E2723] text-white shadow-lg' : 'text-[#3E2723]/40 hover:text-[#3E2723]'}`}
+                        >
+                          {mode}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex gap-2 mb-8 bg-[#3E2723]/5 p-1.5 rounded-2xl w-fit">
-                   {['Daily', 'Monthly', 'Yearly'].map(tab => (
-                     <button 
-                       key={tab}
-                       onClick={() => setAnalyticsTab(tab)}
-                       className={`px-8 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all ${
-                         analyticsTab === tab ? 'bg-white text-blue-500 shadow-sm' : 'text-[#3E2723]/40 hover:text-[#3E2723]'
-                       }`}
-                     >
-                       {tab}
-                     </button>
-                   ))}
-                </div>
-
-                <div className="bg-[#8C513E] rounded-[2.5rem] overflow-hidden shadow-xl text-white">
-                  <table className="w-full text-left">
-                    <thead className="bg-black/20 text-white uppercase tracking-widest text-[11px] font-black">
-                      <tr>
-                        <th className="px-10 py-8 italic uppercase tracking-[0.2em]">Reporting Period</th>
-                        <th className="px-10 py-8 italic uppercase tracking-[0.2em] text-center">New Member Enrollment</th>
-                        <th className="px-10 py-8 italic uppercase tracking-[0.2em] text-center">Active User Sessions</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-white/10 text-[14px]">
-                      {dashboardData.map((row, i) => (
-                        <tr key={i} className="hover:bg-white/5 transition-all duration-300">
-                          <td className="px-10 py-6 font-black uppercase tracking-widest text-[13px]">{row.name}</td>
-                          <td className="px-10 py-6 font-bold uppercase text-center text-blue-100">{row.signups.toLocaleString()}</td>
-                          <td className="px-10 py-6 font-bold uppercase text-center text-teal-100">{row.logins.toLocaleString()}</td>
+                <div className="bg-[#3E2723] rounded-[2.5rem] overflow-hidden shadow-2xl text-white">
+                  <div className="p-8 bg-black/20 border-b border-white/5 flex justify-between items-center">
+                    <p className="text-[11px] font-black uppercase tracking-[0.3em] italic text-[#FFEFE5]">Business Timeline Registry</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/40">Filtered: {businessData.length} records</p>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                      <thead className="bg-black/10 text-white uppercase tracking-widest text-[10px] font-black">
+                        <tr>
+                          <th className="px-8 py-6">Order #</th>
+                          <th className="px-8 py-6">Customer</th>
+                          <th className="px-8 py-6 text-center">Status</th>
+                          <th className="px-8 py-6 text-center">Revenue</th>
+                          <th className="px-8 py-6">Delivery Date</th>
+                          <th className="px-8 py-6 text-right">Payment</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {dashboardData.length === 0 && (
-                    <div className="p-20 text-center text-white/40 uppercase tracking-widest font-black text-[12px]">
-                      No analytic data recorded for this registry period
+                      </thead>
+                      <tbody className="divide-y divide-white/10 text-[13px]">
+                        {businessData.map((order, i) => (
+                          <tr key={i} className="hover:bg-white/5 transition-all duration-300">
+                            <td className="px-8 py-6 font-black uppercase tracking-widest text-[12px]">{order.id}</td>
+                            <td className="px-8 py-6 font-bold uppercase">{order.cx}</td>
+                            <td className="px-8 py-6 text-center">
+                              <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-tighter ${
+                                order.delivery === 'Delivered' ? 'bg-green-500/20 text-green-300 border border-green-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                              }`}>
+                                {order.delivery || 'Pending'}
+                              </span>
+                            </td>
+                            <td className="px-8 py-6 font-black uppercase text-center text-[#FFEFE5]">{order.total}</td>
+                            <td className="px-8 py-6 font-bold uppercase text-[11px] text-white/60">{order.deliveryDate}</td>
+                            <td className="px-8 py-6 text-right">
+                              <span className={`text-[10px] font-black uppercase tracking-widest ${order.paymentStatus === 'Paid' ? 'text-teal-400' : 'text-amber-400'}`}>
+                                {order.paymentStatus}
+                              </span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  {businessData.length === 0 && (
+                    <div className="p-20 text-center text-white/20 uppercase tracking-[0.4em] font-black text-[11px]">
+                      No logistical data found for the selected period
                     </div>
                   )}
                 </div>
-
               </div>
             </div>
           )}
