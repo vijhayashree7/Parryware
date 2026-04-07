@@ -1,65 +1,28 @@
 [
   {
-    "id": "#AB-29335",
+    "id": "ORD002",
     "cx": "Thrisha Velmurugan",
     "email": "thrishavelmurugan18@gmail.com",
     "items": [
       "Premium Heater Storage - Model 01 (1)",
-      "Premium Heater Storage - Model 02 (1)"
+      "Premium Heater Storage - Model 02 (1)",
+      "Premium One Piece Closet - Model 01 (1)"
     ],
-    "total": "₹26,798",
-    "date": "2026-04-06",
-    "packed": false,
-    "delivery": "Pending"
+    "total": "₹39,297",
+    "date": "2026-04-07",
+    "status": "Ordered"
   },
   {
-    "id": "#AB-92032",
-    "cx": "S Sheeren Taj",
-    "email": "230118.it@rmkec.ac.in",
-    "items": [
-      "Premium Wall Mounted Chimney - Model 02 (1)"
-    ],
-    "total": "₹22,299",
-    "date": "2026-04-06",
-    "packed": false,
-    "delivery": "Pending"
-  },
-  {
-    "id": "#AB-25702",
-    "cx": "Vijhaya Shree A",
-    "email": "shree782005@gmail.com",
-    "items": [
-      "Premium Two Piece Closet - Model 02 (1)",
-      "Premium Two Piece Closet - Model 03 (1)"
-    ],
-    "total": "₹32,498",
-    "date": "2026-04-05",
-    "packed": false,
-    "delivery": "Pending"
-  },
-  {
-    "id": "#AB-80263",
+    "id": "ORD001",
     "cx": "Thrisha Velmurugan",
     "email": "thrishavelmurugan18@gmail.com",
     "items": [
-      "Premium Heater Tankless - Model 03 (1)"
+      "Premium Heater Storage - Model 01 (1)",
+      "Premium Heater Storage - Model 02 (1)",
+      "Premium One Piece Closet - Model 01 (1)"
     ],
-    "total": "₹18,199",
-    "date": "2026-04-05",
-    "packed": false,
-    "delivery": "Pending"
-  },
-  {
-    "id": "#ORD-9912",
-    "email": "admin@abirami.com",
-    "cx": "Admin Authority",
-    "items": [
-      "Cardinal Faucet (1)",
-      "Praseo Basin (1)"
-    ],
-    "total": "₹2,799",
-    "packed": true,
-    "delivery": "Delivered",
-    "date": "2026-04-01"
+    "total": "₹39,297",
+    "date": "2026-04-07",
+    "status": "Ordered"
   }
 ]

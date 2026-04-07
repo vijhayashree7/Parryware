@@ -114,8 +114,8 @@ export default function AdminDashboard() {
     end: new Date() 
   });
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
-  const [viewMode, setViewMode] = useState('Daily'); // Daily, Weekly, Monthly
-  const [customStartDate, setCustomStartDate] = useState(format(subDays(new Date(), 30), 'yyyy-MM-dd'));
+  const [viewMode, setViewMode] = useState('Daily'); // Daily, Monthly
+  const [customStartDate, setCustomStartDate] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [customEndDate, setCustomEndDate] = useState(format(new Date(), 'yyyy-MM-dd'));
 
   // Helper to parse currency string (e.g., "₹26,798") to number
@@ -127,8 +127,8 @@ export default function AdminDashboard() {
   };
 
   const getBusinessData = () => {
-    const start = parseISO(customStartDate);
-    const end = parseISO(customEndDate);
+    const start = startOfDay(parseISO(customStartDate));
+    const end = endOfDay(parseISO(customEndDate));
     
     return orders.filter(o => {
       const orderDate = parseISO(o.date);
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
       numericTotal: parseTotal(o.total),
       paymentStatus: o.packed ? 'Paid' : 'Pending', // Mocking based on status
       deliveryDate: o.delivery === 'Delivered' ? o.date : 'Estimated: TBD'
-    }));
+    })).sort((a, b) => new Date(b.date) - new Date(a.date));
   };
 
   const businessData = getBusinessData();
@@ -281,10 +281,19 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div className="flex gap-2 bg-[#3E2723]/5 p-1 rounded-xl">
-                      {['Daily', 'Weekly', 'Monthly'].map(mode => (
+                      {['Daily', 'Monthly'].map(mode => (
                         <button 
                           key={mode} 
-                          onClick={() => setViewMode(mode)}
+                          onClick={() => {
+                            setViewMode(mode);
+                            if (mode === 'Daily') {
+                              setCustomStartDate(format(new Date(), 'yyyy-MM-dd'));
+                              setCustomEndDate(format(new Date(), 'yyyy-MM-dd'));
+                            } else if (mode === 'Monthly') {
+                              setCustomStartDate(format(startOfMonth(new Date()), 'yyyy-MM-dd'));
+                              setCustomEndDate(format(new Date(), 'yyyy-MM-dd'));
+                            }
+                          }}
                           className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === mode ? 'bg-[#3E2723] text-white shadow-lg' : 'text-[#3E2723]/40 hover:text-[#3E2723]'}`}
                         >
                           {mode}
@@ -304,6 +313,7 @@ export default function AdminDashboard() {
                       <thead className="bg-black/10 text-white uppercase tracking-widest text-[10px] font-black">
                         <tr>
                           <th className="px-8 py-6">Order #</th>
+                          <th className="px-8 py-6 text-center">Date</th>
                           <th className="px-8 py-6">Customer</th>
                           <th className="px-8 py-6 text-center">Status</th>
                           <th className="px-8 py-6 text-center">Revenue</th>
@@ -315,6 +325,9 @@ export default function AdminDashboard() {
                         {businessData.map((order, i) => (
                           <tr key={i} className="hover:bg-white/5 transition-all duration-300">
                             <td className="px-8 py-6 font-black uppercase tracking-widest text-[12px]">{order.id}</td>
+                            <td className="px-8 py-6 font-bold uppercase text-[11px] text-[#FFEFE5] text-center">
+                              {format(parseISO(order.date), 'dd-MM-yyyy')}
+                            </td>
                             <td className="px-8 py-6 font-bold uppercase">{order.cx}</td>
                             <td className="px-8 py-6 text-center">
                               <span className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-tighter ${
